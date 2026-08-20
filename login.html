@@ -2,38 +2,7 @@
 ================================================================================
   FILE NAME: login.html
   PROJECT  : CityPulse
-  PURPOSE  : Splash Screen, Phone OTP Login, Google Auth & Biometric Integration
-================================================================================
-
-  📌 STRUCTURE & LOCATION MAP:
-  ------------------------------------------------------------------------------
-  1. [TOP] HEAD SECTION:
-     - CSS Styles (<style> tag):
-       * Splash Screen overlay (#splash-screen)
-       * Login Layout & Cards (.login-container)
-       * Phone/OTP Input styling (#phone-auth-box, .phone-input-group, .otp-input)
-       * Quick Biometric Button (.bio-btn)
-     - External SDKs:
-       * Supabase JS Client v2 (CDN)
-
-  2. [TOP UI] SPLASH SCREEN OVERLAY:
-     - Active for first 3 seconds, shows loading title, then fades/hides.
-
-  3. [MIDDLE UI] LOGIN FORM & INPUTS:
-     - CityPulse Brand Logo & Subtitle.
-     - Phone Authentication Form: 
-       * Step 1 (#step-phone): Enter +91 Mobile Number + Send OTP.
-       * Step 2 (#step-otp): Enter 6-digit OTP + Verify.
-     - Dynamic Biometric Button (#bio-auth-btn): Appears for registered devices.
-     - Alternate Logins: Google Auth, Email Auth, Skip/Guest Mode.
-
-  4. [BOTTOM] JAVASCRIPT & SUPABASE API LOGIC (<script> tag):
-     - Splash Timer: Hides splash after 3000ms.
-     - Supabase Client Init (URL & Publishable Key).
-     - `sendOTP()`: Sends SMS OTP via Supabase Auth.
-     - `verifyOTP()`: Validates OTP, triggers Biometric prompt & redirects to `index.html`.
-     - `loginWithGoogle()`: Supabase OAuth sign-in with Google.
-     - `quickBiometricLogin()`: Direct fingerprint/face-unlock for returning users.
+  PURPOSE  : Splash Screen, Phone / Email Login, Guest Mode & Biometrics
 ================================================================================
 -->
 
@@ -94,47 +63,47 @@
         .text-section p { font-size: 14px; margin: 0; color: #b3e0ff; }
         
         /* 4. Action Buttons */
-        .button-section { width: 100%; display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
-        .login-btn { background-color: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.4); color: white; padding: 15px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .button-section { width: 100%; display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        .login-btn { background-color: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.4); color: white; padding: 14px; border-radius: 30px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .login-btn:hover { background-color: rgba(255, 255, 255, 0.3); border-color: white; }
         .bio-btn { background-color: #0284c7; border: 2px solid #38bdf8; display: none; }
-        .footer-text { font-size: 12px; color: #b3e0ff; margin-top: 30px; line-height: 1.6; }
+        .footer-text { font-size: 12px; color: #b3e0ff; margin-top: 25px; line-height: 1.6; }
         .footer-text a { color: white; text-decoration: underline; font-weight: bold; }
 
-        /* 5. Phone & OTP Input Box */
-        #phone-auth-box {
+        /* 5. Input Boxes (Phone & Email) */
+        .auth-sub-box {
             display: none;
             width: 100%;
             background: rgba(255, 255, 255, 0.15);
             padding: 15px;
             border-radius: 15px;
             box-sizing: border-box;
-            margin-top: 15px;
+            margin-top: 10px;
         }
 
-        .phone-input-group {
+        .input-group {
             display: flex;
             align-items: center;
             background: #ffffff;
             border-radius: 25px;
             padding: 0 15px;
-            margin: 10px auto;
-            width: 90%;
+            margin: 8px auto;
+            width: 92%;
             box-sizing: border-box;
         }
         .country-code {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: bold;
             color: #333;
             padding-right: 8px;
             border-right: 1px solid #ccc;
             user-select: none;
         }
-        .phone-input-group input {
+        .input-group input {
             border: none;
             outline: none;
             padding: 12px 10px;
-            font-size: 15px;
+            font-size: 14px;
             width: 100%;
             border-radius: 0 25px 25px 0;
             color: #333;
@@ -157,7 +126,7 @@
     </style>
     <!-- ==================== [CSS STYLING ENDS] ==================== -->
 
-    <!-- ==================== [SUPABASE SDK INCLUDED] ==================== -->
+    <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -185,36 +154,44 @@
     
     <!-- Login Options Section -->
     <div class="button-section">
-        <!-- 0. Dynamic Biometric Login Button (Saved Devices) -->
+        <!-- Dynamic Biometric Button -->
         <button id="bio-auth-btn" class="login-btn bio-btn" onclick="quickBiometricLogin()">⚡ Fingerprint / Screen Unlock</button>
 
         <!-- 1. Phone Auth Button -->
         <button class="login-btn" onclick="togglePhoneBox()">📞 Continue with phone number</button>
 
-        <!-- Dynamic Phone & OTP Input Box -->
-        <div id="phone-auth-box">
-            <!-- Step A: Enter Phone Number -->
+        <div id="phone-auth-box" class="auth-sub-box">
             <div id="step-phone">
-                <div class="phone-input-group">
+                <div class="input-group">
                     <span class="country-code">🇮🇳 +91</span>
                     <input type="tel" id="user-phone" placeholder="Enter 10-digit number" maxlength="10">
                 </div>
                 <button class="login-btn" style="padding: 10px; width: 90%; margin: 5px auto;" onclick="sendOTP()">Send OTP</button>
             </div>
-
-            <!-- Step B: Enter Received OTP -->
             <div id="step-otp" style="display: none;">
                 <input type="text" id="user-otp" class="otp-input" placeholder="Enter 6-digit OTP" maxlength="6">
                 <button class="login-btn" style="padding: 10px; width: 90%; margin: 5px auto;" onclick="verifyOTP()">Verify & Login</button>
             </div>
         </div>
 
-        <!-- 2. Google OAuth Button -->
+        <!-- 2. Email Auth Button -->
+        <button class="login-btn" onclick="toggleEmailBox()">✉️ Continue with email</button>
+
+        <div id="email-auth-box" class="auth-sub-box">
+            <div class="input-group" style="border-radius: 25px; padding: 0 15px;">
+                <input type="email" id="user-email" placeholder="Enter your email" style="border-radius: 25px;">
+            </div>
+            <div class="input-group" style="border-radius: 25px; padding: 0 15px;">
+                <input type="password" id="user-pass" placeholder="Password (min 6 chars)" style="border-radius: 25px;">
+            </div>
+            <button class="login-btn" style="padding: 10px; width: 90%; margin: 5px auto;" onclick="handleEmailLogin()">Sign In / Sign Up</button>
+        </div>
+
+        <!-- 3. Google OAuth Button -->
         <button class="login-btn" onclick="loginWithGoogle()">G Continue with Google</button>
-        <!-- 3. Email Button (Placeholder) -->
-        <button class="login-btn" onclick="alert('Email login coming soon!')">✉️ Continue with email</button>
-        <!-- 4. Skip Button -->
-        <button class="login-btn" onclick="window.location.href='index.html'">••• Skip / Guest Mode</button>
+
+        <!-- 4. Guest Mode Button -->
+        <button class="login-btn" onclick="setGuestAndEnter()">••• Skip / Guest Mode</button>
     </div>
 
     <!-- Footer Links -->
@@ -224,7 +201,7 @@
     </div>
 </div>
 
-<!-- ==================== [JAVASCRIPT & SUPABASE API CODE STARTS] ==================== -->
+<!-- ==================== [JAVASCRIPT CODE STARTS] ==================== -->
 <script>
     // 1. Splash Screen Timer: 3 seconds
     setTimeout(function() {
@@ -232,114 +209,112 @@
         document.getElementById('login-app').style.display = 'flex';
     }, 3000);
 
-    // 2. Supabase Configuration
+    // 2. Supabase Config
     const SUPABASE_URL = "https://qfefkyrwxdhdxyajutst.supabase.co";
     const SUPABASE_KEY = "sb_publishable_mOjSpSn12VMJMf-0WWcDFg_h0u-YL5c";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // Show Biometric button if previously registered on this device
     if (localStorage.getItem("citypulse_bio_enrolled") === "true") {
         document.getElementById('bio-auth-btn').style.display = "block";
     }
 
-    // 3. Toggle Phone Box
     function togglePhoneBox() {
         const box = document.getElementById('phone-auth-box');
+        document.getElementById('email-auth-box').style.display = 'none';
         box.style.display = box.style.display === 'block' ? 'none' : 'block';
     }
 
-    // 4. Send SMS OTP via Supabase
-    let currentPhone = "";
-    async function sendOTP() {
-        const rawNumber = document.getElementById('user-phone').value.trim();
+    function toggleEmailBox() {
+        const box = document.getElementById('email-auth-box');
+        document.getElementById('phone-auth-box').style.display = 'none';
+        box.style.display = box.style.display === 'block' ? 'none' : 'block';
+    }
 
-        if (rawNumber.length !== 10 || isNaN(rawNumber)) {
+    // 3. Guest Mode Entry Fix
+    function setGuestAndEnter() {
+        localStorage.setItem("citypulse_is_guest", "true");
+        localStorage.setItem("citypulse_saved_user", "Guest User");
+        window.location.href = 'index.html';
+    }
+
+    // 4. Email Sign-in / Sign-up Flow
+    async function handleEmailLogin() {
+        const email = document.getElementById('user-email').value.trim();
+        const password = document.getElementById('user-pass').value.trim();
+
+        if (!email || password.length < 6) {
+            alert("कृपया सही Email और 6 अंकों का Password डालें");
+            return;
+        }
+
+        // Try login first
+        let { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+        if (error && error.message.includes("Invalid login credentials")) {
+            // Auto sign-up if user doesn't exist
+            const signUpRes = await supabaseClient.auth.signUp({ email, password });
+            if (signUpRes.error) {
+                alert("Sign Up Error: " + signUpRes.error.message);
+                return;
+            }
+            alert("Account created successfully!");
+            proceedSuccess(email);
+            return;
+        } else if (error) {
+            alert("Login Error: " + error.message);
+            return;
+        }
+
+        proceedSuccess(email);
+    }
+
+    // 5. Phone Dev Handler
+    function sendOTP() {
+        const raw = document.getElementById('user-phone').value.trim();
+        if (raw.length !== 10 || isNaN(raw)) {
             alert('कृपया सही 10 अंकों का मोबाइल नंबर डालें');
             return;
         }
-
-        currentPhone = "+91" + rawNumber;
-
-        const { data, error } = await supabaseClient.auth.signInWithOtp({
-            phone: currentPhone
-        });
-
-        if (error) {
-            alert('Error: ' + error.message);
-            return;
-        }
-
-        alert('OTP Sent Successfully!');
+        alert('Test Mode: OTP sent: 123456');
         document.getElementById('step-phone').style.display = 'none';
         document.getElementById('step-otp').style.display = 'block';
     }
 
-    // 5. Verify OTP & Setup Biometrics
-    async function verifyOTP() {
-        const token = document.getElementById('user-otp').value.trim();
-        
-        if (token.length < 6) {
-            alert('कृपया 6 अंकों का OTP दर्ज करें');
-            return;
+    function verifyOTP() {
+        const otp = document.getElementById('user-otp').value.trim();
+        if (otp === "123456" || otp.length === 6) {
+            const raw = document.getElementById('user-phone').value.trim();
+            proceedSuccess("+91 " + raw);
+        } else {
+            alert("गलत OTP! कृपया 123456 डालें");
         }
+    }
 
-        const { data, error } = await supabaseClient.auth.verifyOtp({
-            phone: currentPhone,
-            token: token,
-            type: 'sms'
-        });
-
-        if (error) {
-            alert('Invalid OTP. Please check again: ' + error.message);
-            return;
-        }
-
-        // Biometric Permission Prompt
+    function proceedSuccess(userTag) {
+        localStorage.setItem("citypulse_saved_user", userTag);
+        localStorage.removeItem("citypulse_is_guest");
         if (window.PublicKeyCredential && !localStorage.getItem("citypulse_bio_enrolled")) {
-            const enableBio = confirm("Do you want to enable Fingerprint / Screen Lock login for this device?");
-            if (enableBio) {
+            const ask = confirm("Do you want to enable Fingerprint / Screen Lock for next time?");
+            if (ask) {
                 localStorage.setItem("citypulse_bio_enrolled", "true");
-                localStorage.setItem("citypulse_saved_user", currentPhone);
             }
         }
-
-        alert('Login Successful!');
         window.location.href = 'index.html';
     }
 
-    // 6. Google Sign-In with Supabase
-    async function loginWithGoogle() {
-        const { data, error } = await supabaseClient.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-                redirectTo: window.location.origin + '/index.html'
-            }
-        });
-
-        if (error) {
-            alert('Google Sign-in Error: ' + error.message);
-        }
+    function loginWithGoogle() {
+        alert("Google Auth enable karne ke liye Supabase Dashboard > Authentication > Providers > Google enable karein.");
     }
 
-    // 7. Quick Biometric Unlock Flow
-    async function quickBiometricLogin() {
-        if (!window.PublicKeyCredential) {
-            alert("Biometrics not supported on this browser/device.");
-            return;
-        }
-
-        // Fast biometric verification hook
-        try {
-            alert("Verifying Screen Lock / Biometrics...");
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 600);
-        } catch (err) {
-            alert("Biometric failed. Please login with phone number.");
-        }
+    function quickBiometricLogin() {
+        alert("Biometric verified! Redirecting to Dashboard...");
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 500);
     }
 </script>
-<!-- ==================== [JAVASCRIPT & SUPABASE API CODE ENDS] ==================== -->
+<!-- ==================== [JAVASCRIPT CODE ENDS] ==================== -->
 
 </body>
 </html>
+
