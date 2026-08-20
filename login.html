@@ -1,0 +1,314 @@
+<!-- 
+================================================================================
+  FILE NAME: login.html
+  PROJECT  : CityPulse
+  PURPOSE  : Splash Screen, Phone OTP Login & Google Firebase Authentication
+================================================================================
+
+  📌 STRUCTURE & LOCATION MAP:
+  ------------------------------------------------------------------------------
+  1. [TOP] HEAD SECTION:
+     - CSS Styles (<style> tag):
+       * Splash Screen overlay (#splash-screen).
+       * Login Layout & Cards (.login-container).
+       * Phone/OTP Input styling (#phone-auth-box, .phone-input-group, .otp-input).
+     - External SDKs:
+       * Firebase App & Auth SDK v10.9.0 (Compat scripts).
+
+  2. [TOP UI] SPLASH SCREEN OVERLAY:
+     - Active for first 3 seconds, shows loading title, then fades/hides.
+
+  3. [MIDDLE UI] LOGIN FORM & INPUTS:
+     - CityPulse Brand Logo & Subtitle.
+     - Phone Authentication Form: 
+       * Step 1 (#step-phone): Enter +91 Mobile Number + Send OTP.
+       * Step 2 (#step-otp): Enter 6-digit OTP + Verify.
+     - Alternate Logins: Google Auth, Email (placeholder), Skip/Guest Mode.
+     - Invisible ReCAPTCHA Container (#recaptcha-container).
+
+  4. [BOTTOM] JAVASCRIPT & FIREBASE API LOGIC (<script> tag):
+     - Splash Timer: Hides splash after 3000ms.
+     - Firebase Configuration (`firebaseConfig` object).
+     - `sendOTP()`: Triggers Firebase SMS OTP with ReCAPTCHA.
+     - `verifyOTP()`: Validates OTP and redirects to `biometric.html`.
+     - `loginWithGoogle()`: Opens Google Sign-in popup and redirects to `biometric.html`.
+================================================================================
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityPulse - Login</title>
+
+    <!-- ==================== [CSS STYLING STARTS] ==================== -->
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f6f9; 
+            display: flex;
+            justify-content: center;
+        }
+        
+        /* 1. Splash Screen Overlay (3-Second intro) */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #005C7A; 
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        #splash-screen h1 { font-size: 45px; margin: 0; color: #ffffff; }
+        #splash-screen p { font-size: 18px; color: #99cce0; margin-top: 10px; }
+        
+        /* 2. Main Login Container */
+        .login-container { 
+            width: 100%;
+            max-width: 400px; 
+            min-height: 100vh;
+            background: linear-gradient(145deg, #007a99, #005C7A, #004865); 
+            color: white;
+            display: none; /* Shows after Splash finishes */
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-evenly;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        /* 3. Logo & Heading text */
+        .logo-section h1 { font-size: 38px; margin: 0 0 15px 0; font-weight: bold; letter-spacing: 1px; }
+        .logo-circle { width: 110px; height: 110px; border: 3px solid white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 50px; margin: 0 auto; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .text-section h2 { font-size: 15px; font-weight: bold; margin: 0 0 10px 0; letter-spacing: 1px; }
+        .text-section p { font-size: 14px; margin: 0; color: #b3e0ff; }
+        
+        /* 4. Action Buttons */
+        .button-section { width: 100%; display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
+        .login-btn { background-color: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.4); color: white; padding: 15px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .login-btn:hover { background-color: rgba(255, 255, 255, 0.3); border-color: white; }
+        .footer-text { font-size: 12px; color: #b3e0ff; margin-top: 30px; line-height: 1.6; }
+        .footer-text a { color: white; text-decoration: underline; font-weight: bold; }
+
+        /* 5. Phone & OTP Input Box */
+        #phone-auth-box {
+            display: none;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 15px;
+            box-sizing: border-box;
+            margin-top: 15px;
+        }
+
+        .phone-input-group {
+            display: flex;
+            align-items: center;
+            background: #ffffff;
+            border-radius: 25px;
+            padding: 0 15px;
+            margin: 10px auto;
+            width: 90%;
+            box-sizing: border-box;
+        }
+        .country-code {
+            font-size: 15px;
+            font-weight: bold;
+            color: #333;
+            padding-right: 8px;
+            border-right: 1px solid #ccc;
+            user-select: none;
+        }
+        .phone-input-group input {
+            border: none;
+            outline: none;
+            padding: 12px 10px;
+            font-size: 15px;
+            width: 100%;
+            border-radius: 0 25px 25px 0;
+            color: #333;
+        }
+
+        .otp-input {
+            width: 85%;
+            padding: 12px;
+            margin: 8px auto;
+            border-radius: 25px;
+            border: 1px solid #fff;
+            background: #ffffff;
+            color: #333;
+            font-size: 16px;
+            outline: none;
+            text-align: center;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+    </style>
+    <!-- ==================== [CSS STYLING ENDS] ==================== -->
+
+    <!-- ==================== [FIREBASE SDKs INCLUDED] ==================== -->
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+
+<!-- [TOP] Splash Screen Overlay -->
+<div id="splash-screen">
+    <h1>CityPulse</h1>
+    <p>Loading Super Services...</p>
+</div>
+
+<!-- [MIDDLE] Login Main Container -->
+<div id="login-app" class="login-container">
+    
+    <!-- Branding Section -->
+    <div class="logo-section">
+        <h1>CityPulse</h1>
+        <div class="logo-circle">🏙️</div> 
+    </div>
+
+    <!-- Title & Information Text -->
+    <div class="text-section">
+        <h2>CONTINUE TO SIGN UP FOR FREE</h2>
+        <p>If you already have an account,<br>we will log you in</p>
+    </div>
+    
+    <!-- Login Options Section -->
+    <div class="button-section">
+        <!-- 1. Phone Auth Button -->
+        <button class="login-btn" onclick="togglePhoneBox()">📞 Continue with phone number</button>
+
+        <!-- Dynamic Phone & OTP Input Box -->
+        <div id="phone-auth-box">
+            <!-- Step A: Enter Phone Number -->
+            <div id="step-phone">
+                <div class="phone-input-group">
+                    <span class="country-code">🇮🇳 +91</span>
+                    <input type="tel" id="user-phone" placeholder="Enter 10-digit number" maxlength="10">
+                </div>
+                <button class="login-btn" style="padding: 10px; width: 90%; margin: 5px auto;" onclick="sendOTP()">Send OTP</button>
+            </div>
+
+            <!-- Step B: Enter Received OTP -->
+            <div id="step-otp" style="display: none;">
+                <input type="text" id="user-otp" class="otp-input" placeholder="Enter 6-digit OTP" maxlength="6">
+                <button class="login-btn" style="padding: 10px; width: 90%; margin: 5px auto;" onclick="verifyOTP()">Verify & Login</button>
+            </div>
+        </div>
+
+        <!-- 2. Google OAuth Button -->
+        <button class="login-btn" onclick="loginWithGoogle()">G Continue with Google</button>
+        <!-- 3. Email Button (Placeholder) -->
+        <button class="login-btn" onclick="alert('Email login coming soon!')">✉️ Continue with email</button>
+        <!-- 4. Skip Button -->
+        <button class="login-btn" onclick="window.location.href='index.html'">••• Skip / Guest Mode</button>
+    </div>
+
+    <!-- Firebase ReCAPTCHA Anchor -->
+    <div id="recaptcha-container"></div>
+
+    <!-- Footer Links -->
+    <div class="footer-text">
+        By continuing, you agree to CityPulse's <br>
+        <a href="#">TERMS OF USE</a>. Read our <a href="#">PRIVACY POLICY</a>.
+    </div>
+</div>
+
+<!-- ==================== [JAVASCRIPT & FIREBASE API CODE STARTS] ==================== -->
+<script>
+    // 1. Splash Screen Timer: 3 seconds
+    setTimeout(function() {
+        document.getElementById('splash-screen').style.display = 'none';
+        document.getElementById('login-app').style.display = 'flex';
+    }, 3000);
+
+    // 2. Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyClIWguv8WBR8DCSO5Gx1H9xjeQVzYwKo0",
+        authDomain: "citypulse-fcc77.firebaseapp.com",
+        projectId: "citypulse-fcc77",
+        storageBucket: "citypulse-fcc77.firebasestorage.app",
+        messagingSenderId: "579500734980",
+        appId: "1:579500734980:web:7f8f847b617f6e586dd351",
+        measurementId: "G-B5Q0PXFGKD"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // 3. Toggle Phone Box & Initialize invisible ReCAPTCHA
+    function togglePhoneBox() {
+        const box = document.getElementById('phone-auth-box');
+        box.style.display = box.style.display === 'block' ? 'none' : 'block';
+        if (!window.recaptchaVerifier) {
+            window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                'size': 'invisible'
+            });
+        }
+    }
+
+    // 4. Send SMS OTP Function
+    function sendOTP() {
+        const rawNumber = document.getElementById('user-phone').value.trim();
+
+        if (rawNumber.length !== 10 || isNaN(rawNumber)) {
+            alert('कृपया सही 10 अंकों का मोबाइल नंबर डालें');
+            return;
+        }
+
+        const phoneNumber = "+91" + rawNumber;
+        const appVerifier = window.recaptchaVerifier;
+
+        auth.signInWithPhoneNumber(phoneNumber, appVerifier)
+            .then((confirmationResult) => {
+                window.confirmationResult = confirmationResult;
+                alert('OTP Sent Successfully!');
+                document.getElementById('step-phone').style.display = 'none';
+                document.getElementById('step-otp').style.display = 'block';
+            }).catch((error) => {
+                alert('Error: ' + error.message);
+            });
+    }
+
+    // 5. Verify OTP & Redirect to Biometric page
+    function verifyOTP() {
+        const code = document.getElementById('user-otp').value.trim();
+        
+        if (code.length < 6) {
+            alert('कृपया 6 अंकों का OTP दर्ज करें');
+            return;
+        }
+
+        window.confirmationResult.confirm(code).then((result) => {
+            alert('Login Successful!');
+            window.location.href = 'biometric.html';
+        }).catch((error) => {
+            alert('Invalid OTP. Please check again.');
+        });
+    }
+
+    // 6. Google Sign-In with Popup & Redirect to Biometric page
+    function loginWithGoogle() {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider)
+            .then((result) => {
+                alert('Welcome, ' + (result.user.displayName || 'User'));
+                window.location.href = 'biometric.html';
+            }).catch((error) => {
+                alert('Google Sign-in Error: ' + error.message);
+            });
+    }
+</script>
+<!-- ==================== [JAVASCRIPT & FIREBASE API CODE ENDS] ==================== -->
+
+</body>
+</html>

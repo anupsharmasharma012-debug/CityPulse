@@ -1,0 +1,486 @@
+<!-- 
+================================================================================
+  FILE NAME: index.html
+  PROJECT  : CityPulse
+  PURPOSE  : Main Application Dashboard / Home Screen
+================================================================================
+
+  📌 STRUCTURE & LOCATION MAP:
+  ------------------------------------------------------------------------------
+  1. [TOP] HEAD SECTION:
+     - CSS Styles (<style> tag):
+       * Mobile Container layout (.app-container).
+       * Top Quick Actions 4-column Grid (.top-grid).
+       * Weather / Calendar / Language Grid (.info-grid).
+       * SOS & Emergency contacts Hub (.emergency-box).
+       * News & Live Alerts Banner (.news-banner).
+       * Promotions / Offers 3-column Grid (.promo-grid).
+       * City Services 8-box Grid (.services-grid).
+       * Fixed Bottom Navigation Bar (.bottom-nav).
+
+  2. [TOP UI] QUICK ACTIONS & WIDGETS:
+     - 4 Quick Buttons: Pay, Transport, Shopping, Food.
+     - Info Cards: City/Weather widget, Calendar, Language selector.
+
+  3. [MIDDLE UI] EMERGENCY, NEWS & OFFERS:
+     - Emergency SOS Button & Complain Hub.
+     - 3 One-touch Emergency Call buttons (Helpline, Police, Ambulance).
+     - Scrolling/Sticky News Banner.
+     - 3 Promo Boxes: Offers, City Events, Community Forums.
+
+  4. [BOTTOM UI] UTILITIES & NAVIGATION:
+     - 8 Municipal Utility Services (Electricity, Water, Waste, Map, Traffic, etc.).
+     - Fixed Bottom Navigation Bar: Home, Services, Alerts, Profile (links to login.html).
+================================================================================
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityPulse - Home</title>
+
+    <!-- ==================== [CSS STYLING STARTS] ==================== -->
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Main Mobile App Container */
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            background: linear-gradient(180deg, #1b4b60, #225c75, #2c6f8d);
+            min-height: 100vh;
+            padding: 16px;
+            padding-bottom: 85px; /* Bottom bar padding */
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            position: relative;
+        }
+
+        /* 1. Top 4 Quick Action Cards */
+        .top-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .action-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 10px 4px;
+            text-align: center;
+            color: #1e3d4f;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .action-card .icon {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .action-card span {
+            font-size: 11px;
+            font-weight: 700;
+            display: block;
+        }
+
+        /* 2. Middle Info Widgets (Weather, Calendar, Language) */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr 1fr;
+            gap: 8px;
+        }
+
+        .info-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+            color: #1e3d4f;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .info-card .icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+
+        .info-card .title {
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .info-card .subtext {
+            font-size: 10px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        /* 3. Emergency Section */
+        .emergency-box {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .emergency-top {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .btn-danger-large {
+            border: 2px solid #e63946;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #e63946;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .btn-complain {
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #1e3d4f;
+            font-size: 11px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .emergency-contacts {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+
+        .contact-pill {
+            background: #fff5f5;
+            border: 1px solid #ffe0e0;
+            border-radius: 10px;
+            padding: 8px 4px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .contact-pill .label {
+            font-size: 10px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .contact-pill .call-icon {
+            color: #d90429;
+            font-size: 14px;
+        }
+
+        /* 4. News Banner */
+        .news-banner {
+            background: #0f3443;
+            color: #ffffff;
+            border-radius: 12px;
+            padding: 12px 14px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .news-banner h3 {
+            font-size: 14px;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        .news-banner p {
+            font-size: 11px;
+            color: #b0c4de;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 5. Middle Promo Cards */
+        .promo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .promo-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 10px 4px;
+            text-align: center;
+            color: #1e3d4f;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+
+        .promo-card .icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .promo-card span {
+            font-size: 10px;
+            font-weight: bold;
+            display: block;
+            line-height: 1.2;
+        }
+
+        /* 6. City Services 4-Column Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .service-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 10px 4px;
+            text-align: center;
+            color: #1e3d4f;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+
+        .service-card .icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .service-card .title {
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .service-card .subtitle {
+            font-size: 8px;
+            color: #666;
+            margin-top: 2px;
+            display: block;
+        }
+
+        /* 7. Fixed Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 420px;
+            height: 60px;
+            background: #0f3443;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            z-index: 9999;
+            box-shadow: 0 -3px 10px rgba(0,0,0,0.25);
+        }
+
+        .nav-item {
+            text-align: center;
+            color: #b0c4de;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .nav-item.active {
+            color: #00e5ff;
+        }
+
+        .nav-item .nav-icon {
+            font-size: 18px;
+        }
+    </style>
+    <!-- ==================== [CSS STYLING ENDS] ==================== -->
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- ==================== [TOP SECTION: QUICK ACTIONS] ==================== -->
+    <div class="top-grid">
+        <div class="action-card">
+            <div class="icon">💳</div>
+            <span>Pay</span>
+        </div>
+        <div class="action-card">
+            <div class="icon">🚌</div>
+            <span>Transport</span>
+        </div>
+        <div class="action-card">
+            <div class="icon">🛒</div>
+            <span>Shopping</span>
+        </div>
+        <div class="action-card">
+            <div class="icon">🍽️</div>
+            <span>Food</span>
+        </div>
+    </div>
+
+    <!-- ==================== [TOP SECTION: INFO WIDGETS] ==================== -->
+    <div class="info-grid">
+        <div class="info-card">
+            <div class="title">📍 My City, State</div>
+            <div class="subtext">⛅ Weather, 24°C</div>
+        </div>
+        <div class="info-card">
+            <div class="icon">📅</div>
+            <div class="title">Calendar</div>
+        </div>
+        <div class="info-card">
+            <div class="icon">🌐</div>
+            <div class="title">Language</div>
+        </div>
+    </div>
+
+    <!-- ==================== [MIDDLE SECTION: EMERGENCY HUB] ==================== -->
+    <div class="emergency-box">
+        <div class="emergency-top">
+            <button class="btn-danger-large">➕ Emergency</button>
+            <button class="btn-complain">📢 Citizen Voice & Complain</button>
+        </div>
+        <div class="emergency-contacts">
+            <div class="contact-pill">
+                <div class="label">👩 Helpline</div>
+                <div class="call-icon">📞</div>
+            </div>
+            <div class="contact-pill">
+                <div class="label">👮 Police</div>
+                <div class="call-icon">📞</div>
+            </div>
+            <div class="contact-pill">
+                <div class="label">🚑 Ambulance</div>
+                <div class="call-icon">📞</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== [MIDDLE SECTION: NEWS BANNER] ==================== -->
+    <div class="news-banner">
+        <h3>City News & Updates</h3>
+        <p>The best Alert: Main Street Construction Update, Ignite your city...</p>
+    </div>
+
+    <!-- ==================== [MIDDLE SECTION: PROMOS & EVENTS] ==================== -->
+    <div class="promo-grid">
+        <div class="promo-card">
+            <div class="icon">🏷️</div>
+            <span>Explore<br>Top Offers</span>
+        </div>
+        <div class="promo-card">
+            <div class="icon">🎉</div>
+            <span>Upcoming<br>City Events</span>
+        </div>
+        <div class="promo-card">
+            <div class="icon">💬</div>
+            <span>Community<br>Forums</span>
+        </div>
+    </div>
+
+    <!-- ==================== [BOTTOM SECTION: SERVICES GRID] ==================== -->
+    <div class="services-grid">
+        <div class="service-card">
+            <div class="icon">⚡</div>
+            <div class="title">Electricity</div>
+            <span class="subtitle">Bill Payment</span>
+        </div>
+        <div class="service-card">
+            <div class="icon">🚰</div>
+            <div class="title">Water</div>
+            <span class="subtitle">Meter Reading</span>
+        </div>
+        <div class="service-card">
+            <div class="icon">♻️</div>
+            <div class="title">Waste</div>
+            <span class="subtitle">Collection</span>
+        </div>
+        <div class="service-card">
+            <div class="icon">🗺️</div>
+            <div class="title">Map</div>
+            <span class="subtitle">Routing</span>
+        </div>
+
+        <div class="service-card">
+            <div class="icon">🚦</div>
+            <div class="title">Traffic</div>
+            <span class="subtitle">Live Updates</span>
+        </div>
+        <div class="service-card">
+            <div class="icon">🎧</div>
+            <div class="title">Support</div>
+            <span class="subtitle">Customer Care</span>
+        </div>
+        <div class="service-card">
+            <div class="icon">🏙️</div>
+            <div class="title">Local</div>
+            <span class="subtitle">Around You</span>
+        </div>
+        <div class="service-card">
+            <div class="icon">🅿️</div>
+            <div class="title">Parking</div>
+            <span class="subtitle">Nearby Garages</span>
+        </div>
+    </div>
+
+    <!-- ==================== [BOTTOM NAVIGATION BAR] ==================== -->
+    <div class="bottom-nav">
+        <div class="nav-item active">
+            <div class="nav-icon">🏠</div>
+            <span>Home</span>
+        </div>
+        <div class="nav-item">
+            <div class="nav-icon">📑</div>
+            <span>Services</span>
+        </div>
+        <div class="nav-item">
+            <div class="nav-icon">🔔</div>
+            <span>Alerts</span>
+        </div>
+        <!-- Profile Click navigates back to Login -->
+        <div class="nav-item" onclick="window.location.href='login.html'">
+            <div class="nav-icon">👤</div>
+            <span>Profile</span>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
