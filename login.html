@@ -187,8 +187,8 @@
     <!-- Login Options Section -->
     <div class="button-section">
         <!-- Dynamic Biometric Button -->
-        <button id="bio-auth-btn" class="login-btn bio-btn" onclick="quickBiometricLogin()">⚡ Fingerprint / Screen Unlock</button>
-
+        <button id="bio-auth-btn" class="login-btn bio-btn" onclick="handleBiometricAuth()" style="display: none;">⚡ Fingerprint / Screen Unlock</button>
+      
         <!-- 1. Phone Auth Button -->
         <button class="login-btn" onclick="togglePhoneBox()">📞 Continue with phone number</button>
 
@@ -248,10 +248,42 @@
     const SUPABASE_KEY = "sb_publishable_mOjSpSn12VMJMf-0WWcDFg_h0u-YL5c";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // Show Biometric button if previously enrolled on this device
-    if (localStorage.getItem("citypulse_bio_enrolled") === "true") {
-        document.getElementById('bio-auth-btn').style.display = "block";
+    // Check device biometric support & auto-handle enrollment
+async function initBiometrics() {
+    const bioBtn = document.getElementById('bio-auth-btn');
+    if (window.PublicKeyCredential && bioBtn) {
+        const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+        if (available) {
+            bioBtn.style.display = "block";
+        }
     }
+}
+initBiometrics();
+
+// Biometric Unlock Trigger
+async function handleBiometricAuth() {
+    try {
+        const challenge = new Uint8Array(32);
+        window.crypto.getRandomValues(challenge);
+
+        const credential = await navigator.credentials.get({
+            publicKey: {
+                challenge: challenge,
+                timeout: 60000,
+                userVerification: "required"
+            }
+        });
+
+        if (credential) {
+            localStorage.setItem("citypulse_bio_enrolled", "true");
+            window.location.href = "index.html";
+        }
+    } catch (err) {
+        console.warn("Biometric verification canceled or not enrolled yet:", err);
+        alert("Fingerprint / Screen Lock verify nahi hua. Pehle Email ya Google se login karein.");
+    }
+}
+   
 
     // 3. UI Toggle Functions
     function togglePhoneBox() {
