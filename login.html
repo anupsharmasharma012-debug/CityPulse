@@ -247,6 +247,13 @@
     const SUPABASE_URL = "https://qfefkyrwxdhdxyajutst.supabase.co";
     const SUPABASE_KEY = "sb_publishable_mOjSpSn12VMJMf-0WWcDFg_h0u-YL5c";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  // Auto-redirect if Google login is already successful
+supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (session) {
+        window.location.href = "index.html";
+    }
+});
+  
 
     // Check device biometric support & auto-handle enrollment
 async function initBiometrics() {
