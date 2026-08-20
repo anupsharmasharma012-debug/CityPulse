@@ -2,7 +2,7 @@
 ================================================================================
   FILE NAME: index.html
   PROJECT  : CityPulse
-  PURPOSE  : Dashboard with Supabase Auth Guard & Live Weather/City Integration
+  PURPOSE  : Dashboard with Live Weather, SOS Modal & Profile Page Routing
 ================================================================================
 -->
 
@@ -12,12 +12,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CityPulse - Home</title>
-
-    <!-- Supabase JS Client SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- ==================== [CSS STYLING STARTS] ==================== -->
     <style>
+        :root {
+            --bg-grad: linear-gradient(180deg, #1b4b60, #225c75, #2c6f8d);
+            --card-bg: #ffffff;
+            --text-dark: #1e3d4f;
+        }
+
+        body.dark-theme {
+            --bg-grad: linear-gradient(180deg, #0b1c24, #122c38, #183a4a);
+            --card-bg: #1e293b;
+            --text-dark: #f8fafc;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -31,11 +40,10 @@
             justify-content: center;
         }
 
-        /* Main Mobile App Container */
         .app-container {
             width: 100%;
             max-width: 420px;
-            background: linear-gradient(180deg, #1b4b60, #225c75, #2c6f8d);
+            background: var(--bg-grad);
             min-height: 100vh;
             padding: 16px;
             padding-bottom: 85px;
@@ -45,42 +53,37 @@
             position: relative;
         }
 
-        /* 0. Top User Status Bar */
-        .user-status-bar {
+        /* Top Brand Header */
+        .top-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(255, 255, 255, 0.12);
-            padding: 8px 12px;
-            border-radius: 10px;
+            padding: 4px 2px;
             color: #ffffff;
-            font-size: 11px;
-            font-weight: 600;
         }
 
-        .user-status-bar .user-tag {
+        .brand-title {
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .header-profile-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
             display: flex;
             align-items: center;
             gap: 6px;
-            color: #e0f2fe;
-            max-width: 250px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
 
-        .btn-logout-chip {
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* 1. Top 4 Quick Action Cards */
+        /* 1. Top Quick Action Cards */
         .top-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -113,7 +116,7 @@
             display: block;
         }
 
-        /* 2. Middle Info Widgets (Weather, Calendar, Language) */
+        /* 2. Middle Info Widgets */
         .info-grid {
             display: grid;
             grid-template-columns: 1.3fr 1fr 1fr;
@@ -183,6 +186,11 @@
             gap: 6px;
             padding: 8px;
             cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-danger-large:active {
+            background: #ffe5e5;
         }
 
         .btn-complain {
@@ -352,43 +360,102 @@
         .nav-item .nav-icon {
             font-size: 18px;
         }
+
+        /* 8. SOS Emergency Modal Styling */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 360px;
+            padding: 24px 20px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-content h2 {
+            color: #e63946;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .modal-content p {
+            color: #555;
+            font-size: 13px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .loc-badge {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            color: #475569;
+            margin-bottom: 16px;
+            word-break: break-all;
+        }
+
+        .btn-sos-trigger {
+            background: #e63946;
+            color: #ffffff;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            border: none;
+            margin-top: 12px;
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 6px;
+        }
     </style>
-    <!-- ==================== [CSS STYLING ENDS] ==================== -->
 </head>
 <body>
 
 <div class="app-container">
 
-    <!-- Top User Status Bar -->
-    <div class="user-status-bar">
-        <div class="user-tag">
-            <span>🟢</span>
-            <span id="active-user-display">Loading User...</span>
-        </div>
-        <button class="btn-logout-chip" onclick="handleLogout()">Logout</button>
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="brand-title">CityPulse</div>
+        <a href="profile.html" class="header-profile-btn">
+            <span>👤</span>
+            <span id="user-header-name">Profile</span>
+        </a>
     </div>
 
-    <!-- Top Quick Actions -->
+    <!-- Quick Actions -->
     <div class="top-grid">
-        <div class="action-card">
-            <div class="icon">💳</div>
-            <span>Pay</span>
-        </div>
-        <div class="action-card">
-            <div class="icon">🚌</div>
-            <span>Transport</span>
-        </div>
-        <div class="action-card">
-            <div class="icon">🛒</div>
-            <span>Shopping</span>
-        </div>
-        <div class="action-card">
-            <div class="icon">🍽️</div>
-            <span>Food</span>
-        </div>
+        <div class="action-card"><div class="icon">💳</div><span>Pay</span></div>
+        <div class="action-card"><div class="icon">🚌</div><span>Transport</span></div>
+        <div class="action-card"><div class="icon">🛒</div><span>Shopping</span></div>
+        <div class="action-card"><div class="icon">🍽️</div><span>Food</span></div>
     </div>
 
-    <!-- Live Weather, Date & Language Widgets -->
+    <!-- Info Widgets -->
     <div class="info-grid">
         <div class="info-card" id="weather-card" onclick="fetchLiveWeather()">
             <div class="title" id="city-name-display">📍 Detecting...</div>
@@ -398,99 +465,48 @@
             <div class="icon">📅</div>
             <div class="title" id="current-date-display">Today</div>
         </div>
-        <div class="info-card">
+        <div class="info-card" onclick="window.location.href='profile.html'">
             <div class="icon">🌐</div>
             <div class="title">Language</div>
         </div>
     </div>
 
-    <!-- Emergency Section -->
+    <!-- Emergency Box -->
     <div class="emergency-box">
         <div class="emergency-top">
-            <button class="btn-danger-large" onclick="alert('SOS Emergency Alert Triggered!')">➕ Emergency</button>
+            <button class="btn-danger-large" onclick="openSOSModal()">➕ Emergency</button>
             <button class="btn-complain" onclick="alert('Citizen Voice Complaint Form coming up!')">📢 Citizen Voice</button>
         </div>
         <div class="emergency-contacts">
-            <div class="contact-pill" onclick="window.location.href='tel:1091'">
-                <div class="label">👩 Helpline</div>
-                <div class="call-icon">📞</div>
-            </div>
-            <div class="contact-pill" onclick="window.location.href='tel:100'">
-                <div class="label">👮 Police</div>
-                <div class="call-icon">📞</div>
-            </div>
-            <div class="contact-pill" onclick="window.location.href='tel:108'">
-                <div class="label">🚑 Ambulance</div>
-                <div class="call-icon">📞</div>
-            </div>
+            <div class="contact-pill" onclick="window.location.href='tel:1091'"><div class="label">👩 Helpline</div><div class="call-icon">📞</div></div>
+            <div class="contact-pill" onclick="window.location.href='tel:100'"><div class="label">👮 Police</div><div class="call-icon">📞</div></div>
+            <div class="contact-pill" onclick="window.location.href='tel:108'"><div class="label">🚑 Ambulance</div><div class="call-icon">📞</div></div>
         </div>
     </div>
 
     <!-- News Banner -->
     <div class="news-banner">
         <h3>City News & Updates</h3>
-        <p>The best Alert: Main Street Construction Update, Ignite your city...</p>
+        <p>Main Street civic maintenance scheduled for this weekend...</p>
     </div>
 
-    <!-- Promos & Events -->
+    <!-- Promos -->
     <div class="promo-grid">
-        <div class="promo-card">
-            <div class="icon">🏷️</div>
-            <span>Explore<br>Top Offers</span>
-        </div>
-        <div class="promo-card">
-            <div class="icon">🎉</div>
-            <span>Upcoming<br>City Events</span>
-        </div>
-        <div class="promo-card">
-            <div class="icon">💬</div>
-            <span>Community<br>Forums</span>
-        </div>
+        <div class="promo-card"><div class="icon">🏷️</div><span>Explore<br>Top Offers</span></div>
+        <div class="promo-card"><div class="icon">🎉</div><span>Upcoming<br>City Events</span></div>
+        <div class="promo-card"><div class="icon">💬</div><span>Community<br>Forums</span></div>
     </div>
 
     <!-- Services Grid -->
     <div class="services-grid">
-        <div class="service-card">
-            <div class="icon">⚡</div>
-            <div class="title">Electricity</div>
-            <span class="subtitle">Bill Payment</span>
-        </div>
-        <div class="service-card">
-            <div class="icon">🚰</div>
-            <div class="title">Water</div>
-            <span class="subtitle">Meter Reading</span>
-        </div>
-        <div class="service-card">
-            <div class="icon">♻️</div>
-            <div class="title">Waste</div>
-            <span class="subtitle">Collection</span>
-        </div>
-        <div class="service-card">
-            <div class="icon">🗺️</div>
-            <div class="title">Map</div>
-            <span class="subtitle">Routing</span>
-        </div>
-
-        <div class="service-card">
-            <div class="icon">🚦</div>
-            <div class="title">Traffic</div>
-            <span class="subtitle">Live Updates</span>
-        </div>
-        <div class="service-card">
-            <div class="icon">🎧</div>
-            <div class="title">Support</div>
-            <span class="subtitle">Customer Care</span>
-        </div>
-        <div class="service-card">
-            <div class="icon">🏙️</div>
-            <div class="title">Local</div>
-            <span class="subtitle">Around You</span>
-        </div>
-        <div class="service-card">
-            <div class="icon">🅿️</div>
-            <div class="title">Parking</div>
-            <span class="subtitle">Nearby Garages</span>
-        </div>
+        <div class="service-card"><div class="icon">⚡</div><div class="title">Electricity</div><span class="subtitle">Bill Payment</span></div>
+        <div class="service-card"><div class="icon">🚰</div><div class="title">Water</div><span class="subtitle">Meter Reading</span></div>
+        <div class="service-card"><div class="icon">♻️</div><div class="title">Waste</div><span class="subtitle">Collection</span></div>
+        <div class="service-card"><div class="icon">🗺️</div><div class="title">Map</div><span class="subtitle">Routing</span></div>
+        <div class="service-card"><div class="icon">🚦</div><div class="title">Traffic</div><span class="subtitle">Live Updates</span></div>
+        <div class="service-card"><div class="icon">🎧</div><div class="title">Support</div><span class="subtitle">Customer Care</span></div>
+        <div class="service-card"><div class="icon">🏙️</div><div class="title">Local</div><span class="subtitle">Around You</span></div>
+        <div class="service-card"><div class="icon">🅿️</div><div class="title">Parking</div><span class="subtitle">Nearby Garages</span></div>
     </div>
 
     <!-- Bottom Navigation Bar -->
@@ -499,15 +515,15 @@
             <div class="nav-icon">🏠</div>
             <span>Home</span>
         </div>
-        <div class="nav-item">
+        <div class="nav-item" onclick="alert('Services view')">
             <div class="nav-icon">📑</div>
             <span>Services</span>
         </div>
-        <div class="nav-item">
+        <div class="nav-item" onclick="alert('Alerts view')">
             <div class="nav-icon">🔔</div>
             <span>Alerts</span>
         </div>
-        <div class="nav-item" onclick="handleLogout()">
+        <div class="nav-item" onclick="window.location.href='profile.html'">
             <div class="nav-icon">👤</div>
             <span>Profile</span>
         </div>
@@ -515,57 +531,59 @@
 
 </div>
 
-<!-- ==================== [JAVASCRIPT CODE STARTS] ==================== -->
+<!-- SOS Emergency Modal -->
+<div id="sos-modal" class="modal-overlay">
+    <div class="modal-content">
+        <h2>🚨 SOS EMERGENCY</h2>
+        <p>Aapki live GPS location ke sath emergency control room ko alert bheja ja raha hai.</p>
+        <div class="loc-badge" id="sos-loc-status">📍 Detecting exact coordinates...</div>
+        <button class="btn-sos-trigger" onclick="triggerSOS()">SEND SOS ALERT</button>
+        <br>
+        <button class="btn-cancel" onclick="closeSOSModal()">Cancel</button>
+    </div>
+</div>
+
 <script>
-    // 1. Supabase Initialization
     const SUPABASE_URL = "https://qfefkyrwxdhdxyajutst.supabase.co";
     const SUPABASE_KEY = "sb_publishable_mOjSpSn12VMJMf-OWwCDFg_h0u-YL5c";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    function updateUserUI(userIdentifier) {
-        const displayElem = document.getElementById("active-user-display");
-        if (displayElem && userIdentifier) {
-            displayElem.innerText = userIdentifier;
-        }
-    }
+    let currentLat = null;
+    let currentLon = null;
 
-    // 2. Protected Route Guard
+    // 1. Theme and User Initialization
+    (function initHome() {
+        if (localStorage.getItem("citypulse_theme") === "dark") {
+            document.body.classList.add("dark-theme");
+        }
+        const user = localStorage.getItem("citypulse_saved_user");
+        if (user && document.getElementById("user-header-name")) {
+            const shortName = user.includes('@') ? user.split('@')[0] : user;
+            document.getElementById("user-header-name").innerText = shortName.substring(0, 10);
+        }
+    })();
+
+    // 2. Auth Session Guard
     supabaseClient.auth.onAuthStateChange((event, session) => {
         if (session && session.user) {
             const email = session.user.email || session.user.phone || "Active User";
             localStorage.setItem("citypulse_saved_user", email);
             localStorage.removeItem("citypulse_is_guest");
-            updateUserUI(email);
-        } else {
-            const savedUser = localStorage.getItem("citypulse_saved_user");
-            if (savedUser) {
-                updateUserUI(savedUser);
-            } else if (!window.location.hash.includes('access_token') && !window.location.search.includes('code=')) {
-                window.location.replace("login.html");
-            }
+        } else if (!localStorage.getItem("citypulse_saved_user") && !window.location.hash.includes('access_token')) {
+            window.location.replace("login.html");
         }
     });
 
-    // 3. User Sign Out
-    async function handleLogout() {
-        if (confirm("Are you sure you want to log out?")) {
-            await supabaseClient.auth.signOut();
-            localStorage.clear();
-            window.location.replace("login.html");
-        }
-    }
-
-    // 4. Live Date Display
+    // 3. Live Date Display
     function updateDateWidget() {
         const dateElem = document.getElementById("current-date-display");
         if (dateElem) {
             const today = new Date();
-            const options = { day: 'numeric', month: 'short' };
-            dateElem.innerText = today.toLocaleDateString('en-IN', options);
+            dateElem.innerText = today.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
         }
     }
 
-    // 5. Live City & Weather Integration (Open-Meteo & Reverse Geocoding)
+    // 4. Live City & Weather Integration
     async function fetchLiveWeather() {
         const cityElem = document.getElementById("city-name-display");
         const weatherElem = document.getElementById("weather-temp-display");
@@ -581,29 +599,24 @@
 
         navigator.geolocation.getCurrentPosition(
             async (pos) => {
-                const lat = pos.coords.latitude;
-                const lon = pos.coords.longitude;
-
+                currentLat = pos.coords.latitude;
+                currentLon = pos.coords.longitude;
                 try {
-                    // Fetch city name via free Nominatim Reverse Geocoding
-                    const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+                    const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${currentLat}&lon=${currentLon}&format=json`);
                     const geoData = await geoRes.json();
                     const city = geoData.address.city || geoData.address.town || geoData.address.suburb || geoData.address.county || "My City";
                     cityElem.innerText = `📍 ${city}`;
 
-                    // Fetch live temperature via Open-Meteo API
-                    const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+                    const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${currentLat}&longitude=${currentLon}&current_weather=true`);
                     const weatherData = await weatherRes.json();
                     const temp = Math.round(weatherData.current_weather.temperature);
                     weatherElem.innerText = `⛅ Weather, ${temp}°C`;
                 } catch (err) {
-                    console.error("Live fetch error:", err);
                     cityElem.innerText = "📍 Bhatpara";
                     weatherElem.innerText = "⛅ 28°C";
                 }
             },
             (err) => {
-                // If user denies GPS permission, set fallback
                 cityElem.innerText = "📍 Enable GPS";
                 weatherElem.innerText = "⛅ Tap to retry";
             },
@@ -611,11 +624,9 @@
         );
     }
 
-    // Initial Triggers
-    updateDateWidget();
-    fetchLiveWeather();
-</script>
-<!-- ==================== [JAVASCRIPT CODE ENDS] ==================== -->
-
-</body>
-</html>
+    // 5. SOS Modal Handlers
+    function openSOSModal() {
+        document.getElementById('sos-modal').style.display = 'flex';
+        const locStatus = document.getElementById('sos-loc-status');
+        if (currentLat && currentLon) {
+            locStatus.innerText = `📍 Coordi
