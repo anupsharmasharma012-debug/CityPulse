@@ -372,9 +372,21 @@ async function handleBiometricAuth() {
     }
 
     // 8. Google OAuth Handler
-    function loginWithGoogle() {
-        alert("Google Auth enable karne ke liye Supabase Dashboard > Authentication > Providers > Google enable karein.");
+async function loginWithGoogle() {
+    try {
+        const { data, error } = await supabaseClient.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: window.location.origin + window.location.pathname.replace('login.html', 'index.html')
+            }
+        });
+        if (error) throw error;
+    } catch (err) {
+        console.error("Google login error:", err.message);
+        alert("Google Sign-In failed: " + err.message);
     }
+}
+  
 
     // 9. Biometric Quick Unlock Handler
     function quickBiometricLogin() {
