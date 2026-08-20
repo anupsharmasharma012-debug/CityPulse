@@ -550,50 +550,33 @@
         }
     }
 
-    // 2. Session Resolver (OAuth Hash Handler)
-    async function initSession() {
-        if (window.location.hash && window.location.hash.includes('access_token')) {
-            const { data } = await supabaseClient.auth.getSession();
-            if (data?.session?.user) {
-                localStorage.setItem("citypulse_saved_user", data.session.user.email || "Active User");
-                localStorage.removeItem("citypulse_is_guest");
-                updateUserUI(data.session.user.email);
-                window.history.replaceState(null, null, window.location.pathname);
-                return;
-            }
-        }
-
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (session?.user) {
-            localStorage.setItem("citypulse_saved_user", session.user.email || session.user.phone || "Active User");
+    // 2. Protected Route Guard (Listens to OAuth Tokens and Active Sessions)
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+        if (session && session.user) {
+            const email = session.user.email || session.user.phone || "Active User";
+            localStorage.setItem("citypulse_saved_user", email);
             localStorage.removeItem("citypulse_is_guest");
-            updateUserUI(session.user.email || session.user.phone);
+            updateUserUI(email);
         } else {
             const savedUser = localStorage.getItem("citypulse_saved_user");
             if (savedUser) {
                 updateUserUI(savedUser);
-            } else {
-                window.location.href = "login.html";
+            } else if (!window.location.hash.includes('access_token') && !window.location.search.includes('code=')) {
+                window.location.replace("login.html");
             }
         }
-    }
+    });
 
     // 3. User Sign Out Function
     async function handleLogout() {
         const confirmLogout = confirm("Are you sure you want to log out?");
         if (confirmLogout) {
             await supabaseClient.auth.signOut();
-            localStorage.removeItem("citypulse_bio_enrolled");
-            localStorage.removeItem("citypulse_saved_user");
-            localStorage.removeItem("citypulse_is_guest");
-            window.location.href = "login.html";
+            localStorage.clear();
+            window.location.replace("login.html");
         }
     }
-
-    initSession();
 </script>
-  
-  
 <!-- ==================== [JAVASCRIPT & SUPABASE SESSION CODE ENDS] ==================== -->
 
 </body>
