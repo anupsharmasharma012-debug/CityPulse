@@ -540,43 +540,48 @@
 <script>
     // 1. Supabase Initialization
     const SUPABASE_URL = "https://qfefkyrwxdhdxyajutst.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_mOjSpSn12VMJMf-0WWcDFg_h0u-YL5c";
+    const SUPABASE_KEY = "sb_publishable_mOjSpSn12VMJMf-OWwCDFg_h0u-YL5c";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // 2. Protected Route Guard (Checks on page load)
-    async function checkAuth() {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        
-        // Agar guest mode ya direct testing nahi hai aur user unauthenticated hai:
-        if (!session && !localStorage.getItem("citypulse_saved_user")) {
-            // Unauthenticated: redirect to login
-            window.location.href = "login.html";
-            return;
-        }
-
-        // Active user identification
+    // 2. Display User Info Helper
+    function updateUserUI(userIdentifier) {
         const displayElem = document.getElementById("active-user-display");
-        if (session && session.user) {
-            displayElem.innerText = session.user.email || session.user.phone || "Active User";
-        } else if (localStorage.getItem("citypulse_saved_user")) {
-            displayElem.innerText = localStorage.getItem("citypulse_saved_user");
+        if (displayElem && userIdentifier) {
+            displayElem.innerText = userIdentifier;
         }
     }
 
-    // 3. User Sign Out Function
+    // 3. Protected Route Guard (Listens to OAuth & Local Session)
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+        if (session && session.user) {
+            // Google / Email Auth success
+            localStorage.setItem("citypulse_saved_user", session.user.email || session.user.phone || "Active User");
+            localStorage.removeItem("citypulse_is_guest");
+            updateUserUI(session.user.email || session.user.phone);
+        } else {
+            const savedUser = localStorage.getItem("citypulse_saved_user");
+            if (savedUser) {
+                updateUserUI(savedUser);
+            } else {
+                // Sach me unauthenticated hai tabhi login par bhejo
+                window.location.href = "login.html";
+            }
+        }
+    });
+
+    // 4. User Sign Out Function
     async function handleLogout() {
         const confirmLogout = confirm("Are you sure you want to log out?");
         if (confirmLogout) {
             await supabaseClient.auth.signOut();
             localStorage.removeItem("citypulse_bio_enrolled");
             localStorage.removeItem("citypulse_saved_user");
+            localStorage.removeItem("citypulse_is_guest");
             window.location.href = "login.html";
         }
     }
-
-    // Execute session check immediately
-    checkAuth();
 </script>
+  
 <!-- ==================== [JAVASCRIPT & SUPABASE SESSION CODE ENDS] ==================== -->
 
 </body>
