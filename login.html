@@ -2,7 +2,39 @@
 ================================================================================
   FILE NAME: login.html
   PROJECT  : CityPulse
-  PURPOSE  : Splash Screen, Phone / Email Login, Guest Mode & Biometrics
+  PURPOSE  : Splash Screen, Supabase Auth (Email, Phone Dev & Google) & Biometrics
+================================================================================
+
+  📌 STRUCTURE & LOCATION MAP:
+  ------------------------------------------------------------------------------
+  1. [TOP] HEAD SECTION:
+     - CSS Styles (<style> tag):
+       * Splash Screen overlay (#splash-screen).
+       * Main Login Container (.login-container).
+       * Branding, Typography & Action Buttons (.logo-section, .login-btn, .bio-btn).
+       * Input Containers for Phone & Email Auth (.auth-sub-box, .input-group, .otp-input).
+     - External SDKs:
+       * Supabase JS Client v2 (CDN script).
+
+  2. [TOP UI] SPLASH SCREEN OVERLAY:
+     - Active for first 3 seconds, shows loading title, then fades/hides.
+
+  3. [MIDDLE UI] LOGIN FORM & INPUTS:
+     - CityPulse Brand Logo & Subtitle.
+     - Dynamic Quick Fingerprint Button (#bio-auth-btn).
+     - Step 1: Phone Auth Trigger & Form Box (#phone-auth-box).
+     - Step 2: Email Auth Trigger & Form Box (#email-auth-box).
+     - Step 3: Google Auth Button & Skip/Guest Mode Button.
+
+  4. [BOTTOM] JAVASCRIPT & SUPABASE API LOGIC (<script> tag):
+     - Splash Timer: Hides splash screen after 3000ms.
+     - Supabase Client Configuration & Init (`supabase.createClient`).
+     - `togglePhoneBox()` & `toggleEmailBox()`: UI dynamic display toggles.
+     - `setGuestAndEnter()`: Sets local guest flags and routes to `index.html`.
+     - `handleEmailLogin()`: Direct email sign-in / auto-signup using Supabase Auth.
+     - `sendOTP()` & `verifyOTP()`: Phone number input and OTP confirmation flow.
+     - `proceedSuccess()`: Biometric prompt trigger and dashboard redirect.
+     - `quickBiometricLogin()`: Instant device biometric unlock handler.
 ================================================================================
 -->
 
@@ -126,7 +158,7 @@
     </style>
     <!-- ==================== [CSS STYLING ENDS] ==================== -->
 
-    <!-- Supabase SDK -->
+    <!-- ==================== [SUPABASE SDK INCLUDED] ==================== -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -160,6 +192,7 @@
         <!-- 1. Phone Auth Button -->
         <button class="login-btn" onclick="togglePhoneBox()">📞 Continue with phone number</button>
 
+        <!-- Phone & OTP Input Box -->
         <div id="phone-auth-box" class="auth-sub-box">
             <div id="step-phone">
                 <div class="input-group">
@@ -177,6 +210,7 @@
         <!-- 2. Email Auth Button -->
         <button class="login-btn" onclick="toggleEmailBox()">✉️ Continue with email</button>
 
+        <!-- Email & Password Input Box -->
         <div id="email-auth-box" class="auth-sub-box">
             <div class="input-group" style="border-radius: 25px; padding: 0 15px;">
                 <input type="email" id="user-email" placeholder="Enter your email" style="border-radius: 25px;">
@@ -201,7 +235,7 @@
     </div>
 </div>
 
-<!-- ==================== [JAVASCRIPT CODE STARTS] ==================== -->
+<!-- ==================== [JAVASCRIPT & SUPABASE API CODE STARTS] ==================== -->
 <script>
     // 1. Splash Screen Timer: 3 seconds
     setTimeout(function() {
@@ -209,15 +243,17 @@
         document.getElementById('login-app').style.display = 'flex';
     }, 3000);
 
-    // 2. Supabase Config
+    // 2. Supabase Configuration
     const SUPABASE_URL = "https://qfefkyrwxdhdxyajutst.supabase.co";
     const SUPABASE_KEY = "sb_publishable_mOjSpSn12VMJMf-0WWcDFg_h0u-YL5c";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    // Show Biometric button if previously enrolled on this device
     if (localStorage.getItem("citypulse_bio_enrolled") === "true") {
         document.getElementById('bio-auth-btn').style.display = "block";
     }
 
+    // 3. UI Toggle Functions
     function togglePhoneBox() {
         const box = document.getElementById('phone-auth-box');
         document.getElementById('email-auth-box').style.display = 'none';
@@ -230,28 +266,28 @@
         box.style.display = box.style.display === 'block' ? 'none' : 'block';
     }
 
-    // 3. Guest Mode Entry Fix
+    // 4. Guest Mode Handler
     function setGuestAndEnter() {
         localStorage.setItem("citypulse_is_guest", "true");
         localStorage.setItem("citypulse_saved_user", "Guest User");
         window.location.href = 'index.html';
     }
 
-    // 4. Email Sign-in / Sign-up Flow
+    // 5. Email Login & Auto Sign-up Logic
     async function handleEmailLogin() {
         const email = document.getElementById('user-email').value.trim();
         const password = document.getElementById('user-pass').value.trim();
 
         if (!email || password.length < 6) {
-            alert("कृपया सही Email और 6 अंकों का Password डालें");
+            alert("कृपया सही Email और कम से कम 6 अक्षरों का Password डालें");
             return;
         }
 
-        // Try login first
+        // Attempt Sign In
         let { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
         if (error && error.message.includes("Invalid login credentials")) {
-            // Auto sign-up if user doesn't exist
+            // Auto Sign Up if account does not exist
             const signUpRes = await supabaseClient.auth.signUp({ email, password });
             if (signUpRes.error) {
                 alert("Sign Up Error: " + signUpRes.error.message);
@@ -268,7 +304,7 @@
         proceedSuccess(email);
     }
 
-    // 5. Phone Dev Handler
+    // 6. Phone Authentication (Dev Mode Simulation)
     function sendOTP() {
         const raw = document.getElementById('user-phone').value.trim();
         if (raw.length !== 10 || isNaN(raw)) {
@@ -290,11 +326,12 @@
         }
     }
 
+    // 7. Success Redirection & Biometric Setup
     function proceedSuccess(userTag) {
         localStorage.setItem("citypulse_saved_user", userTag);
         localStorage.removeItem("citypulse_is_guest");
         if (window.PublicKeyCredential && !localStorage.getItem("citypulse_bio_enrolled")) {
-            const ask = confirm("Do you want to enable Fingerprint / Screen Lock for next time?");
+            const ask = confirm("Do you want to enable Fingerprint / Screen Lock for faster login next time?");
             if (ask) {
                 localStorage.setItem("citypulse_bio_enrolled", "true");
             }
@@ -302,10 +339,12 @@
         window.location.href = 'index.html';
     }
 
+    // 8. Google OAuth Handler
     function loginWithGoogle() {
         alert("Google Auth enable karne ke liye Supabase Dashboard > Authentication > Providers > Google enable karein.");
     }
 
+    // 9. Biometric Quick Unlock Handler
     function quickBiometricLogin() {
         alert("Biometric verified! Redirecting to Dashboard...");
         setTimeout(() => {
@@ -313,8 +352,7 @@
         }, 500);
     }
 </script>
-<!-- ==================== [JAVASCRIPT CODE ENDS] ==================== -->
+<!-- ==================== [JAVASCRIPT & SUPABASE API CODE ENDS] ==================== -->
 
 </body>
 </html>
-
