@@ -237,22 +237,30 @@
 
 <!-- ==================== [JAVASCRIPT & SUPABASE API CODE STARTS] ==================== -->
 <script>
-    // 1. Splash Screen Timer: 3 seconds
-    setTimeout(function() {
-        document.getElementById('splash-screen').style.display = 'none';
-        document.getElementById('login-app').style.display = 'flex';
-    }, 3000);
-
-    // 2. Supabase Configuration
+        // 1. Supabase Configuration
     const SUPABASE_URL = "https://qfefkyrwxdhdxyajutst.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_mOjSpSn12VMJMf-0WWcDFg_h0u-YL5c";
+    const SUPABASE_KEY = "sb_publishable_mOjSpSn12VMJMf-OWwCDFg_h0u-YL5c";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-// Auto-redirect and setup user post-Google login
-supabaseClient.auth.onAuthStateChange((event, session) => {
-    if (session && session.user) {
-        proceedSuccess(session.user.email);
-    }
-});
+
+    // 2. Auth Session Check & Splash Screen Logic
+    supabaseClient.auth.getSession().then(({ data: { session } }) => {
+        if (session && session.user) {
+            document.getElementById('splash-screen').style.display = 'none';
+            proceedSuccess(session.user.email);
+        } else {
+            setTimeout(function() {
+                document.getElementById('splash-screen').style.display = 'none';
+                document.getElementById('login-app').style.display = 'flex';
+            }, 3000);
+        }
+    });
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+        if (session && session.user) {
+            proceedSuccess(session.user.email);
+        }
+    });
+  
   
   
 
