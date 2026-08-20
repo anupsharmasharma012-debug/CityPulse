@@ -237,71 +237,54 @@
 
 <!-- ==================== [JAVASCRIPT & SUPABASE API CODE STARTS] ==================== -->
 <script>
-        // 1. Supabase Configuration
+    // 1. Supabase Configuration
     const SUPABASE_URL = "https://qfefkyrwxdhdxyajutst.supabase.co";
     const SUPABASE_KEY = "sb_publishable_mOjSpSn12VMJMf-OWwCDFg_h0u-YL5c";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // 2. Auth Check & Hash Handler
-    if (window.location.hash && window.location.hash.includes('access_token')) {
-        document.getElementById('splash-screen').style.display = 'none';
-        window.location.href = 'index.html' + window.location.hash;
-    } else {
-        supabaseClient.auth.getSession().then(({ data: { session } }) => {
-            if (session && session.user) {
-                document.getElementById('splash-screen').style.display = 'none';
-                window.location.href = 'index.html';
-            } else {
-                setTimeout(function() {
-                    document.getElementById('splash-screen').style.display = 'none';
-                    document.getElementById('login-app').style.display = 'flex';
-                }, 2000);
-            }
-        });
-    }
-  
-  
-  
-  
+    // 2. Splash Screen & Session Check
+    (async function initLogin() {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session && session.user) {
+            localStorage.setItem("citypulse_saved_user", session.user.email || "Active User");
+            window.location.replace("index.html");
+            return;
+        }
 
-    // Check device biometric support & auto-handle enrollment
-async function initBiometrics() {
-    const bioBtn = document.getElementById('bio-auth-btn');
-    if (window.PublicKeyCredential && bioBtn) {
-        const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-        if (available) {
-            bioBtn.style.display = "block";
+        setTimeout(() => {
+            document.getElementById('splash-screen').style.display = 'none';
+            document.getElementById('login-app').style.display = 'flex';
+        }, 1500);
+    })();
+
+    // 3. Biometric Support Check
+    async function initBiometrics() {
+        const bioBtn = document.getElementById('bio-auth-btn');
+        if (window.PublicKeyCredential && bioBtn) {
+            const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+            if (available && localStorage.getItem("citypulse_bio_enrolled")) {
+                bioBtn.style.display = "block";
+            }
         }
     }
-}
-initBiometrics();
+    initBiometrics();
 
-// Biometric Unlock Trigger
-async function handleBiometricAuth() {
-    try {
-        const challenge = new Uint8Array(32);
-        window.crypto.getRandomValues(challenge);
-
-        const credential = await navigator.credentials.get({
-            publicKey: {
-                challenge: challenge,
-                timeout: 60000,
-                userVerification: "required"
+    async function handleBiometricAuth() {
+        try {
+            const challenge = new Uint8Array(32);
+            window.crypto.getRandomValues(challenge);
+            const credential = await navigator.credentials.get({
+                publicKey: { challenge, timeout: 60000, userVerification: "required" }
+            });
+            if (credential) {
+                window.location.replace("index.html");
             }
-        });
-
-        if (credential) {
-            localStorage.setItem("citypulse_bio_enrolled", "true");
-            window.location.href = "index.html";
+        } catch (err) {
+            alert("Biometric verify nahi hua.");
         }
-    } catch (err) {
-        console.warn("Biometric verification canceled or not enrolled yet:", err);
-        alert("Fingerprint / Screen Lock verify nahi hua. Pehle Email ya Google se login karein.");
     }
-}
-   
 
-    // 3. UI Toggle Functions
+    // 4. UI Toggle Functions
     function togglePhoneBox() {
         const box = document.getElementById('phone-auth-box');
         document.getElementById('email-auth-box').style.display = 'none';
@@ -314,14 +297,27 @@ async function handleBiometricAuth() {
         box.style.display = box.style.display === 'block' ? 'none' : 'block';
     }
 
-    // 4. Guest Mode Handler
+    // 5. Guest Mode Handler
     function setGuestAndEnter() {
         localStorage.setItem("citypulse_is_guest", "true");
         localStorage.setItem("citypulse_saved_user", "Guest User");
-        window.location.href = 'index.html';
+        window.location.replace('index.html');
     }
 
-    // 5. Email Login & Auto Sign-up Logic
+    // 6. Success Redirection
+    function proceedSuccess(userTag) {
+        localStorage.setItem("citypulse_saved_user", userTag);
+        localStorage.removeItem("citypulse_is_guest");
+        if (window.PublicKeyCredential && !localStorage.getItem("citypulse_bio_enrolled")) {
+            const ask = confirm("Do you want to enable Fingerprint / Screen Lock for faster login next time?");
+            if (ask) {
+                localStorage.setItem("citypulse_bio_enrolled", "true");
+            }
+        }
+        window.location.replace('index.html');
+    }
+
+    // 7. Email Login & Auto Sign-up Logic
     async function handleEmailLogin() {
         const email = document.getElementById('user-email').value.trim();
         const password = document.getElementById('user-pass').value.trim();
@@ -331,28 +327,18 @@ async function handleBiometricAuth() {
             return;
         }
 
-        // Attempt Sign In
-        let { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-
-        if (error && error.message.includes("Invalid login credentials")) {
-            // Auto Sign Up if account does not exist
-            const signUpRes = await supabaseClient.auth.signUp({ email, password });
-            if (signUpRes.error) {
-                alert("Sign Up Error: " + signUpRes.error.message);
+        let { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) {
+            let signUp = await supabaseClient.auth.signUp({ email, password });
+            if (signUp.error) {
+                alert("Login Error: " + signUp.error.message);
                 return;
             }
-            alert("Account created successfully!");
-            proceedSuccess(email);
-            return;
-        } else if (error) {
-            alert("Login Error: " + error.message);
-            return;
         }
-
         proceedSuccess(email);
     }
 
-    // 6. Phone Authentication (Dev Mode Simulation)
+    // 8. Phone Authentication (Dev Mode Simulation)
     function sendOTP() {
         const raw = document.getElementById('user-phone').value.trim();
         if (raw.length !== 10 || isNaN(raw)) {
@@ -374,41 +360,27 @@ async function handleBiometricAuth() {
         }
     }
 
-    // 7. Success Redirection & Biometric Setup
-    function proceedSuccess(userTag) {
-        localStorage.setItem("citypulse_saved_user", userTag);
-        localStorage.removeItem("citypulse_is_guest");
-        if (window.PublicKeyCredential && !localStorage.getItem("citypulse_bio_enrolled")) {
-            const ask = confirm("Do you want to enable Fingerprint / Screen Lock for faster login next time?");
-            if (ask) {
-                localStorage.setItem("citypulse_bio_enrolled", "true");
-            }
+    // 9. Google OAuth Handler
+    async function loginWithGoogle() {
+        try {
+            const { data, error } = await supabaseClient.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: 'https://anupsharmasharma012-debug.github.io/CityPulse/index.html'
+                }
+            });
+            if (error) throw error;
+        } catch (err) {
+            console.error("Google login error:", err.message);
+            alert("Google Sign-In failed: " + err.message);
         }
-        window.location.href = 'index.html';
     }
 
-    // 8. Google OAuth Handler
-async function loginWithGoogle() {
-    try {
-        const { data, error } = await supabaseClient.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-                redirectTo: 'https://anupsharmasharma012-debug.github.io/CityPulse/index.html'
-            }
-        });
-        if (error) throw error;
-    } catch (err) {
-        console.error("Google login error:", err.message);
-        alert("Google Sign-In failed: " + err.message);
-    }
-}
-  
-
-    // 9. Biometric Quick Unlock Handler
+    // 10. Biometric Quick Unlock Handler
     function quickBiometricLogin() {
         alert("Biometric verified! Redirecting to Dashboard...");
         setTimeout(() => {
-            window.location.href = 'index.html';
+            window.location.replace('index.html');
         }, 500);
     }
 </script>
