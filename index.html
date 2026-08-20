@@ -543,7 +543,6 @@
     const SUPABASE_KEY = "sb_publishable_mOjSpSn12VMJMf-OWwCDFg_h0u-YL5c";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // 2. Display User Info Helper
     function updateUserUI(userIdentifier) {
         const displayElem = document.getElementById("active-user-display");
         if (displayElem && userIdentifier) {
@@ -551,10 +550,21 @@
         }
     }
 
-    // 3. Protected Route Guard (Listens to OAuth & Local Session)
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-        if (session && session.user) {
-            // Google / Email Auth success
+    // 2. Session Resolver (OAuth Hash Handler)
+    async function initSession() {
+        if (window.location.hash && window.location.hash.includes('access_token')) {
+            const { data } = await supabaseClient.auth.getSession();
+            if (data?.session?.user) {
+                localStorage.setItem("citypulse_saved_user", data.session.user.email || "Active User");
+                localStorage.removeItem("citypulse_is_guest");
+                updateUserUI(data.session.user.email);
+                window.history.replaceState(null, null, window.location.pathname);
+                return;
+            }
+        }
+
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session?.user) {
             localStorage.setItem("citypulse_saved_user", session.user.email || session.user.phone || "Active User");
             localStorage.removeItem("citypulse_is_guest");
             updateUserUI(session.user.email || session.user.phone);
@@ -563,13 +573,12 @@
             if (savedUser) {
                 updateUserUI(savedUser);
             } else {
-                // Sach me unauthenticated hai tabhi login par bhejo
                 window.location.href = "login.html";
             }
         }
-    });
+    }
 
-    // 4. User Sign Out Function
+    // 3. User Sign Out Function
     async function handleLogout() {
         const confirmLogout = confirm("Are you sure you want to log out?");
         if (confirmLogout) {
@@ -580,7 +589,10 @@
             window.location.href = "login.html";
         }
     }
+
+    initSession();
 </script>
+  
   
 <!-- ==================== [JAVASCRIPT & SUPABASE SESSION CODE ENDS] ==================== -->
 
