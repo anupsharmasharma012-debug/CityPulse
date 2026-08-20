@@ -2,42 +2,7 @@
 ================================================================================
   FILE NAME: index.html
   PROJECT  : CityPulse
-  PURPOSE  : Main Application Dashboard / Home Screen with Supabase Session Guard
-================================================================================
-
-  📌 STRUCTURE & LOCATION MAP:
-  ------------------------------------------------------------------------------
-  1. [TOP] HEAD SECTION:
-     - External SDK: Supabase JS Client v2
-     - CSS Styles (<style> tag):
-       * Mobile Container layout (.app-container).
-       * Top User Status & Logout Chip (.user-status-bar).
-       * Top Quick Actions 4-column Grid (.top-grid).
-       * Weather / Calendar / Language Grid (.info-grid).
-       * SOS & Emergency contacts Hub (.emergency-box).
-       * News & Live Alerts Banner (.news-banner).
-       * Promotions / Offers 3-column Grid (.promo-grid).
-       * City Services 8-box Grid (.services-grid).
-       * Fixed Bottom Navigation Bar (.bottom-nav).
-
-  2. [TOP UI] USER STATUS & QUICK ACTIONS:
-     - Logged-in user badge & Logout trigger.
-     - 4 Quick Buttons: Pay, Transport, Shopping, Food.
-     - Info Cards: City/Weather widget, Calendar, Language selector.
-
-  3. [MIDDLE UI] EMERGENCY, NEWS & OFFERS:
-     - Emergency SOS Button & Complain Hub.
-     - 3 One-touch Emergency Call buttons (Helpline, Police, Ambulance).
-     - Scrolling/Sticky News Banner.
-     - 3 Promo Boxes: Offers, City Events, Community Forums.
-
-  4. [BOTTOM UI] UTILITIES & NAVIGATION:
-     - 8 Municipal Utility Services (Electricity, Water, Waste, Map, Traffic, etc.).
-     - Fixed Bottom Navigation Bar: Home, Services, Alerts, Profile/Logout.
-
-  5. [BOTTOM SCRIPT] JAVASCRIPT & SUPABASE SESSION LOGIC:
-     - `checkAuth()`: Protects the route; redirects unauthenticated users to login.html.
-     - `handleLogout()`: Signs out from Supabase & clears local biometric flags.
+  PURPOSE  : Dashboard with Supabase Auth Guard & Live Weather/City Integration
 ================================================================================
 -->
 
@@ -73,14 +38,14 @@
             background: linear-gradient(180deg, #1b4b60, #225c75, #2c6f8d);
             min-height: 100vh;
             padding: 16px;
-            padding-bottom: 85px; /* Bottom bar padding */
+            padding-bottom: 85px;
             display: flex;
             flex-direction: column;
             gap: 14px;
             position: relative;
         }
 
-        /* 0. Top User Status Bar (Supabase Session Info) */
+        /* 0. Top User Status Bar */
         .user-status-bar {
             display: flex;
             justify-content: space-between;
@@ -130,6 +95,11 @@
             color: #1e3d4f;
             cursor: pointer;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            transition: transform 0.1s;
+        }
+
+        .action-card:active {
+            transform: scale(0.96);
         }
 
         .action-card .icon {
@@ -153,26 +123,36 @@
         .info-card {
             background: #ffffff;
             border-radius: 12px;
-            padding: 10px;
+            padding: 10px 6px;
             text-align: center;
             color: #1e3d4f;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
         }
 
         .info-card .icon {
-            font-size: 20px;
+            font-size: 18px;
             margin-bottom: 2px;
         }
 
         .info-card .title {
             font-size: 11px;
             font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
         }
 
         .info-card .subtext {
             font-size: 10px;
-            color: #666;
+            color: #555;
             margin-top: 2px;
+            font-weight: 600;
         }
 
         /* 3. Emergency Section */
@@ -195,7 +175,7 @@
             border-radius: 10px;
             background: #ffffff;
             color: #e63946;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             display: flex;
             align-items: center;
@@ -215,7 +195,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 4px;
             padding: 8px;
             cursor: pointer;
             text-align: left;
@@ -258,7 +238,7 @@
         }
 
         .news-banner h3 {
-            font-size: 14px;
+            font-size: 13px;
             margin-bottom: 4px;
             font-weight: 700;
         }
@@ -300,7 +280,7 @@
             line-height: 1.2;
         }
 
-        /* 6. City Services 4-Column Grid */
+        /* 6. City Services Grid */
         .services-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -334,7 +314,7 @@
             display: block;
         }
 
-        /* 7. Fixed Bottom Navigation Bar */
+        /* 7. Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -379,16 +359,16 @@
 
 <div class="app-container">
 
-    <!-- ==================== [TOP SECTION: USER SESSION BAR] ==================== -->
+    <!-- Top User Status Bar -->
     <div class="user-status-bar">
         <div class="user-tag">
             <span>🟢</span>
-            <span id="active-user-display">CityPulse User</span>
+            <span id="active-user-display">Loading User...</span>
         </div>
         <button class="btn-logout-chip" onclick="handleLogout()">Logout</button>
     </div>
 
-    <!-- ==================== [TOP SECTION: QUICK ACTIONS] ==================== -->
+    <!-- Top Quick Actions -->
     <div class="top-grid">
         <div class="action-card">
             <div class="icon">💳</div>
@@ -408,15 +388,15 @@
         </div>
     </div>
 
-    <!-- ==================== [TOP SECTION: INFO WIDGETS] ==================== -->
+    <!-- Live Weather, Date & Language Widgets -->
     <div class="info-grid">
-        <div class="info-card">
-            <div class="title">📍 My City, State</div>
-            <div class="subtext">⛅ Weather, 24°C</div>
+        <div class="info-card" id="weather-card" onclick="fetchLiveWeather()">
+            <div class="title" id="city-name-display">📍 Detecting...</div>
+            <div class="subtext" id="weather-temp-display">⛅ Loading...</div>
         </div>
         <div class="info-card">
             <div class="icon">📅</div>
-            <div class="title">Calendar</div>
+            <div class="title" id="current-date-display">Today</div>
         </div>
         <div class="info-card">
             <div class="icon">🌐</div>
@@ -424,35 +404,35 @@
         </div>
     </div>
 
-    <!-- ==================== [MIDDLE SECTION: EMERGENCY HUB] ==================== -->
+    <!-- Emergency Section -->
     <div class="emergency-box">
         <div class="emergency-top">
-            <button class="btn-danger-large">➕ Emergency</button>
-            <button class="btn-complain">📢 Citizen Voice & Complain</button>
+            <button class="btn-danger-large" onclick="alert('SOS Emergency Alert Triggered!')">➕ Emergency</button>
+            <button class="btn-complain" onclick="alert('Citizen Voice Complaint Form coming up!')">📢 Citizen Voice</button>
         </div>
         <div class="emergency-contacts">
-            <div class="contact-pill">
+            <div class="contact-pill" onclick="window.location.href='tel:1091'">
                 <div class="label">👩 Helpline</div>
                 <div class="call-icon">📞</div>
             </div>
-            <div class="contact-pill">
+            <div class="contact-pill" onclick="window.location.href='tel:100'">
                 <div class="label">👮 Police</div>
                 <div class="call-icon">📞</div>
             </div>
-            <div class="contact-pill">
+            <div class="contact-pill" onclick="window.location.href='tel:108'">
                 <div class="label">🚑 Ambulance</div>
                 <div class="call-icon">📞</div>
             </div>
         </div>
     </div>
 
-    <!-- ==================== [MIDDLE SECTION: NEWS BANNER] ==================== -->
+    <!-- News Banner -->
     <div class="news-banner">
         <h3>City News & Updates</h3>
         <p>The best Alert: Main Street Construction Update, Ignite your city...</p>
     </div>
 
-    <!-- ==================== [MIDDLE SECTION: PROMOS & EVENTS] ==================== -->
+    <!-- Promos & Events -->
     <div class="promo-grid">
         <div class="promo-card">
             <div class="icon">🏷️</div>
@@ -468,7 +448,7 @@
         </div>
     </div>
 
-    <!-- ==================== [BOTTOM SECTION: SERVICES GRID] ==================== -->
+    <!-- Services Grid -->
     <div class="services-grid">
         <div class="service-card">
             <div class="icon">⚡</div>
@@ -513,7 +493,7 @@
         </div>
     </div>
 
-    <!-- ==================== [BOTTOM NAVIGATION BAR] ==================== -->
+    <!-- Bottom Navigation Bar -->
     <div class="bottom-nav">
         <div class="nav-item active">
             <div class="nav-icon">🏠</div>
@@ -527,7 +507,6 @@
             <div class="nav-icon">🔔</div>
             <span>Alerts</span>
         </div>
-        <!-- Profile / Logout Action -->
         <div class="nav-item" onclick="handleLogout()">
             <div class="nav-icon">👤</div>
             <span>Profile</span>
@@ -536,7 +515,7 @@
 
 </div>
 
-<!-- ==================== [JAVASCRIPT & SUPABASE SESSION CODE] ==================== -->
+<!-- ==================== [JAVASCRIPT CODE STARTS] ==================== -->
 <script>
     // 1. Supabase Initialization
     const SUPABASE_URL = "https://qfefkyrwxdhdxyajutst.supabase.co";
@@ -550,7 +529,7 @@
         }
     }
 
-    // 2. Protected Route Guard (Listens to OAuth Tokens and Active Sessions)
+    // 2. Protected Route Guard
     supabaseClient.auth.onAuthStateChange((event, session) => {
         if (session && session.user) {
             const email = session.user.email || session.user.phone || "Active User";
@@ -567,17 +546,76 @@
         }
     });
 
-    // 3. User Sign Out Function
+    // 3. User Sign Out
     async function handleLogout() {
-        const confirmLogout = confirm("Are you sure you want to log out?");
-        if (confirmLogout) {
+        if (confirm("Are you sure you want to log out?")) {
             await supabaseClient.auth.signOut();
             localStorage.clear();
             window.location.replace("login.html");
         }
     }
+
+    // 4. Live Date Display
+    function updateDateWidget() {
+        const dateElem = document.getElementById("current-date-display");
+        if (dateElem) {
+            const today = new Date();
+            const options = { day: 'numeric', month: 'short' };
+            dateElem.innerText = today.toLocaleDateString('en-IN', options);
+        }
+    }
+
+    // 5. Live City & Weather Integration (Open-Meteo & Reverse Geocoding)
+    async function fetchLiveWeather() {
+        const cityElem = document.getElementById("city-name-display");
+        const weatherElem = document.getElementById("weather-temp-display");
+
+        if (!navigator.geolocation) {
+            cityElem.innerText = "📍 Bhatpara";
+            weatherElem.innerText = "⛅ 28°C";
+            return;
+        }
+
+        cityElem.innerText = "📍 Locating...";
+        weatherElem.innerText = "⛅ Loading...";
+
+        navigator.geolocation.getCurrentPosition(
+            async (pos) => {
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+
+                try {
+                    // Fetch city name via free Nominatim Reverse Geocoding
+                    const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+                    const geoData = await geoRes.json();
+                    const city = geoData.address.city || geoData.address.town || geoData.address.suburb || geoData.address.county || "My City";
+                    cityElem.innerText = `📍 ${city}`;
+
+                    // Fetch live temperature via Open-Meteo API
+                    const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+                    const weatherData = await weatherRes.json();
+                    const temp = Math.round(weatherData.current_weather.temperature);
+                    weatherElem.innerText = `⛅ Weather, ${temp}°C`;
+                } catch (err) {
+                    console.error("Live fetch error:", err);
+                    cityElem.innerText = "📍 Bhatpara";
+                    weatherElem.innerText = "⛅ 28°C";
+                }
+            },
+            (err) => {
+                // If user denies GPS permission, set fallback
+                cityElem.innerText = "📍 Enable GPS";
+                weatherElem.innerText = "⛅ Tap to retry";
+            },
+            { timeout: 8000 }
+        );
+    }
+
+    // Initial Triggers
+    updateDateWidget();
+    fetchLiveWeather();
 </script>
-<!-- ==================== [JAVASCRIPT & SUPABASE SESSION CODE ENDS] ==================== -->
+<!-- ==================== [JAVASCRIPT CODE ENDS] ==================== -->
 
 </body>
 </html>
