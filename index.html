@@ -2,7 +2,7 @@
 ================================================================================
   FILE NAME: index.html
   PROJECT  : CityPulse
-  PURPOSE  : Dashboard with Live Weather, SOS Modal & Profile Page Routing
+  PURPOSE  : Dashboard with Clean Header, Live Weather, SOS Modal & Profile Nav
 ================================================================================
 -->
 
@@ -58,32 +58,28 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 4px 2px;
+            padding: 6px 2px;
             color: #ffffff;
         }
 
         .brand-title {
-            font-size: 20px;
-            font-weight: bold;
+            font-size: 22px;
+            font-weight: 800;
             letter-spacing: 0.5px;
         }
 
-        .header-profile-btn {
+        .header-live-badge {
             background: rgba(255, 255, 255, 0.15);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            padding: 5px 12px;
+            padding: 4px 10px;
             border-radius: 20px;
             font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
+            color: #e0f2fe;
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        /* 1. Top Quick Action Cards */
+        /* 1. Quick Action Cards */
         .top-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -116,7 +112,7 @@
             display: block;
         }
 
-        /* 2. Middle Info Widgets */
+        /* 2. Info Widgets */
         .info-grid {
             display: grid;
             grid-template-columns: 1.3fr 1fr 1fr;
@@ -186,7 +182,6 @@
             gap: 6px;
             padding: 8px;
             cursor: pointer;
-            transition: 0.2s;
         }
 
         .btn-danger-large:active {
@@ -361,7 +356,7 @@
             font-size: 18px;
         }
 
-        /* 8. SOS Emergency Modal Styling */
+        /* 8. SOS Emergency Modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -438,13 +433,10 @@
 
 <div class="app-container">
 
-    <!-- Top Header -->
+    <!-- Top Header (Clean: No duplicate profile button) -->
     <div class="top-header">
         <div class="brand-title">CityPulse</div>
-        <a href="profile.html" class="header-profile-btn">
-            <span>👤</span>
-            <span id="user-header-name">Profile</span>
-        </a>
+        <div class="header-live-badge">🟢 Portal Active</div>
     </div>
 
     <!-- Quick Actions -->
@@ -515,11 +507,11 @@
             <div class="nav-icon">🏠</div>
             <span>Home</span>
         </div>
-        <div class="nav-item" onclick="alert('Services view')">
+        <div class="nav-item" onclick="alert('Services tab active')">
             <div class="nav-icon">📑</div>
             <span>Services</span>
         </div>
-        <div class="nav-item" onclick="alert('Alerts view')">
+        <div class="nav-item" onclick="alert('Alerts tab active')">
             <div class="nav-icon">🔔</div>
             <span>Alerts</span>
         </div>
@@ -551,30 +543,24 @@
     let currentLat = null;
     let currentLon = null;
 
-    // 1. Theme and User Initialization
-    (function initHome() {
+    // 1. Session Guard
+    (async function checkSession() {
         if (localStorage.getItem("citypulse_theme") === "dark") {
             document.body.classList.add("dark-theme");
         }
-        const user = localStorage.getItem("citypulse_saved_user");
-        if (user && document.getElementById("user-header-name")) {
-            const shortName = user.includes('@') ? user.split('@')[0] : user;
-            document.getElementById("user-header-name").innerText = shortName.substring(0, 10);
+
+        const savedUser = localStorage.getItem("citypulse_saved_user");
+        if (!savedUser) {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session && session.user) {
+                localStorage.setItem("citypulse_saved_user", session.user.email || "Active Resident");
+            } else if (!window.location.hash.includes('access_token')) {
+                window.location.replace("login.html");
+            }
         }
     })();
 
-    // 2. Auth Session Guard
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-        if (session && session.user) {
-            const email = session.user.email || session.user.phone || "Active User";
-            localStorage.setItem("citypulse_saved_user", email);
-            localStorage.removeItem("citypulse_is_guest");
-        } else if (!localStorage.getItem("citypulse_saved_user") && !window.location.hash.includes('access_token')) {
-            window.location.replace("login.html");
-        }
-    });
-
-    // 3. Live Date Display
+    // 2. Live Date Display
     function updateDateWidget() {
         const dateElem = document.getElementById("current-date-display");
         if (dateElem) {
@@ -583,7 +569,7 @@
         }
     }
 
-    // 4. Live City & Weather Integration
+    // 3. Live City & Weather Integration
     async function fetchLiveWeather() {
         const cityElem = document.getElementById("city-name-display");
         const weatherElem = document.getElementById("weather-temp-display");
@@ -624,9 +610,24 @@
         );
     }
 
-    // 5. SOS Modal Handlers
+    // 4. SOS Handlers
     function openSOSModal() {
         document.getElementById('sos-modal').style.display = 'flex';
         const locStatus = document.getElementById('sos-loc-status');
         if (currentLat && currentLon) {
-            locStatus.innerText = `📍 Coordi
+            locStatus.innerText = `📍 Coordinates: Lat ${currentLat.toFixed(4)}, Lon ${currentLon.toFixed(4)}`;
+        } else if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((pos) => {
+                currentLat = pos.coords.latitude;
+                currentLon = pos.coords.longitude;
+                locStatus.innerText = `📍 Coordinates: Lat ${currentLat.toFixed(4)}, Lon ${currentLon.toFixed(4)}`;
+            });
+        }
+    }
+
+    function closeSOSModal() {
+        document.getElementById('sos-modal').style.display = 'none';
+    }
+
+    function triggerSOS() {
+        alert("🚨 SOS ALERT DISPATCHED!\nEmergency services 
