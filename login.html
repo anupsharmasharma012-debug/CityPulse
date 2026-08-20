@@ -384,7 +384,7 @@ async function loginWithGoogle() {
         const { data, error } = await supabaseClient.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: window.location.origin + window.location.pathname.replace('login.html', 'index.html')
+                redirectTo: 'https://anupsharmasharma012-debug.github.io/CityPulse/index.html'
             }
         });
         if (error) throw error;
