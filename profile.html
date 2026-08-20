@@ -1,0 +1,312 @@
+<!-- 
+================================================================================
+  FILE NAME: profile.html
+  PROJECT  : CityPulse
+  PURPOSE  : Citizen Profile, Civic Info, Activity, History & App Settings
+================================================================================
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityPulse - Profile</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+            --primary: #007a99;
+            --danger: #ef4444;
+            --badge-bg: #e0f2fe;
+            --badge-text: #0284c7;
+        }
+
+        body.dark-theme {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --border-color: #334155;
+            --primary: #38bdf8;
+            --badge-bg: #0369a1;
+            --badge-text: #e0f2fe;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); display: flex; justify-content: center; color: var(--text-main); transition: background-color 0.2s; }
+        .profile-container { width: 100%; max-width: 420px; min-height: 100vh; padding: 16px; padding-bottom: 85px; display: flex; flex-direction: column; gap: 14px; }
+        
+        .header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
+        .header h1 { font-size: 18px; font-weight: 700; }
+        .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; padding: 4px; }
+
+        /* User Identity Card */
+        .user-card { background: var(--card-bg); border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+        .avatar { width: 56px; height: 56px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; }
+        .user-info h2 { font-size: 16px; margin-bottom: 2px; }
+        .user-info p { font-size: 12px; color: var(--text-sub); }
+        .badge-row { display: flex; gap: 6px; margin-top: 5px; }
+        .badge { display: inline-block; background: var(--badge-bg); color: var(--badge-text); font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 6px; }
+
+        /* Grouped Menus */
+        .section-title { font-size: 12px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; margin-top: 6px; letter-spacing: 0.5px; }
+        .menu-group { background: var(--card-bg); border-radius: 14px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+        .menu-item { display: flex; align-items: center; justify-content: space-between; padding: 14px; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.1s; }
+        .menu-item:last-child { border-bottom: none; }
+        .menu-item:active { background: rgba(0,0,0,0.02); }
+        .menu-left { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; }
+        .menu-left .icon { font-size: 16px; width: 20px; text-align: center; }
+        .menu-right { font-size: 12px; color: var(--text-sub); }
+
+        /* Switches */
+        .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .2s; border-radius: 22px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .2s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(18px); }
+
+        /* Fixed Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; height: 60px; background: #0f3443; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); z-index: 9999; }
+        .nav-item { text-align: center; color: #b0c4de; font-size: 10px; font-weight: 600; cursor: pointer; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+        .nav-item.active { color: #00e5ff; }
+        .nav-item .nav-icon { font-size: 18px; }
+
+        .btn-logout { background: var(--card-bg); color: var(--danger); border: 1.5px solid var(--danger); border-radius: 12px; padding: 13px; font-weight: bold; font-size: 13px; cursor: pointer; margin-top: 10px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="profile-container">
+    <div class="header">
+        <button class="back-btn" onclick="window.location.href='index.html'">←</button>
+        <h1>Citizen Profile</h1>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <!-- 1. Personal Identity & Account Info -->
+    <div class="user-card">
+        <div class="avatar" id="avatar-initial">U</div>
+        <div class="user-info">
+            <h2 id="profile-name">CityPulse Resident</h2>
+            <p id="profile-contact">Loading...</p>
+            <div class="badge-row">
+                <span class="badge" id="citizen-badge">Verified Resident</span>
+                <span class="badge" id="aadhaar-badge" style="background:#dcfce7; color:#15803d;">Aadhaar Linked</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Civic & Address Settings -->
+    <div class="section-title">🏛️ Civic & Address Settings</div>
+    <div class="menu-group">
+        <div class="menu-item" onclick="promptCivicWard()">
+            <div class="menu-left"><span class="icon">🏘️</span> Primary Ward & Holding</div>
+            <div class="menu-right" id="ward-display">Ward 14 ›</div>
+        </div>
+        <div class="menu-item" onclick="promptCitySelect()">
+            <div class="menu-left"><span class="icon">📍</span> Registered City</div>
+            <div class="menu-right" id="profile-city">Detecting... ›</div>
+        </div>
+    </div>
+
+    <!-- 3. My Activity & History -->
+    <div class="section-title">📂 Activity & History</div>
+    <div class="menu-group">
+        <div class="menu-item" onclick="alert('Complaints Tracker: Showing all pending and resolved municipal issues.')">
+            <div class="menu-left"><span class="icon">📢</span> Complaints & Scheme Applications</div>
+            <div class="menu-right">Track Live ›</div>
+        </div>
+        <div class="menu-item" onclick="alert('Payment History: View and download receipts for Electricity, Water, and Tax bills.')">
+            <div class="menu-left"><span class="icon">🧾</span> Payment Receipts & History</div>
+            <div class="menu-right">PDFs ›</div>
+        </div>
+        <div class="menu-item" onclick="manageSOSContacts()">
+            <div class="menu-left"><span class="icon">🆘</span> Emergency SOS Contacts</div>
+            <div class="menu-right" id="sos-count">2 Saved ›</div>
+        </div>
+        <div class="menu-item" onclick="alert('Saved Notices & Community Posts: 0 items bookmarked.')">
+            <div class="menu-left"><span class="icon">🔖</span> Saved & Bookmarked</div>
+            <div class="menu-right">›</div>
+        </div>
+    </div>
+
+    <!-- 4. App Settings & Security -->
+    <div class="section-title">⚙️ App Settings & Security</div>
+    <div class="menu-group">
+        <div class="menu-item">
+            <div class="menu-left"><span class="icon">🌙</span> Dark / Light Theme</div>
+            <label class="switch">
+                <input type="checkbox" id="dark-toggle" onchange="toggleDarkMode()">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="menu-item" onclick="changeLanguage()">
+            <div class="menu-left"><span class="icon">🌐</span> Language Switcher</div>
+            <div class="menu-right" id="lang-display">English ›</div>
+        </div>
+        <div class="menu-item">
+            <div class="menu-left"><span class="icon">🔒</span> App Lock & Biometrics</div>
+            <label class="switch">
+                <input type="checkbox" id="bio-toggle" onchange="toggleBiometrics()">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="menu-item" onclick="alert('Notification Settings: Weather, Emergency, and Bill alerts are enabled.')">
+            <div class="menu-left"><span class="icon">🔔</span> Notification Preferences</div>
+            <div class="menu-right">Enabled ›</div>
+        </div>
+    </div>
+
+    <!-- 5. Help, Support & Legal -->
+    <div class="section-title">💬 Help & Support</div>
+    <div class="menu-group">
+        <div class="menu-item" onclick="alert('CityPulse FAQ & User Guide: Learn how to report civic issues and pay utility bills.')">
+            <div class="menu-left"><span class="icon">❓</span> App FAQ & User Guide</div>
+            <div class="menu-right">›</div>
+        </div>
+        <div class="menu-item" onclick="alert('Contact Support: Write to support@citypulse.gov or call 1800-CITYPULSE')">
+            <div class="menu-left"><span class="icon">🎧</span> Contact Support & Feedback</div>
+            <div class="menu-right">›</div>
+        </div>
+        <div class="menu-item" onclick="alert('Privacy Policy: All municipal data and citizen records are encrypted.')">
+            <div class="menu-left"><span class="icon">📜</span> Terms, Privacy & Disclaimer</div>
+            <div class="menu-right">›</div>
+        </div>
+    </div>
+
+    <!-- 6. Logout -->
+    <button class="btn-logout" onclick="handleLogout()">🚪 Logout Account</button>
+</div>
+
+<!-- Bottom Navigation Bar -->
+<div class="bottom-nav">
+    <div class="nav-item" onclick="window.location.href='index.html'">
+        <div class="nav-icon">🏠</div>
+        <span>Home</span>
+    </div>
+    <div class="nav-item" onclick="window.location.href='index.html'">
+        <div class="nav-icon">📑</div>
+        <span>Services</span>
+    </div>
+    <div class="nav-item" onclick="window.location.href='index.html'">
+        <div class="nav-icon">🔔</div>
+        <span>Alerts</span>
+    </div>
+    <div class="nav-item active">
+        <div class="nav-icon">👤</div>
+        <span>Profile</span>
+    </div>
+</div>
+
+<script>
+    const SUPABASE_URL = "https://qfefkyrwxdhdxyajutst.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_mOjSpSn12VMJMf-OWwCDFg_h0u-YL5c";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // 1. Initialize Profile State
+    (function initProfile() {
+        const user = localStorage.getItem("citypulse_saved_user") || "Guest Citizen";
+        const isGuest = localStorage.getItem("citypulse_is_guest") === "true";
+        
+        document.getElementById("profile-contact").innerText = user;
+        document.getElementById("avatar-initial").innerText = user.charAt(0).toUpperCase();
+
+        if (isGuest) {
+            document.getElementById("profile-name").innerText = "Guest User";
+            document.getElementById("citizen-badge").innerText = "Guest Mode";
+            document.getElementById("citizen-badge").style.background = "#fef3c7";
+            document.getElementById("citizen-badge").style.color = "#d97706";
+            document.getElementById("aadhaar-badge").style.display = "none";
+        } else {
+            document.getElementById("profile-name").innerText = user.includes('@') ? user.split('@')[0] : user;
+        }
+
+        // Load Preferences
+        if (localStorage.getItem("citypulse_theme") === "dark") {
+            document.body.classList.add("dark-theme");
+            document.getElementById("dark-toggle").checked = true;
+        }
+
+        if (localStorage.getItem("citypulse_bio_enrolled") === "true") {
+            document.getElementById("bio-toggle").checked = true;
+        }
+
+        const savedCity = localStorage.getItem("citypulse_saved_city") || "Bhatpara, WB";
+        document.getElementById("profile-city").innerText = savedCity + " ›";
+
+        const savedWard = localStorage.getItem("citypulse_ward") || "Ward 14";
+        document.getElementById("ward-display").innerText = savedWard + " ›";
+    })();
+
+    // 2. Theme Toggle Handler
+    function toggleDarkMode() {
+        const isDark = document.getElementById("dark-toggle").checked;
+        if (isDark) {
+            document.body.classList.add("dark-theme");
+            localStorage.setItem("citypulse_theme", "dark");
+        } else {
+            document.body.classList.remove("dark-theme");
+            localStorage.setItem("citypulse_theme", "light");
+        }
+    }
+
+    // 3. Biometric Toggle Handler
+    function toggleBiometrics() {
+        const isBio = document.getElementById("bio-toggle").checked;
+        localStorage.setItem("citypulse_bio_enrolled", isBio ? "true" : "false");
+    }
+
+    // 4. Civic Ward & City Updaters
+    function promptCivicWard() {
+        const current = localStorage.getItem("citypulse_ward") || "Ward 14";
+        const val = prompt("Apna Ward No. / Holding No. darj karein:", current);
+        if (val) {
+            localStorage.setItem("citypulse_ward", val);
+            document.getElementById("ward-display").innerText = val + " ›";
+        }
+    }
+
+    function promptCitySelect() {
+        const current = localStorage.getItem("citypulse_saved_city") || "Bhatpara, WB";
+        const val = prompt("Default Municipal City badlein:", current);
+        if (val) {
+            localStorage.setItem("citypulse_saved_city", val);
+            document.getElementById("profile-city").innerText = val + " ›";
+        }
+    }
+
+    // 5. Emergency SOS Contacts Manager
+    function manageSOSContacts() {
+        const num1 = prompt("Emergency Contact 1 (Family/Friend Number):", localStorage.getItem("citypulse_sos_1") || "");
+        if (num1 !== null) localStorage.setItem("citypulse_sos_1", num1);
+        const num2 = prompt("Emergency Contact 2 (Family/Friend Number):", localStorage.getItem("citypulse_sos_2") || "");
+        if (num2 !== null) localStorage.setItem("citypulse_sos_2", num2);
+        alert("Emergency SOS Contacts successfully save ho gaye!");
+    }
+
+    // 6. Language Switcher
+    function changeLanguage() {
+        const lang = prompt("Choose Language (English / Hindi / Bengali):", "English");
+        if (lang) {
+            document.getElementById("lang-display").innerText = lang + " ›";
+        }
+    }
+
+    // 7. Secure Logout Flow
+    async function handleLogout() {
+        const confirmLogout = confirm("Are you sure you want to log out?");
+        if (confirmLogout) {
+            await supabaseClient.auth.signOut();
+            localStorage.clear();
+            window.location.replace("login.html");
+        }
+    }
+</script>
+</body>
+</html>
