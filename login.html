@@ -50,10 +50,9 @@
             padding: 24px 20px;
             box-sizing: border-box;
             text-align: center;
-            position: relative; /* Added to keep absolute language button contained */
+            position: relative;
         }
 
-        /* Language Switcher Button Style */
         .login-lang-btn {
             position: absolute;
             top: 16px;
@@ -149,7 +148,6 @@
 </div>
 
 <div id="login-app" class="login-container">
-    <!-- Language Switcher Button Top-Right -->
     <button class="login-lang-btn" onclick="openLanguageSelector()">
         🌐 Language
     </button>
@@ -165,13 +163,10 @@
     </div>
     
     <div class="button-section">
-        <!-- 0. Biometric (Hidden by default, shows if enrolled) -->
         <button id="bio-auth-btn" class="login-btn bio-btn" onclick="handleBiometricAuth()">⚡ Fingerprint / Quick Unlock</button>
         
-        <!-- 1. Google -->
         <button class="login-btn" onclick="loginWithGoogle()">G Continue with Google</button>
       
-        <!-- 2. Email -->
         <button class="login-btn" onclick="toggleEmailBox()">✉️ Continue with email</button>
         <div id="email-auth-box" class="auth-sub-box">
             <div class="input-group">
@@ -183,7 +178,6 @@
             <button class="login-btn" style="padding: 10px; width: 100%; margin-top: 6px;" onclick="handleEmailLogin()">Sign In / Sign Up</button>
         </div>
 
-        <!-- 3. Phone -->
         <button class="login-btn" onclick="togglePhoneBox()">📞 Continue with phone number</button>
         <div id="phone-auth-box" class="auth-sub-box">
             <div id="step-phone">
@@ -199,7 +193,6 @@
             </div>
         </div>
 
-        <!-- 4. Guest Mode -->
         <button class="login-btn" onclick="setGuestAndEnter()" style="border:none; text-decoration:underline;">Guest mode</button>
     </div>
 
@@ -215,13 +208,20 @@
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     (async function initLogin() {
-        // [BUG FIX]: Intercept Google redirect parameters BEFORE loading screen
         const isCallback = window.location.search.includes("code=") || window.location.hash.includes("access_token");
         if (isCallback) {
             document.getElementById('splash-screen').style.display = 'flex';
             document.getElementById('splash-text').innerText = "Authenticating Google Login...";
-            // Forward directly to index.html to process the session
             window.location.replace("index.html" + window.location.search + window.location.hash);
+            return;
+        }
+
+        // Language change check bypass
+        const justChangedLang = sessionStorage.getItem("lang_just_changed");
+        if (justChangedLang) {
+            sessionStorage.removeItem("lang_just_changed");
+            document.getElementById('splash-screen').style.display = 'none';
+            document.getElementById('login-app').style.display = 'flex';
             return;
         }
 
@@ -243,9 +243,9 @@
         }, 1200);
     })();
 
-    // Language Selector Navigation Handler
     function openLanguageSelector() {
         localStorage.setItem("citypulse_lang_ref", "login");
+        sessionStorage.setItem("lang_just_changed", "true");
         window.location.href = 'language.html';
     }
 
@@ -339,7 +339,6 @@
 
     async function loginWithGoogle() {
         try {
-            // [BUG FIX]: Redirect straight to index to prevent loop
             const redirectUrl = window.location.origin + window.location.pathname.replace('login.html', 'index.html');
             const { error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'google',
