@@ -174,12 +174,12 @@
         }
 
         .sos-box {
-            background: #ffebee;
-            border: 1px solid #ffcdd2;
+            background: #e63946;
+            border: 1px solid #d90429;
         }
 
         .sos-box h4 {
-            color: #d32f2f;
+            color: #ffffff;
             margin: 0 0 4px 0;
             font-size: 11px;
             font-weight: bold;
@@ -206,8 +206,8 @@
         .mini-call {
             font-size: 9px;
             font-weight: 600;
-            color: #444;
-            background: rgba(255, 255, 255, 0.8);
+            color: #d90429;
+            background: rgba(255, 255, 255, 0.95);
             padding: 2px 6px;
             border-radius: 4px;
             border: 1px solid rgba(0, 0, 0, 0.1);
@@ -337,85 +337,13 @@
         .nav-item .nav-icon {
             font-size: 16px;
         }
-
-        /* 8. SOS Emergency Modal */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.75);
-            z-index: 10000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal-content {
-            background: #ffffff;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 360px;
-            padding: 24px 20px;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        .modal-content h2 {
-            color: #e63946;
-            font-size: 20px;
-            margin-bottom: 8px;
-        }
-
-        .modal-content p {
-            color: #555;
-            font-size: 13px;
-            margin-bottom: 15px;
-            line-height: 1.4;
-        }
-
-        .loc-badge {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 8px;
-            border-radius: 8px;
-            font-size: 11px;
-            color: #475569;
-            margin-bottom: 16px;
-            word-break: break-all;
-        }
-
-        .btn-sos-trigger {
-            background: #e63946;
-            color: #ffffff;
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 15px;
-            cursor: pointer;
-        }
-
-        .btn-cancel {
-            background: transparent;
-            border: none;
-            margin-top: 12px;
-            color: #64748b;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            padding: 6px;
-        }
     </style>
 </head>
 <body>
 
 <div class="app-container">
 
-    <!-- Top Header (Clean: No duplicate profile button) -->
+    <!-- Top Header -->
     <div class="top-header">
         <div class="brand-title">CityPulse</div>
         <div class="header-live-badge">🟢 Portal Active</div>
@@ -445,11 +373,11 @@
         </div>
     </div>
 
-    <!-- Dual Compact Action Boxes (SOS & Citizen Voice side-by-side) -->
+    <!-- Dual Compact Action Boxes -->
     <div class="dual-action-container">
         
-        <!-- 1. Compact Emergency SOS Box -->
-        <div class="action-box sos-box" onclick="openSOSModal()">
+        <!-- 1. Compact Emergency SOS Box (Red Background, White Text, Links to emergency.html) -->
+        <div class="action-box sos-box" onclick="window.location.href='emergency.html'">
             <h4>🚨 SOS EMERGENCY</h4>
             <div class="mini-call-grid">
                 <span class="mini-call" onclick="event.stopPropagation(); window.location.href='tel:100'">Police</span>
@@ -494,7 +422,7 @@
         <div class="service-card"><div class="icon">🅿️</div><div class="title">Parking</div><span class="subtitle">Nearby Garages</span></div>
     </div>
 
-    <!-- UPDATED: 6-Button Bottom Navigation (Home Active) -->
+    <!-- Bottom Navigation -->
     <div class="bottom-nav">
         <a href="index.html" class="nav-item active">
             <div class="nav-icon">🏠</div><span>Home</span>
@@ -518,18 +446,6 @@
 
 </div>
 
-<!-- SOS Emergency Modal -->
-<div id="sos-modal" class="modal-overlay">
-    <div class="modal-content">
-        <h2>🚨 SOS EMERGENCY</h2>
-        <p>Aapki live GPS location ke sath emergency control room ko alert bheja ja raha hai.</p>
-        <div class="loc-badge" id="sos-loc-status">📍 Detecting exact coordinates...</div>
-        <button class="btn-sos-trigger" onclick="triggerSOS()">SEND SOS ALERT</button>
-        <br>
-        <button class="btn-cancel" onclick="closeSOSModal()">Cancel</button>
-    </div>
-</div>
-
 <script>
     const SUPABASE_URL = "https://qfefkyrwxdhdxyajutst.supabase.co";
     const SUPABASE_KEY = "sb_publishable_mOjSpSn12VMJMf-0WWcDFg_h0u-YL5c";
@@ -538,7 +454,6 @@
     let currentLat = null;
     let currentLon = null;
 
-    // 1. [BUG FIX]: Robust Session Guard with PKCE Bypass
     (async function checkSession() {
         if (localStorage.getItem("citypulse_theme") === "dark") {
             document.body.classList.add("dark-theme");
@@ -566,7 +481,6 @@
         });
     })();
 
-    // 2. Live Date Display
     function updateDateWidget() {
         const dateElem = document.getElementById("current-date-display");
         if (dateElem) {
@@ -576,7 +490,6 @@
     }
     updateDateWidget();
 
-    // 3. Live City & Weather Integration
     async function fetchLiveWeather() {
         const cityElem = document.getElementById("city-name-display");
         const weatherElem = document.getElementById("weather-temp-display");
@@ -617,32 +530,6 @@
         );
     }
     fetchLiveWeather();
-
-    // 4. SOS Modal Controls
-    function openSOSModal() {
-        document.getElementById('sos-modal').style.display = 'flex';
-        const locStatus = document.getElementById('sos-loc-status');
-        if (currentLat && currentLon) {
-            locStatus.innerText = `📍 Lat: ${currentLat.toFixed(4)}, Lon: ${currentLon.toFixed(4)}`;
-        } else if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((pos) => {
-                currentLat = pos.coords.latitude;
-                currentLon = pos.coords.longitude;
-                locStatus.innerText = `📍 Lat: ${currentLat.toFixed(4)}, Lon: ${currentLon.toFixed(4)}`;
-            }, () => {
-                locStatus.innerText = "⚠️ GPS not available. Default Municipal Grid used.";
-            });
-        }
-    }
-
-    function closeSOSModal() {
-        document.getElementById('sos-modal').style.display = 'none';
-    }
-
-    function triggerSOS() {
-        alert("🚨 EMERGENCY ALERT TRANSMITTED!\nControl Room has received your coordinates. Help is on the way.");
-        closeSOSModal();
-    }
 </script>
 </body>
 </html>
