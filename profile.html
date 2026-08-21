@@ -1,3 +1,11 @@
+<!-- 
+================================================================================
+  FILE NAME: profile.html
+  PROJECT  : CityPulse
+  PURPOSE  : Citizen Profile, Civic Info, Activity, History & App Settings
+================================================================================
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,122 +14,300 @@
     <title>CityPulse - Profile</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --bg-color: #f0f4f8; --card-bg: #ffffff; --text-main: #1e3d4f; }
-        body.dark-theme { --bg-color: #0b1c24; --card-bg: #1e293b; --text-main: #f8fafc; }
+        :root {
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+            --primary: #007a99;
+            --danger: #ef4444;
+            --badge-bg: #e0f2fe;
+            --badge-text: #0284c7;
+        }
+
+        body.dark-theme {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --border-color: #334155;
+            --primary: #38bdf8;
+            --badge-bg: #0369a1;
+            --badge-text: #e0f2fe;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); display: flex; justify-content: center; }
+        body { background-color: var(--bg-color); display: flex; justify-content: center; color: var(--text-main); transition: background-color 0.2s; }
+        .profile-container { width: 100%; max-width: 420px; min-height: 100vh; padding: 16px; padding-bottom: 85px; display: flex; flex-direction: column; gap: 14px; }
         
-        .page-container { width: 100%; max-width: 420px; min-height: 100vh; padding: 16px; padding-bottom: 85px; }
-        
-        .header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; font-size: 18px; font-weight: bold; }
-        .user-card { background: var(--card-bg); padding: 20px; border-radius: 15px; display: flex; gap: 15px; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .avatar { width: 56px; height: 56px; background: #007a99; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; }
-        .badge { display: inline-block; background: #e0f2fe; color: #0284c7; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 6px; margin-top: 5px; }
-        
-        .section-title { font-size: 12px; font-weight: bold; color: gray; text-transform: uppercase; margin: 15px 0 5px 5px; }
-        .menu-list { background: var(--card-bg); border-radius: 15px; overflow: hidden; margin-bottom: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
-        .menu-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid rgba(0,0,0,0.05); cursor: pointer; font-size: 14px; font-weight: 600; }
-        
+        .header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
+        .header h1 { font-size: 18px; font-weight: 700; }
+        .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; padding: 4px; }
+
+        /* User Identity Card */
+        .user-card { background: var(--card-bg); border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+        .avatar { width: 56px; height: 56px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; }
+        .user-info h2 { font-size: 16px; margin-bottom: 2px; }
+        .user-info p { font-size: 12px; color: var(--text-sub); }
+        .badge-row { display: flex; gap: 6px; margin-top: 5px; }
+        .badge { display: inline-block; background: var(--badge-bg); color: var(--badge-text); font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 6px; }
+
+        /* Grouped Menus */
+        .section-title { font-size: 12px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; margin-top: 6px; letter-spacing: 0.5px; }
+        .menu-group { background: var(--card-bg); border-radius: 14px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+        .menu-item { display: flex; align-items: center; justify-content: space-between; padding: 14px; border-bottom: 1px solid var(--border-color); cursor: pointer; }
+        .menu-item:last-child { border-bottom: none; }
+        .menu-item:active { background: rgba(0,0,0,0.02); }
+        .menu-left { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; }
+        .menu-left .icon { font-size: 16px; width: 20px; text-align: center; }
+        .menu-right { font-size: 12px; color: var(--text-sub); }
+
+        /* Switches */
         .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .2s; border-radius: 22px; }
         .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .2s; border-radius: 50%; }
-        input:checked + .slider { background-color: #007a99; }
+        input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(18px); }
 
-        .btn-logout { width: 100%; background: transparent; color: #ef4444; padding: 15px; border: 1px solid #ef4444; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 15px; }
-
-        /* 6-Button Bottom Navigation */
-        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; height: 65px; background: #0f3443; display: grid; grid-template-columns: repeat(6, 1fr); align-items: center; border-top: 1px solid rgba(255,255,255,0.1); z-index: 9999; box-shadow: 0 -3px 10px rgba(0,0,0,0.25); }
-        .nav-item { text-align: center; color: #b0c4de; font-size: 9px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none;}
+        /* UPDATED: 6-Button Bottom Nav */
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 0; left: 50%; transform: translateX(-50%); 
+            width: 100%; max-width: 420px; height: 65px; 
+            background: #0f3443; 
+            display: grid; grid-template-columns: repeat(6, 1fr); align-items: center; 
+            border-top: 1px solid rgba(255,255,255,0.1); z-index: 9999; 
+            box-shadow: 0 -3px 10px rgba(0,0,0,0.25); 
+        }
+        .nav-item { text-align: center; color: #b0c4de; font-size: 9px; font-weight: 600; cursor: pointer; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-item.active { color: #00e5ff; }
         .nav-item .nav-icon { font-size: 16px; }
+
+        .btn-logout { background: var(--card-bg); color: var(--danger); border: 1.5px solid var(--danger); border-radius: 12px; padding: 13px; font-weight: bold; font-size: 13px; cursor: pointer; margin-top: 10px; text-align: center; }
     </style>
 </head>
 <body>
-<div class="page-container">
-    <div class="header"><span onclick="location.href='index.html'" style="cursor:pointer">←</span> My Profile</div>
-    
+
+<div class="profile-container">
+    <div class="header">
+        <button class="back-btn" onclick="window.location.href='index.html'">←</button>
+        <h1>Citizen Profile</h1>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <!-- 1. Personal Identity & Account Info -->
     <div class="user-card">
         <div class="avatar" id="avatar-initial">U</div>
-        <div>
-            <h2 id="profile-name" style="font-size: 16px;">Loading...</h2>
-            <p id="profile-email" style="font-size: 12px; color: gray;">...</p>
-            <div id="badge-container"><span class="badge" id="citizen-badge">Verified Resident</span></div>
+        <div class="user-info">
+            <h2 id="profile-name">CityPulse Resident</h2>
+            <p id="profile-contact">Loading...</p>
+            <div class="badge-row">
+                <span class="badge" id="citizen-badge">Verified Resident</span>
+                <span class="badge" id="aadhaar-badge" style="background:#dcfce7; color:#15803d;">Identity Linked</span>
+            </div>
         </div>
     </div>
 
-    <div class="section-title">🏛️ Civic Details</div>
-    <div class="menu-list">
-        <div class="menu-item" onclick="prompt('Enter Ward No:')"><span>🏘️ Primary Ward</span> <span style="color:gray; font-size: 12px;">Ward 14 ›</span></div>
-        <div class="menu-item" onclick="prompt('Enter City:')"><span>📍 Registered City</span> <span style="color:gray; font-size: 12px;">Bhatpara ›</span></div>
+    <!-- 2. Civic & Address Settings -->
+    <div class="section-title">🏛️ Civic & Address Settings</div>
+    <div class="menu-group">
+        <div class="menu-item" onclick="promptCivicWard()">
+            <div class="menu-left"><span class="icon">🏘️</span> Primary Ward & Holding</div>
+            <div class="menu-right" id="ward-display">Ward 14 ›</div>
+        </div>
+        <div class="menu-item" onclick="promptCitySelect()">
+            <div class="menu-left"><span class="icon">📍</span> Registered City</div>
+            <div class="menu-right" id="profile-city">Bhatpara, WB ›</div>
+        </div>
     </div>
 
-    <div class="section-title">📂 Activity</div>
-    <div class="menu-list">
-        <div class="menu-item" onclick="alert('Opening Complaints Tracker...')"><span>📢 My Complaints</span> <span style="color:gray;">›</span></div>
-        <div class="menu-item" onclick="alert('Opening Receipts...')"><span>🧾 Payment History</span> <span style="color:gray;">›</span></div>
-        <div class="menu-item" onclick="alert('Manage SOS Contacts')"><span>🆘 Emergency Contacts</span> <span style="color:gray;">2 Saved ›</span></div>
+    <!-- 3. My Activity & History -->
+    <div class="section-title">📂 Activity & History</div>
+    <div class="menu-group">
+        <div class="menu-item" onclick="alert('Complaints Tracker: Showing all pending and resolved issues.')">
+            <div class="menu-left"><span class="icon">📢</span> Complaints & Scheme Applications</div>
+            <div class="menu-right">Track Live ›</div>
+        </div>
+        <div class="menu-item" onclick="alert('Payment History: Receipts for Utility Bills.')">
+            <div class="menu-left"><span class="icon">🧾</span> Payment Receipts & History</div>
+            <div class="menu-right">PDFs ›</div>
+        </div>
+        <div class="menu-item" onclick="manageSOSContacts()">
+            <div class="menu-left"><span class="icon">🆘</span> Emergency SOS Contacts</div>
+            <div class="menu-right" id="sos-count">2 Saved ›</div>
+        </div>
+        <div class="menu-item" onclick="alert('Saved Notices & Community Posts: 0 items bookmarked.')">
+            <div class="menu-left"><span class="icon">🔖</span> Saved & Bookmarked</div>
+            <div class="menu-right">›</div>
+        </div>
     </div>
 
-    <div class="section-title">⚙️ Settings</div>
-    <div class="menu-list">
+    <!-- 4. App Settings & Security -->
+    <div class="section-title">⚙️ App Settings & Security</div>
+    <div class="menu-group">
         <div class="menu-item">
-            <span>🌙 Dark Mode</span>
-            <label class="switch"><input type="checkbox" id="dark-toggle" onchange="toggleTheme()"><span class="slider"></span></label>
+            <div class="menu-left"><span class="icon">🌙</span> Dark / Light Theme</div>
+            <label class="switch">
+                <input type="checkbox" id="dark-toggle" onchange="toggleDarkMode()">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="menu-item" onclick="changeLanguage()">
+            <div class="menu-left"><span class="icon">🌐</span> Language Switcher</div>
+            <div class="menu-right" id="lang-display">English ›</div>
         </div>
         <div class="menu-item">
-            <span>🔒 App Lock (Biometrics)</span>
-            <label class="switch"><input type="checkbox" id="bio-toggle" onchange="toggleBio()"><span class="slider"></span></label>
+            <div class="menu-left"><span class="icon">🔒</span> App Lock & Biometrics</div>
+            <label class="switch">
+                <input type="checkbox" id="bio-toggle" onchange="toggleBiometrics()">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="menu-item" onclick="alert('Notification Settings: Weather, Emergency, and Bill alerts are enabled.')">
+            <div class="menu-left"><span class="icon">🔔</span> Notification Preferences</div>
+            <div class="menu-right">Enabled ›</div>
         </div>
     </div>
 
+    <!-- 5. Help, Support & Legal -->
+    <div class="section-title">💬 Help & Support</div>
+    <div class="menu-group">
+        <div class="menu-item" onclick="alert('CityPulse FAQ & User Guide: Learn how to report civic issues and pay utility bills.')">
+            <div class="menu-left"><span class="icon">❓</span> App FAQ & User Guide</div>
+            <div class="menu-right">›</div>
+        </div>
+        <div class="menu-item" onclick="alert('Contact Support: support@citypulse.gov')">
+            <div class="menu-left"><span class="icon">🎧</span> Contact Support & Feedback</div>
+            <div class="menu-right">›</div>
+        </div>
+        <div class="menu-item" onclick="alert('Privacy Policy: All municipal citizen records are encrypted.')">
+            <div class="menu-left"><span class="icon">📜</span> Terms, Privacy & Disclaimer</div>
+            <div class="menu-right">›</div>
+        </div>
+    </div>
+
+    <!-- 6. Logout -->
     <button class="btn-logout" onclick="handleLogout()">🚪 Logout Account</button>
 </div>
 
-<!-- 6-Button Bottom Navigation (Profile Active) -->
+<!-- UPDATED: 6-Button Bottom Navigation (Profile Active) -->
 <div class="bottom-nav">
-    <a href="index.html" class="nav-item"><div class="nav-icon">🏠</div><span>Home</span></a>
-    <a href="profile.html" class="nav-item active"><div class="nav-icon">👤</div><span>Profile</span></a>
-    <a href="search.html" class="nav-item"><div class="nav-icon">🔍</div><span>Search</span></a>
-    <a href="category.html" class="nav-item"><div class="nav-icon">📂</div><span>Category</span></a>
-    <a href="notifications.html" class="nav-item"><div class="nav-icon">🔔</div><span>Alerts</span></a>
-    <a href="menu.html" class="nav-item"><div class="nav-icon">☰</div><span>Menu</span></a>
+    <a href="index.html" class="nav-item">
+        <div class="nav-icon">🏠</div><span>Home</span>
+    </a>
+    <a href="profile.html" class="nav-item active">
+        <div class="nav-icon">👤</div><span>Profile</span>
+    </a>
+    <a href="search.html" class="nav-item">
+        <div class="nav-icon">🔍</div><span>Search</span>
+    </a>
+    <a href="category.html" class="nav-item">
+        <div class="nav-icon">📂</div><span>Category</span>
+    </a>
+    <a href="notifications.html" class="nav-item">
+        <div class="nav-icon">🔔</div><span>Alerts</span>
+    </a>
+    <a href="menu.html" class="nav-item">
+        <div class="nav-icon">☰</div><span>Menu</span>
+    </a>
 </div>
 
 <script>
-    const supabaseClient = supabase.createClient("https://qfefkyrwxdhdxyajutst.supabase.co", "sb_publishable_mOjSpSn12VMJMf-OWwCDFg_h0u-YL5c");
+    const SUPABASE_URL = "https://qfefkyrwxdhdxyajutst.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_mOjSpSn12VMJMf-OWwCDFg_h0u-YL5c";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    (async function initProfile() {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        let user = localStorage.getItem("citypulse_saved_user");
+    (function initProfile() {
+        const user = localStorage.getItem("citypulse_saved_user") || "Guest Citizen";
+        const isGuest = localStorage.getItem("citypulse_is_guest") === "true";
         
-        if (!user && session?.user) { user = session.user.email; localStorage.setItem("citypulse_saved_user", user); }
-        if (!user) { user = "Guest Citizen"; }
-
-        document.getElementById("profile-name").innerText = user.includes('@') ? user.split('@')[0] : user;
-        document.getElementById("profile-email").innerText = user;
+        document.getElementById("profile-contact").innerText = user;
         document.getElementById("avatar-initial").innerText = user.charAt(0).toUpperCase();
 
-        if(localStorage.getItem("citypulse_is_guest") === "true") {
+        if (isGuest) {
+            document.getElementById("profile-name").innerText = "Guest User";
             document.getElementById("citizen-badge").innerText = "Guest Mode";
             document.getElementById("citizen-badge").style.background = "#fef3c7";
             document.getElementById("citizen-badge").style.color = "#d97706";
+            document.getElementById("aadhaar-badge").style.display = "none";
+        } else {
+            document.getElementById("profile-name").innerText = user.includes('@') ? user.split('@')[0] : user;
         }
 
-        if (localStorage.getItem("citypulse_theme") === "dark") { document.body.classList.add("dark-theme"); document.getElementById("dark-toggle").checked = true; }
-        if (localStorage.getItem("citypulse_bio_enrolled") === "true") { document.getElementById("bio-toggle").checked = true; }
+        if (localStorage.getItem("citypulse_theme") === "dark") {
+            document.body.classList.add("dark-theme");
+            document.getElementById("dark-toggle").checked = true;
+        }
+
+        if (localStorage.getItem("citypulse_bio_enrolled") === "true") {
+            document.getElementById("bio-toggle").checked = true;
+        }
+
+        const savedCity = localStorage.getItem("citypulse_saved_city") || "Bhatpara, WB";
+        document.getElementById("profile-city").innerText = savedCity + " ›";
+
+        const savedWard = localStorage.getItem("citypulse_ward") || "Ward 14";
+        document.getElementById("ward-display").innerText = savedWard + " ›";
     })();
 
-    function toggleTheme() {
+    function toggleDarkMode() {
         const isDark = document.getElementById("dark-toggle").checked;
-        if (isDark) { document.body.classList.add("dark-theme"); localStorage.setItem("citypulse_theme", "dark"); } 
-        else { document.body.classList.remove("dark-theme"); localStorage.setItem("citypulse_theme", "light"); }
+        if (isDark) {
+            document.body.classList.add("dark-theme");
+            localStorage.setItem("citypulse_theme", "dark");
+        } else {
+            document.body.classList.remove("dark-theme");
+            localStorage.setItem("citypulse_theme", "light");
+        }
     }
-    
-    function toggleBio() { localStorage.setItem("citypulse_bio_enrolled", document.getElementById("bio-toggle").checked ? "true" : "false"); }
 
-    async function handleLogout() { if(confirm("Are you sure you want to log out?")){ await supabaseClient.auth.signOut(); localStorage.clear(); location.href="login.html"; } }
+    function toggleBiometrics() {
+        const isBio = document.getElementById("bio-toggle").checked;
+        localStorage.setItem("citypulse_bio_enrolled", isBio ? "true" : "false");
+    }
+
+    function promptCivicWard() {
+        const current = localStorage.getItem("citypulse_ward") || "Ward 14";
+        const val = prompt("Enter Ward No. / Holding No.:", current);
+        if (val) {
+            localStorage.setItem("citypulse_ward", val);
+            document.getElementById("ward-display").innerText = val + " ›";
+        }
+    }
+
+    function promptCitySelect() {
+        const current = localStorage.getItem("citypulse_saved_city") || "Bhatpara, WB";
+        const val = prompt("Change Municipal City:", current);
+        if (val) {
+            localStorage.setItem("citypulse_saved_city", val);
+            document.getElementById("profile-city").innerText = val + " ›";
+        }
+    }
+
+    function manageSOSContacts() {
+        const num1 = prompt("Emergency Contact 1 (Phone Number):", localStorage.getItem("citypulse_sos_1") || "");
+        if (num1 !== null) localStorage.setItem("citypulse_sos_1", num1);
+        const num2 = prompt("Emergency Contact 2 (Phone Number):", localStorage.getItem("citypulse_sos_2") || "");
+        if (num2 !== null) localStorage.setItem("citypulse_sos_2", num2);
+        alert("Emergency SOS Contacts saved!");
+    }
+
+    function changeLanguage() {
+        const lang = prompt("Choose Language (English / Hindi / Bengali):", "English");
+        if (lang) {
+            document.getElementById("lang-display").innerText = lang + " ›";
+        }
+    }
+
+    async function handleLogout() {
+        if (confirm("Are you sure you want to log out?")) {
+            await supabaseClient.auth.signOut();
+            localStorage.clear();
+            window.location.replace("login.html");
+        }
+    }
 </script>
 </body>
 </html>
