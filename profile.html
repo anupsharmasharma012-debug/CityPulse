@@ -38,8 +38,30 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-color); display: flex; justify-content: center; color: var(--text-main); transition: background-color 0.2s; }
-        .profile-container { width: 100%; max-width: 420px; min-height: 100vh; padding: 16px; padding-bottom: 85px; display: flex; flex-direction: column; gap: 14px; }
+        
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            overflow-x: hidden !important;
+            position: relative;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+        }
+
+        .profile-container { 
+            width: 100%; 
+            max-width: 420px; 
+            margin: 0 auto;
+            min-height: 100vh; 
+            padding: 16px; 
+            padding-bottom: 85px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 14px; 
+            overflow-x: hidden !important;
+            box-sizing: border-box;
+        }
         
         .header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
         .header h1 { font-size: 18px; font-weight: 700; }
@@ -71,7 +93,7 @@
         input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(18px); }
 
-        /* UPDATED: 6-Button Bottom Nav */
+        /* Bottom Nav */
         .bottom-nav { 
             position: fixed; 
             bottom: 0; left: 50%; transform: translateX(-50%); 
@@ -97,7 +119,6 @@
         <div style="width: 24px;"></div>
     </div>
 
-    <!-- 1. Personal Identity & Account Info -->
     <div class="user-card">
         <div class="avatar" id="avatar-initial">U</div>
         <div class="user-info">
@@ -110,7 +131,6 @@
         </div>
     </div>
 
-    <!-- 2. Civic & Address Settings -->
     <div class="section-title">🏛️ Civic & Address Settings</div>
     <div class="menu-group">
         <div class="menu-item" onclick="promptCivicWard()">
@@ -123,7 +143,6 @@
         </div>
     </div>
 
-    <!-- 3. My Activity & History -->
     <div class="section-title">📂 Activity & History</div>
     <div class="menu-group">
         <div class="menu-item" onclick="alert('Complaints Tracker: Showing all pending and resolved issues.')">
@@ -138,13 +157,8 @@
             <div class="menu-left"><span class="icon">🆘</span> Emergency SOS Contacts</div>
             <div class="menu-right" id="sos-count">2 Saved ›</div>
         </div>
-        <div class="menu-item" onclick="alert('Saved Notices & Community Posts: 0 items bookmarked.')">
-            <div class="menu-left"><span class="icon">🔖</span> Saved & Bookmarked</div>
-            <div class="menu-right">›</div>
-        </div>
     </div>
 
-    <!-- 4. App Settings & Security -->
     <div class="section-title">⚙️ App Settings & Security</div>
     <div class="menu-group">
         <div class="menu-item">
@@ -158,60 +172,18 @@
             <div class="menu-left"><span class="icon">🌐</span> Language Switcher</div>
             <div class="menu-right" id="lang-display">English ›</div>
         </div>
-        <div class="menu-item">
-            <div class="menu-left"><span class="icon">🔒</span> App Lock & Biometrics</div>
-            <label class="switch">
-                <input type="checkbox" id="bio-toggle" onchange="toggleBiometrics()">
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div class="menu-item" onclick="alert('Notification Settings: Weather, Emergency, and Bill alerts are enabled.')">
-            <div class="menu-left"><span class="icon">🔔</span> Notification Preferences</div>
-            <div class="menu-right">Enabled ›</div>
-        </div>
     </div>
 
-    <!-- 5. Help, Support & Legal -->
-    <div class="section-title">💬 Help & Support</div>
-    <div class="menu-group">
-        <div class="menu-item" onclick="alert('CityPulse FAQ & User Guide: Learn how to report civic issues and pay utility bills.')">
-            <div class="menu-left"><span class="icon">❓</span> App FAQ & User Guide</div>
-            <div class="menu-right">›</div>
-        </div>
-        <div class="menu-item" onclick="alert('Contact Support: support@citypulse.gov')">
-            <div class="menu-left"><span class="icon">🎧</span> Contact Support & Feedback</div>
-            <div class="menu-right">›</div>
-        </div>
-        <div class="menu-item" onclick="alert('Privacy Policy: All municipal citizen records are encrypted.')">
-            <div class="menu-left"><span class="icon">📜</span> Terms, Privacy & Disclaimer</div>
-            <div class="menu-right">›</div>
-        </div>
-    </div>
-
-    <!-- 6. Logout -->
     <button class="btn-logout" onclick="handleLogout()">🚪 Logout Account</button>
 </div>
 
-<!-- UPDATED: 6-Button Bottom Navigation (Profile Active) -->
 <div class="bottom-nav">
-    <a href="index.html" class="nav-item">
-        <div class="nav-icon">🏠</div><span>Home</span>
-    </a>
-    <a href="profile.html" class="nav-item active">
-        <div class="nav-icon">👤</div><span>Profile</span>
-    </a>
-    <a href="search.html" class="nav-item">
-        <div class="nav-icon">🔍</div><span>Search</span>
-    </a>
-    <a href="category.html" class="nav-item">
-        <div class="nav-icon">📂</div><span>Category</span>
-    </a>
-    <a href="notifications.html" class="nav-item">
-        <div class="nav-icon">🔔</div><span>Alerts</span>
-    </a>
-    <a href="menu.html" class="nav-item">
-        <div class="nav-icon">☰</div><span>Menu</span>
-    </a>
+    <a href="index.html" class="nav-item"><div class="nav-icon">🏠</div><span>Home</span></a>
+    <a href="profile.html" class="nav-item active"><div class="nav-icon">👤</div><span>Profile</span></a>
+    <a href="search.html" class="nav-item"><div class="nav-icon">🔍</div><span>Search</span></a>
+    <a href="category.html" class="nav-item"><div class="nav-icon">📂</div><span>Category</span></a>
+    <a href="notifications.html" class="nav-item"><div class="nav-icon">🔔</div><span>Alerts</span></a>
+    <a href="menu.html" class="nav-item"><div class="nav-icon">☰</div><span>Menu</span></a>
 </div>
 
 <script>
@@ -221,35 +193,14 @@
 
     (function initProfile() {
         const user = localStorage.getItem("citypulse_saved_user") || "Guest Citizen";
-        const isGuest = localStorage.getItem("citypulse_is_guest") === "true";
-        
         document.getElementById("profile-contact").innerText = user;
         document.getElementById("avatar-initial").innerText = user.charAt(0).toUpperCase();
-
-        if (isGuest) {
-            document.getElementById("profile-name").innerText = "Guest User";
-            document.getElementById("citizen-badge").innerText = "Guest Mode";
-            document.getElementById("citizen-badge").style.background = "#fef3c7";
-            document.getElementById("citizen-badge").style.color = "#d97706";
-            document.getElementById("aadhaar-badge").style.display = "none";
-        } else {
-            document.getElementById("profile-name").innerText = user.includes('@') ? user.split('@')[0] : user;
-        }
+        document.getElementById("profile-name").innerText = user.includes('@') ? user.split('@')[0] : user;
 
         if (localStorage.getItem("citypulse_theme") === "dark") {
             document.body.classList.add("dark-theme");
             document.getElementById("dark-toggle").checked = true;
         }
-
-        if (localStorage.getItem("citypulse_bio_enrolled") === "true") {
-            document.getElementById("bio-toggle").checked = true;
-        }
-
-        const savedCity = localStorage.getItem("citypulse_saved_city") || "Bhatpara, WB";
-        document.getElementById("profile-city").innerText = savedCity + " ›";
-
-        const savedWard = localStorage.getItem("citypulse_ward") || "Ward 14";
-        document.getElementById("ward-display").innerText = savedWard + " ›";
     })();
 
     function toggleDarkMode() {
@@ -261,11 +212,6 @@
             document.body.classList.remove("dark-theme");
             localStorage.setItem("citypulse_theme", "light");
         }
-    }
-
-    function toggleBiometrics() {
-        const isBio = document.getElementById("bio-toggle").checked;
-        localStorage.setItem("citypulse_bio_enrolled", isBio ? "true" : "false");
     }
 
     function promptCivicWard() {
@@ -295,10 +241,7 @@
     }
 
     function changeLanguage() {
-        const lang = prompt("Choose Language (English / Hindi / Bengali):", "English");
-        if (lang) {
-            document.getElementById("lang-display").innerText = lang + " ›";
-        }
+        window.location.href = 'language.html';
     }
 
     async function handleLogout() {
@@ -311,3 +254,4 @@
 </script>
 </body>
 </html>
+
