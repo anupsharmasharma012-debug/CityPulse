@@ -443,8 +443,16 @@
         const isGuest = localStorage.getItem("citypulse_is_guest") === "true";
         const savedUser = localStorage.getItem("citypulse_saved_user");
 
-        if (!isCallback && !isGuest && !savedUser) {
-            window.location.replace("login.html");
+        if (isGuest || savedUser) {
+            return; 
+        }
+
+        if (!isCallback && !sessionStorage.getItem("checked_session")) {
+            sessionStorage.setItem("checked_session", "true");
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session && !isCallback) {
+                window.location.replace("login.html");
+            }
         }
 
         supabaseClient.auth.onAuthStateChange((event, session) => {
