@@ -2,7 +2,7 @@
 ================================================================================
   FILE NAME: partner.html
   PROJECT  : CityPulse
-  PURPOSE  : Driver & Delivery Partner Live Dashboard
+  PURPOSE  : Driver Dashboard with Supabase Real-Time Feed & Status Management
 ================================================================================
 -->
 
@@ -37,9 +37,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
         html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
+            margin: 0; padding: 0; width: 100%;
             overflow-x: hidden !important;
             overscroll-behavior-x: none !important;
             position: relative;
@@ -48,15 +46,9 @@
         }
 
         .container { 
-            width: 100%; 
-            max-width: 420px; 
-            margin: 0 auto;
-            min-height: 100vh; 
-            padding: 16px; 
-            padding-bottom: 30px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 14px; 
+            width: 100%; max-width: 420px; margin: 0 auto;
+            min-height: 100vh; padding: 16px; padding-bottom: 30px; 
+            display: flex; flex-direction: column; gap: 14px; 
         }
         
         .header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
@@ -78,7 +70,8 @@
 
         .section-title { font-size: 12px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; margin-top: 6px; letter-spacing: 0.5px; }
 
-        /* Request Cards */
+        /* Request Cards Feed */
+        #requests-container { display: flex; flex-direction: column; gap: 12px; }
         .request-card { background: var(--card-bg); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border-left: 4px solid var(--primary); }
         .req-header { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: bold; color: var(--primary); }
         .req-details { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
@@ -88,7 +81,7 @@
         .btn-accept { background: var(--success); color: white; border: none; border-radius: 10px; padding: 10px; font-weight: bold; font-size: 12px; cursor: pointer; text-align: center; }
         .btn-reject { background: var(--card-bg); color: var(--danger); border: 1px solid var(--danger); border-radius: 10px; padding: 10px; font-weight: bold; font-size: 12px; cursor: pointer; text-align: center; }
 
-        .no-request { text-align: center; color: var(--text-sub); font-size: 13px; padding: 30px; background: var(--card-bg); border-radius: 16px; }
+        .no-request { text-align: center; color: var(--text-sub); font-size: 13px; padding: 30px; background: var(--card-bg); border-radius: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
@@ -114,73 +107,106 @@
 
     <div class="section-title">📡 Live Ride & Delivery Requests</div>
 
-    <!-- Requests Feed Container -->
+    <!-- Dynamic Requests Feed Container -->
     <div id="requests-container">
-        <!-- Sample Request Card (Will be dynamically loaded from database later) -->
-        <div class="request-card">
-            <div class="req-header">
-                <span>🛵 BIKE TAXI RIDE</span>
-                <span>Est. ₹65</span>
-            </div>
-            <div class="req-details">
-                <p><strong>Pickup:</strong> Station Road, Bhatpara</p>
-                <p><strong>Drop:</strong> Kankinara More</p>
-                <span>Requested 2 mins ago</span>
-            </div>
-            <div class="action-row">
-                <button class="btn-reject" onclick="handleAction('Rejected')">Reject</button>
-                <button class="btn-accept" onclick="handleAction('Accepted')">Accept Ride</button>
-            </div>
-        </div>
-
-        <div class="request-card" style="border-left-color: #f59e0b;">
-            <div class="req-header" style="color: #f59e0b;">
-                <span>📦 PARCEL DELIVERY</span>
-                <span>Est. ₹90</span>
-            </div>
-            <div class="req-details">
-                <p><strong>Item:</strong> Medicine Box</p>
-                <p><strong>Route:</strong> Ward 14 to Hospital Gate</p>
-                <span>Requested 5 mins ago</span>
-            </div>
-            <div class="action-row">
-                <button class="btn-reject" onclick="handleAction('Rejected')">Reject</button>
-                <button class="btn-accept" onclick="handleAction('Accepted')">Accept Order</button>
-            </div>
-        </div>
+        <div class="no-request">You are offline or no active requests found. Turn on duty to receive live orders.</div>
     </div>
 </div>
 
 <script>
+    // Supabase Configuration (Apna URL aur Key yahan enter karein)
+    const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     function toggleDuty() {
         const isOnline = document.getElementById("duty-toggle").checked;
         const dutyText = document.getElementById("duty-text");
         if (isOnline) {
             dutyText.innerText = "You are Online & Receiving Requests";
             dutyText.style.color = "var(--success)";
+            fetchPendingRequests();
         } else {
             dutyText.innerText = "You are currently Offline";
             dutyText.style.color = "var(--text-sub)";
+            document.getElementById("requests-container").innerHTML = `<div class="no-request">You are currently offline.</div>`;
         }
         localStorage.setItem("citypulse_partner_online", isOnline ? "true" : "false");
     }
 
-    function handleAction(status) {
-        if (status === 'Accepted') {
-            alert("Request Accepted! Navigating to pickup location...");
+    async function fetchPendingRequests() {
+        const isOnline = document.getElementById("duty-toggle").checked;
+        if (!isOnline) return;
+
+        const { data, error } = await supabase
+            .from('deliveries')
+            .select('*')
+            .eq('status', 'Pending')
+            .order('created_at', { ascending: false });
+
+        const container = document.getElementById("requests-container");
+
+        if (error || !data || data.length === 0) {
+            container.innerHTML = `<div class="no-request">Waiting for incoming customer requests...</div>`;
+            return;
+        }
+
+        container.innerHTML = "";
+        data.forEach(req => {
+            container.innerHTML += `
+                <div class="request-card" id="req-${req.id}">
+                    <div class="req-header">
+                        <span>${req.type.toUpperCase()}</span>
+                        <span>Status: Pending</span>
+                    </div>
+                    <div class="req-details">
+                        <p><strong>Pickup:</strong> ${req.pickup}</p>
+                        <p><strong>Drop:</strong> ${req.drop_loc}</p>
+                        <p><strong>Details:</strong> ${req.details}</p>
+                        <span>Requested on: ${new Date(req.created_at).toLocaleTimeString()}</span>
+                    </div>
+                    <div class="action-row">
+                        <button class="btn-reject" onclick="updateStatus('${req.id}', 'Rejected')">Reject</button>
+                        <button class="btn-accept" onclick="updateStatus('${req.id}', 'Accepted')">Accept Order</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    async function updateStatus(id, newStatus) {
+        const { error } = await supabase
+            .from('deliveries')
+            .update({ status: newStatus })
+            .eq('id', id);
+
+        if (error) {
+            alert("Failed to update status: " + error.message);
         } else {
-            alert("Request ignored.");
+            alert("Order " + newStatus + " successfully!");
+            fetchPendingRequests();
         }
     }
 
+    // Realtime Listener to auto-fetch new requests when customer books
+    supabase
+        .channel('public:deliveries')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'deliveries' }, payload => {
+            if (document.getElementById("duty-toggle").checked) {
+                fetchPendingRequests();
+            }
+        })
+        .subscribe();
+
+    // Init on load
     (function initPartner() {
         if (localStorage.getItem("citypulse_partner_online") === "true") {
             document.getElementById("duty-toggle").checked = true;
             document.getElementById("duty-text").innerText = "You are Online & Receiving Requests";
             document.getElementById("duty-text").style.color = "var(--success)";
+            fetchPendingRequests();
         }
     })();
 </script>
 </body>
 </html>
-
