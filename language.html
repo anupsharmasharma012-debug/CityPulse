@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityPulse - Select Language</title>
+    <style>
+        :root { --bg-color: #f0f4f8; --card-bg: #ffffff; --text-main: #1e293b; --primary: #0284c7; --border: #cbd5e1; }
+        body.dark-theme { --bg-color: #0f172a; --card-bg: #1e293b; --text-main: #f8fafc; --primary: #38bdf8; --border: #334155; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); display: flex; justify-content: center; color: var(--text-main); }
+        
+        .page-container { width: 100%; max-width: 420px; min-height: 100vh; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+        
+        .header { display: flex; align-items: center; gap: 15px; font-size: 18px; font-weight: bold; }
+        .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; }
+
+        /* Search Bar */
+        .search-box { position: relative; width: 100%; }
+        .search-input { width: 100%; padding: 12px 16px 12px 40px; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main); font-size: 14px; outline: none; }
+        .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #64748b; }
+
+        .section-title { font-size: 12px; font-weight: bold; color: #64748b; text-transform: uppercase; margin-top: 10px; }
+
+        /* Language Grid / List */
+        .lang-list { display: flex; flex-direction: column; gap: 8px; }
+        .lang-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
+        .lang-card:hover { border-color: var(--primary); }
+        .lang-card.selected { border: 2px solid var(--primary); background: rgba(2, 132, 199, 0.05); }
+        
+        .lang-name { font-size: 15px; font-weight: 600; }
+        .lang-native { font-size: 13px; color: #64748b; }
+        .check-mark { color: var(--primary); font-size: 16px; display: none; }
+        .lang-card.selected .check-mark { display: block; }
+    </style>
+</head>
+<body>
+
+<div class="page-container">
+    <div class="header">
+        <button class="back-btn" onclick="goBack()">←</button>
+        <h1>Select Language / भाषा चुनें</h1>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="langSearch" class="search-input" placeholder="Search language..." onkeyup="filterLanguages()">
+    </div>
+
+    <div class="section-title">Suggested / Popular</div>
+    
+    <!-- Language Options List -->
+    <div class="lang-list" id="langContainer">
+        
+        <div class="lang-card" onclick="selectLanguage('bn', 'বাংলা')">
+            <div>
+                <div class="lang-name">Bengali</div>
+                <div class="lang-native">বাংলা</div>
+            </div>
+            <div class="check-mark">✓</div>
+        </div>
+
+        <div class="lang-card" onclick="selectLanguage('hi', 'हिंदी')">
+            <div>
+                <div class="lang-name">Hindi</div>
+                <div class="lang-native">हिंदी</div>
+            </div>
+            <div class="check-mark">✓</div>
+        </div>
+
+        <div class="lang-card selected" onclick="selectLanguage('en', 'English')">
+            <div>
+                <div class="lang-name">English</div>
+                <div class="lang-native">English</div>
+            </div>
+            <div class="check-mark">✓</div>
+        </div>
+
+        <div class="section-title" style="margin-top: 10px;">Other Regional & National Languages</div>
+
+        <div class="lang-card" onclick="selectLanguage('as', 'অসমীয়া')">
+            <div>
+                <div class="lang-name">Assamese</div>
+                <div class="lang-native">অসমীয়া</div>
+            </div>
+            <div class="check-mark">✓</div>
+        </div>
+
+        <div class="lang-card" onclick="selectLanguage('gu', 'ગુજરાતી')">
+            <div>
+                <div class="lang-name">Gujarati</div>
+                <div class="lang-native">ગુજરાતી</div>
+            </div>
+            <div class="check-mark">✓</div>
+        </div>
+
+        <div class="lang-card" onclick="selectLanguage('mr', 'मराठी')">
+            <div>
+                <div class="lang-name">Marathi</div>
+                <div class="lang-native">मराठी</div>
+            </div>
+            <div class="check-mark">✓</div>
+        </div>
+
+        <div class="lang-card" onclick="selectLanguage('ta', 'தமிழ்')">
+            <div>
+                <div class="lang-name">Tamil</div>
+                <div class="lang-native">தமிழ்</div>
+            </div>
+            <div class="check-mark">✓</div>
+        </div>
+
+        <div class="lang-card" onclick="selectLanguage('te', 'తెలుగు')">
+            <div>
+                <div class="lang-name">Telugu</div>
+                <div class="lang-native">తెలుగు</div>
+            </div>
+            <div class="check-mark">✓</div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
+
+    // Highlight already saved language on load
+    window.onload = function() {
+        const savedLang = localStorage.getItem("citypulse_lang") || "en";
+        const cards = document.querySelectorAll('.lang-card');
+        cards.forEach(card => {
+            card.classList.remove('selected');
+            if(card.getAttribute('onclick').includes(savedLang)) {
+                card.classList.add('selected');
+            }
+        });
+    }
+
+    function selectLanguage(code, name) {
+        localStorage.setItem("citypulse_lang", code);
+        
+        // Visual update
+        const cards = document.querySelectorAll('.lang-card');
+        cards.forEach(card => card.classList.remove('selected'));
+        event.currentTarget.classList.add('selected');
+
+        setTimeout(() => {
+            // Check kahan se aaya hai user (login se ya index se)
+            const ref = localStorage.getItem("citypulse_lang_ref");
+            if(ref === "login") {
+                localStorage.removeItem("citypulse_lang_ref");
+                window.location.href = 'index.html'; // Login ke baad direct dashboard
+            } else {
+                history.back(); // Normal flow mein wapas purane page par
+            }
+        }, 300);
+    }
+
+    function goBack() {
+        const ref = localStorage.getItem("citypulse_lang_ref");
+        if(ref === "login") {
+            window.location.href = 'login.html';
+        } else {
+            history.back();
+        }
+    }
+
+    // Search / Filter Functionality
+    function filterLanguages() {
+        let input = document.getElementById('langSearch').value.toLowerCase();
+        let cards = document.getElementById('langContainer').getElementsByClassName('lang-card');
+        
+        for (let i = 0; i < cards.length; i++) {
+            let text = cards[i].innerText.toLowerCase();
+            if (text.includes(input)) {
+                cards[i].style.display = "flex";
+            } else {
+                cards[i].style.display = "none";
+            }
+        }
+    }
+</script>
+</body>
+</html>
