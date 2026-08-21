@@ -334,7 +334,7 @@
 
     <!-- Top Header -->
     <div class="top-header">
-        <div class="brand-title">CityPulse</div>
+        <div class="brand-title" data-i18n="app_title">CityPulse</div>
         <button class="lang-quick-btn" onclick="window.location.href='language.html'">🌐 Language</button>
     </div>
 
@@ -434,6 +434,7 @@
     let currentLat = null;
     let currentLon = null;
 
+    // Fixed Session Check to prevent infinite redirect loop
     (async function checkSession() {
         if (localStorage.getItem("citypulse_theme") === "dark") {
             document.body.classList.add("dark-theme");
@@ -443,30 +444,21 @@
         const isGuest = localStorage.getItem("citypulse_is_guest") === "true";
         const savedUser = localStorage.getItem("citypulse_saved_user");
 
+        if (isCallback) return;
+
+        // Agar user pehle se logged in hai ya guest hai, toh redirect mat karo
         if (isGuest || savedUser) {
             return; 
         }
 
-        if (!isCallback && !sessionStorage.getItem("checked_session")) {
-            sessionStorage.setItem("checked_session", "true");
+        try {
             const { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session && !isCallback) {
+            if (!session) {
                 window.location.replace("login.html");
             }
+        } catch (err) {
+            console.error("Session check error:", err);
         }
-
-        supabaseClient.auth.onAuthStateChange((event, session) => {
-            if (session && session.user) {
-                localStorage.setItem("citypulse_saved_user", session.user.email || session.user.phone || "Active Resident");
-                localStorage.removeItem("citypulse_is_guest");
-                if (isCallback) {
-                    window.history.replaceState(null, null, window.location.pathname);
-                }
-            } else if (event === 'SIGNED_OUT') {
-                localStorage.clear();
-                window.location.replace("login.html");
-            }
-        });
     })();
 
     function updateDateWidget() {
@@ -521,3 +513,6 @@
 </script>
 </body>
 </html>
+```[cite: 1]
+
+Ise update karne ke baad check kijiye, ab page bar-bar login ya language page par redirect nahi hoga[cite: 1]!
