@@ -2,7 +2,7 @@
 ================================================================================
   FILE NAME: language.html
   PROJECT  : CityPulse
-  PURPOSE  : Language Selection Hub with Search & Persistence
+  PURPOSE  : Language Selection Hub with Search & Secure Redirects
 ================================================================================
 -->
 
@@ -77,7 +77,7 @@
             <div class="check-mark">✓</div>
         </div>
 
-        <div class="lang-card" onclick="selectLanguage('en', 'English')">
+        <div class="lang-card selected" onclick="selectLanguage('en', 'English')">
             <div>
                 <div class="lang-name">English</div>
                 <div class="lang-native">English</div>
@@ -157,9 +157,9 @@
             const ref = localStorage.getItem("citypulse_lang_ref");
             if(ref === "login") {
                 localStorage.removeItem("citypulse_lang_ref");
-                window.location.href = 'index.html'; 
+                window.location.href = 'login.html'; // Wapas login page par bhejega securely
             } else {
-                history.back(); 
+                history.back(); // Normal flow mein wapas purane page par
             }
         }, 300);
     }
