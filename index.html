@@ -335,7 +335,7 @@
     <!-- Top Header -->
     <div class="top-header">
         <div class="brand-title" data-i18n="app_title">CityPulse</div>
-        <button class="lang-quick-btn" onclick="window.location.href='language.html'" data-i18n="btn_language">🌐 Language</button>
+        <button class="lang-quick-btn" onclick="window.location.href='language.html'">🌐 Language</button>
     </div>
 
     <!-- Quick Actions -->
@@ -349,7 +349,7 @@
     <!-- Info Widgets -->
     <div class="info-grid">
         <div class="info-card" id="weather-card" onclick="fetchLiveWeather()">
-            <div class="title" id="city-name-display" data-i18n="weather_detecting">📍 Detecting...</div>
+            <div class="title" id="city-name-display">📍 Detecting...</div>
             <div class="subtext" id="weather-temp-display">⛅ Loading...</div>
         </div>
         <div class="info-card">
@@ -358,7 +358,7 @@
         </div>
         <div class="info-card" onclick="window.location.href='profile.html'">
             <div class="icon">👤</div>
-            <div class="title" data-i18n="profile_title">Profile</div>
+            <div class="title">Profile</div>
         </div>
     </div>
 
@@ -367,12 +367,12 @@
         
         <!-- 1. Compact Emergency SOS Box -->
         <div class="action-box sos-box" onclick="window.location.href='emergency.html'">
-            <h4 data-i18n="sos_emergency">🚨 SOS EMERGENCY</h4>
+            <h4>🚨 SOS EMERGENCY</h4>
         </div>
 
         <!-- 2. Compact Citizen Voice Box -->
         <div class="action-box citizen-box" onclick="window.location.href='complaints.html'">
-            <h4 data-i18n="citizen_voice">📢 CITIZEN VOICE</h4>
+            <h4>📢 CITIZEN VOICE</h4>
         </div>
 
     </div>
@@ -427,29 +427,6 @@
 </div>
 
 <script>
-    // --- i18n Translation Logic with absolute relative path ---
-    async function applyTranslations() {
-        const currentLang = localStorage.getItem('selectedLanguage') || 'en';
-        try {
-            const response = await fetch(`./locales/${currentLang}.json`);
-            if (!response.ok) throw new Error("Could not load translation file");
-            
-            const translations = await response.json();
-            
-            document.querySelectorAll('[data-i18n]').forEach(element => {
-                const key = element.getAttribute('data-i18n');
-                if (translations[key]) {
-                    element.innerText = translations[key];
-                }
-            });
-        } catch (error) {
-            console.error("Translation error:", error);
-        }
-    }
-
-    // Page load hote hi run karega
-    window.addEventListener('DOMContentLoaded', applyTranslations);
-
     const SUPABASE_URL = "https://qfefkyrwxdhdxyajutst.supabase.co";
     const SUPABASE_KEY = "sb_publishable_mOjSpSn12VMJMf-0WWcDFg_h0u-YL5c";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -457,6 +434,7 @@
     let currentLat = null;
     let currentLon = null;
 
+    // Fixed Session Check to prevent infinite redirect loop
     (async function checkSession() {
         if (localStorage.getItem("citypulse_theme") === "dark") {
             document.body.classList.add("dark-theme");
@@ -466,30 +444,21 @@
         const isGuest = localStorage.getItem("citypulse_is_guest") === "true";
         const savedUser = localStorage.getItem("citypulse_saved_user");
 
+        if (isCallback) return;
+
+        // Agar user pehle se logged in hai ya guest hai, toh redirect mat karo
         if (isGuest || savedUser) {
             return; 
         }
 
-        if (!isCallback && !sessionStorage.getItem("checked_session")) {
-            sessionStorage.setItem("checked_session", "true");
+        try {
             const { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session && !isCallback) {
+            if (!session) {
                 window.location.replace("login.html");
             }
+        } catch (err) {
+            console.error("Session check error:", err);
         }
-
-        supabaseClient.auth.onAuthStateChange((event, session) => {
-            if (session && session.user) {
-                localStorage.setItem("citypulse_saved_user", session.user.email || session.user.phone || "Active Resident");
-                localStorage.removeItem("citypulse_is_guest");
-                if (isCallback) {
-                    window.history.replaceState(null, null, window.location.pathname);
-                }
-            } else if (event === 'SIGNED_OUT') {
-                localStorage.clear();
-                window.location.replace("login.html");
-            }
-        });
     })();
 
     function updateDateWidget() {
@@ -545,3 +514,5 @@
 </body>
 </html>
 ```[cite: 1]
+
+Ise update karne ke baad check kijiye, ab page bar-bar login ya language page par redirect nahi hoga[cite: 1]!
