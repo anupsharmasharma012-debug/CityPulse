@@ -2,7 +2,7 @@
 ================================================================================
   FILE NAME: delivery.html
   PROJECT  : CityPulse
-  PURPOSE  : CityRide (Passenger) & CityParcel (Delivery) Booking Interface
+  PURPOSE  : Customer Ride & Parcel Booking with Supabase Backend Integration
 ================================================================================
 -->
 
@@ -23,6 +23,7 @@
             --primary: #007a99;
             --primary-dark: #005f75;
             --danger: #ef4444;
+            --success: #10b981;
         }
 
         body.dark-theme {
@@ -38,9 +39,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
         html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
+            margin: 0; padding: 0; width: 100%;
             overflow-x: hidden !important;
             overscroll-behavior-x: none !important;
             position: relative;
@@ -50,15 +49,9 @@
         }
 
         .container { 
-            width: 100%; 
-            max-width: 420px; 
-            margin: 0 auto;
-            min-height: 100vh; 
-            padding: 16px; 
-            padding-bottom: 85px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 14px; 
+            width: 100%; max-width: 420px; margin: 0 auto;
+            min-height: 100vh; padding: 16px; padding-bottom: 85px; 
+            display: flex; flex-direction: column; gap: 14px; 
         }
         
         .header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
@@ -77,7 +70,7 @@
         .input-field { width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-main); font-size: 13px; outline: none; }
         .input-field:focus { border-color: var(--primary); }
 
-        /* Vehicle / Package Options */
+        /* Options Grid */
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
         .option-box { border: 1.5px solid var(--border-color); border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; background: var(--bg-color); transition: 0.2s; }
         .option-box.selected { border-color: var(--primary); background: rgba(0, 122, 153, 0.05); }
@@ -87,12 +80,13 @@
         .submit-btn { background: var(--primary); color: white; border: none; border-radius: 12px; padding: 13px; font-weight: bold; font-size: 14px; cursor: pointer; text-align: center; width: 100%; margin-top: 6px; }
         .submit-btn:active { background: var(--primary-dark); }
 
+        /* Status Alert Box */
+        .status-box { padding: 12px; border-radius: 10px; font-size: 12px; font-weight: 600; text-align: center; background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid var(--success); }
+
         /* Bottom Nav */
         .bottom-nav { 
-            position: fixed; 
-            bottom: 0; left: 50%; transform: translateX(-50%); 
-            width: 100%; max-width: 420px; height: 65px; 
-            background: #0f3443; 
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
+            width: 100%; max-width: 420px; height: 65px; background: #0f3443; 
             display: grid; grid-template-columns: repeat(6, 1fr); align-items: center; 
             border-top: 1px solid rgba(255,255,255,0.1); z-index: 9999; 
             box-shadow: 0 -3px 10px rgba(0,0,0,0.25); 
@@ -123,7 +117,7 @@
     <div id="form-ride" class="form-card">
         <div class="input-group">
             <label>📍 Pickup Location</label>
-            <input type="text" id="ride-pickup" class="input-field" placeholder="Enter pickup address or landmark">
+            <input type="text" id="ride-pickup" class="input-field" placeholder="Enter pickup address">
         </div>
         <div class="input-group">
             <label>🎯 Drop Location</label>
@@ -142,7 +136,7 @@
                 </div>
             </div>
         </div>
-        <button class="submit-btn" onclick="bookRide()">Find Driver Now</button>
+        <button class="submit-btn" id="ride-submit" onclick="bookRide()">Find Driver Now</button>
     </div>
 
     <!-- Parcel Delivery Form -->
@@ -157,10 +151,12 @@
         </div>
         <div class="input-group">
             <label>📦 Item Description</label>
-            <input type="text" id="parcel-item" class="input-field" placeholder="e.g., Documents, Food Box, Clothes">
+            <input type="text" id="parcel-item" class="input-field" placeholder="e.g., Documents, Food Box">
         </div>
-        <button class="submit-btn" onclick="bookParcel()">Dispatch Parcel</button>
+        <button class="submit-btn" id="parcel-submit" onclick="bookParcel()">Dispatch Parcel</button>
     </div>
+
+    <div id="status-msg" class="status-box hidden">Request sent successfully! Searching for nearby partners...</div>
 </div>
 
 <!-- Bottom Navigation -->
@@ -174,6 +170,11 @@
 </div>
 
 <script>
+    // Supabase Configuration (Apna URL aur Key yahan enter karein)
+    const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     let selectedVehicleType = "bike";
 
     function switchMode(mode) {
@@ -202,7 +203,7 @@
         document.getElementById("veh-" + type).classList.add("selected");
     }
 
-    function bookRide() {
+    async function bookRide() {
         const pickup = document.getElementById("ride-pickup").value.trim();
         const drop = document.getElementById("ride-drop").value.trim();
 
@@ -211,11 +212,32 @@
             return;
         }
 
-        alert(`Searching for nearby ${selectedVehicleType.toUpperCase()} drivers for your ride from "${pickup}" to "${drop}"...`);
-        // Yahan aage hum Supabase database mein booking insert karne ka code add karenge.
+        const btn = document.getElementById("ride-submit");
+        btn.innerText = "Connecting to Partners...";
+        btn.disabled = true;
+
+        const { data, error } = await supabase
+            .from('deliveries')
+            .insert([{
+                type: 'Ride (' + selectedVehicleType.toUpperCase() + ')',
+                pickup: pickup,
+                drop_loc: drop,
+                details: 'Vehicle: ' + selectedVehicleType,
+                status: 'Pending'
+            }]);
+
+        if (error) {
+            alert("Error booking ride: " + error.message);
+            btn.innerText = "Find Driver Now";
+            btn.disabled = false;
+        } else {
+            document.getElementById("status-msg").classList.remove("hidden");
+            document.getElementById("status-msg").innerText = "Ride request broadcasted successfully! Driver will accept shortly.";
+            btn.innerText = "Request Placed";
+        }
     }
 
-    function bookParcel() {
+    async function bookParcel() {
         const pickup = document.getElementById("parcel-pickup").value.trim();
         const drop = document.getElementById("parcel-drop").value.trim();
         const item = document.getElementById("parcel-item").value.trim();
@@ -225,10 +247,30 @@
             return;
         }
 
-        alert(`Parcel dispatch request created successfully for "${item}"! Finding delivery partner...`);
-        // Yahan aage hum Supabase database mein parcel order insert karenge.
+        const btn = document.getElementById("parcel-submit");
+        btn.innerText = "Dispatching...";
+        btn.disabled = true;
+
+        const { data, error } = await supabase
+            .from('deliveries')
+            .insert([{
+                type: 'Parcel Delivery',
+                pickup: pickup,
+                drop_loc: drop,
+                details: 'Item: ' + item,
+                status: 'Pending'
+            }]);
+
+        if (error) {
+            alert("Error dispatching parcel: " + error.message);
+            btn.innerText = "Dispatch Parcel";
+            btn.disabled = false;
+        } else {
+            document.getElementById("status-msg").classList.remove("hidden");
+            document.getElementById("status-msg").innerText = "Parcel order created successfully! Partner matching in progress.";
+            btn.innerText = "Order Dispatched";
+        }
     }
 </script>
 </body>
 </html>
-
