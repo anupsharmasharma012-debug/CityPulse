@@ -1,0 +1,234 @@
+<!-- 
+================================================================================
+  FILE NAME: delivery.html
+  PROJECT  : CityPulse
+  PURPOSE  : CityRide (Passenger) & CityParcel (Delivery) Booking Interface
+================================================================================
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityPulse - Ride & Delivery</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+            --primary: #007a99;
+            --primary-dark: #005f75;
+            --danger: #ef4444;
+        }
+
+        body.dark-theme {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --border-color: #334155;
+            --primary: #38bdf8;
+            --primary-dark: #0ea5e9;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            overflow-x: hidden !important;
+            overscroll-behavior-x: none !important;
+            position: relative;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: background-color 0.2s;
+        }
+
+        .container { 
+            width: 100%; 
+            max-width: 420px; 
+            margin: 0 auto;
+            min-height: 100vh; 
+            padding: 16px; 
+            padding-bottom: 85px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 14px; 
+        }
+        
+        .header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
+        .header h1 { font-size: 18px; font-weight: 700; }
+        .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; padding: 4px; }
+
+        /* Mode Selector Tabs */
+        .tab-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: var(--card-bg); padding: 4px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+        .tab-btn { padding: 10px; text-align: center; font-size: 13px; font-weight: 600; border: none; background: transparent; color: var(--text-sub); cursor: pointer; border-radius: 10px; transition: 0.2s; }
+        .tab-btn.active { background: var(--primary); color: white; }
+
+        /* Form Card */
+        .form-card { background: var(--card-bg); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+        .input-group { display: flex; flex-direction: column; gap: 5px; }
+        .input-group label { font-size: 12px; font-weight: 600; color: var(--text-sub); }
+        .input-field { width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-main); font-size: 13px; outline: none; }
+        .input-field:focus { border-color: var(--primary); }
+
+        /* Vehicle / Package Options */
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
+        .option-box { border: 1.5px solid var(--border-color); border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; background: var(--bg-color); transition: 0.2s; }
+        .option-box.selected { border-color: var(--primary); background: rgba(0, 122, 153, 0.05); }
+        .option-box h3 { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+        .option-box p { font-size: 11px; color: var(--text-sub); }
+
+        .submit-btn { background: var(--primary); color: white; border: none; border-radius: 12px; padding: 13px; font-weight: bold; font-size: 14px; cursor: pointer; text-align: center; width: 100%; margin-top: 6px; }
+        .submit-btn:active { background: var(--primary-dark); }
+
+        /* Bottom Nav */
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 0; left: 50%; transform: translateX(-50%); 
+            width: 100%; max-width: 420px; height: 65px; 
+            background: #0f3443; 
+            display: grid; grid-template-columns: repeat(6, 1fr); align-items: center; 
+            border-top: 1px solid rgba(255,255,255,0.1); z-index: 9999; 
+            box-shadow: 0 -3px 10px rgba(0,0,0,0.25); 
+        }
+        .nav-item { text-align: center; color: #b0c4de; font-size: 9px; font-weight: 600; cursor: pointer; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-item.active { color: #00e5ff; }
+        .nav-item .nav-icon { font-size: 16px; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <button class="back-btn" onclick="window.location.href='index.html'">←</button>
+        <h1>CityMobility & Deliveries</h1>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <!-- Mode Switch Tabs -->
+    <div class="tab-row">
+        <button class="tab-btn active" id="tab-ride" onclick="switchMode('ride')">🛵 Ride Booking</button>
+        <button class="tab-btn" id="tab-parcel" onclick="switchMode('parcel')">📦 Send Parcel</button>
+    </div>
+
+    <!-- Ride Booking Form -->
+    <div id="form-ride" class="form-card">
+        <div class="input-group">
+            <label>📍 Pickup Location</label>
+            <input type="text" id="ride-pickup" class="input-field" placeholder="Enter pickup address or landmark">
+        </div>
+        <div class="input-group">
+            <label>🎯 Drop Location</label>
+            <input type="text" id="ride-drop" class="input-field" placeholder="Enter destination address">
+        </div>
+        <div class="input-group">
+            <label>Select Vehicle Type</label>
+            <div class="options-grid">
+                <div class="option-box selected" id="veh-bike" onclick="selectVehicle('bike')">
+                    <h3>Bike Taxi</h3>
+                    <p>Fast & Affordable</p>
+                </div>
+                <div class="option-box" id="veh-auto" onclick="selectVehicle('auto')">
+                    <h3>Auto Rickshaw</h3>
+                    <p>Comfortable (Up to 3)</p>
+                </div>
+            </div>
+        </div>
+        <button class="submit-btn" onclick="bookRide()">Find Driver Now</button>
+    </div>
+
+    <!-- Parcel Delivery Form -->
+    <div id="form-parcel" class="form-card hidden">
+        <div class="input-group">
+            <label>📤 Sender Pickup Address</label>
+            <input type="text" id="parcel-pickup" class="input-field" placeholder="From where to collect?">
+        </div>
+        <div class="input-group">
+            <label>📥 Receiver Delivery Address</label>
+            <input type="text" id="parcel-drop" class="input-field" placeholder="Where to deliver?">
+        </div>
+        <div class="input-group">
+            <label>📦 Item Description</label>
+            <input type="text" id="parcel-item" class="input-field" placeholder="e.g., Documents, Food Box, Clothes">
+        </div>
+        <button class="submit-btn" onclick="bookParcel()">Dispatch Parcel</button>
+    </div>
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item"><div class="nav-icon">🏠</div><span>Home</span></a>
+    <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><span>Profile</span></a>
+    <a href="search.html" class="nav-item"><div class="nav-icon">🔍</div><span>Search</span></a>
+    <a href="category.html" class="nav-item"><div class="nav-icon">📂</div><span>Category</span></a>
+    <a href="notifications.html" class="nav-item"><div class="nav-icon">🔔</div><span>Alerts</span></a>
+    <a href="menu.html" class="nav-item"><div class="nav-icon">☰</div><span>Menu</span></a>
+</div>
+
+<script>
+    let selectedVehicleType = "bike";
+
+    function switchMode(mode) {
+        const tabRide = document.getElementById("tab-ride");
+        const tabParcel = document.getElementById("tab-parcel");
+        const formRide = document.getElementById("form-ride");
+        const formParcel = document.getElementById("form-parcel");
+
+        if (mode === 'ride') {
+            tabRide.classList.add("active");
+            tabParcel.classList.remove("active");
+            formRide.classList.remove("hidden");
+            formParcel.classList.add("hidden");
+        } else {
+            tabParcel.classList.add("active");
+            tabRide.classList.remove("active");
+            formParcel.classList.remove("hidden");
+            formRide.classList.add("hidden");
+        }
+    }
+
+    function selectVehicle(type) {
+        selectedVehicleType = type;
+        document.getElementById("veh-bike").classList.remove("selected");
+        document.getElementById("veh-auto").classList.remove("selected");
+        document.getElementById("veh-" + type).classList.add("selected");
+    }
+
+    function bookRide() {
+        const pickup = document.getElementById("ride-pickup").value.trim();
+        const drop = document.getElementById("ride-drop").value.trim();
+
+        if (!pickup || !drop) {
+            alert("Please enter both pickup and drop locations!");
+            return;
+        }
+
+        alert(`Searching for nearby ${selectedVehicleType.toUpperCase()} drivers for your ride from "${pickup}" to "${drop}"...`);
+        // Yahan aage hum Supabase database mein booking insert karne ka code add karenge.
+    }
+
+    function bookParcel() {
+        const pickup = document.getElementById("parcel-pickup").value.trim();
+        const drop = document.getElementById("parcel-drop").value.trim();
+        const item = document.getElementById("parcel-item").value.trim();
+
+        if (!pickup || !drop || !item) {
+            alert("Please fill in all parcel details!");
+            return;
+        }
+
+        alert(`Parcel dispatch request created successfully for "${item}"! Finding delivery partner...`);
+        // Yahan aage hum Supabase database mein parcel order insert karenge.
+    }
+</script>
+</body>
+</html>
+
