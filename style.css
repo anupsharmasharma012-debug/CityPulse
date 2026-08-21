@@ -1,0 +1,45 @@
+/* ==========================================
+  FILE: style.css
+  PURPOSE: Shared Global Styles & Bottom Nav
+=========================================== */
+:root {
+    --bg-color: #f0f4f8;
+    --app-bg: linear-gradient(180deg, #1b4b60, #225c75, #2c6f8d);
+    --card-bg: #ffffff;
+    --text-main: #1e3d4f;
+    --nav-bg: #0f3443;
+    --nav-text: #b0c4de;
+    --nav-active: #00e5ff;
+}
+
+body.dark-theme {
+    --bg-color: #0b1c24;
+    --app-bg: linear-gradient(180deg, #0b1c24, #122c38, #183a4a);
+    --card-bg: #1e293b;
+    --text-main: #f8fafc;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { background-color: var(--bg-color); display: flex; justify-content: center; color: var(--text-main); }
+
+.app-container {
+    width: 100%; max-width: 420px; background: var(--app-bg);
+    min-height: 100vh; padding: 16px; padding-bottom: 85px; 
+    display: flex; flex-direction: column; gap: 14px; position: relative;
+}
+
+.page-container {
+    width: 100%; max-width: 420px; background: var(--bg-color);
+    min-height: 100vh; padding: 16px; padding-bottom: 85px;
+}
+
+/* 6-Button Bottom Navigation */
+.bottom-nav {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 420px; height: 65px; background: var(--nav-bg);
+    display: grid; grid-template-columns: repeat(6, 1fr); align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.1); z-index: 9999; box-shadow: 0 -3px 10px rgba(0,0,0,0.25);
+}
+.nav-item { text-align: center; color: var(--nav-text); font-size: 9px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none;}
+.nav-item.active { color: var(--nav-active); }
+.nav-item .nav-icon { font-size: 16px; }
