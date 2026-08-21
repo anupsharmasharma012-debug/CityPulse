@@ -334,7 +334,7 @@
 
     <!-- Top Header -->
     <div class="top-header">
-        <div class="brand-title" data-i18n="app_title">CityPulse</div>
+        <div class="brand-title">CityPulse</div>
         <button class="lang-quick-btn" onclick="window.location.href='language.html'">🌐 Language</button>
     </div>
 
@@ -434,7 +434,7 @@
     let currentLat = null;
     let currentLon = null;
 
-    // Fixed Session Check to prevent infinite redirect loop
+    // Stable session check to prevent loops
     (async function checkSession() {
         if (localStorage.getItem("citypulse_theme") === "dark") {
             document.body.classList.add("dark-theme");
@@ -444,10 +444,7 @@
         const isGuest = localStorage.getItem("citypulse_is_guest") === "true";
         const savedUser = localStorage.getItem("citypulse_saved_user");
 
-        if (isCallback) return;
-
-        // Agar user pehle se logged in hai ya guest hai, toh redirect mat karo
-        if (isGuest || savedUser) {
+        if (isCallback || isGuest || savedUser) {
             return; 
         }
 
@@ -513,6 +510,4 @@
 </script>
 </body>
 </html>
-```[cite: 1]
-
-Ise update karne ke baad check kijiye, ab page bar-bar login ya language page par redirect nahi hoga[cite: 1]!
+```[cite: 2]
