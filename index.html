@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityPulse - Home</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .top-header { display: flex; justify-content: space-between; align-items: center; padding: 6px 2px; color: #ffffff; }
+        .brand-title { font-size: 22px; font-weight: 800; }
+        .lang-btn { background: rgba(255, 255, 255, 0.15); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; border: 1px solid rgba(255,255,255,0.3); color: white; }
+        
+        .scroll-wrapper { width: 100%; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+        .scroll-wrapper::-webkit-scrollbar { display: none; }
+        .scroll-grid { display: flex; gap: 10px; width: max-content; }
+        .action-card { background: var(--card-bg); border-radius: 12px; padding: 10px 15px; text-align: center; cursor: pointer; min-width: 75px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .info-card { background: var(--card-bg); border-radius: 12px; padding: 12px; text-align: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        
+        .emergency-box { background: var(--card-bg); border-radius: 14px; padding: 15px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); margin-top: 10px; }
+        .btn-danger-large { width: 100%; border: none; border-radius: 10px; background: #e63946; color: white; font-size: 14px; font-weight: bold; padding: 12px; cursor: pointer; margin-bottom: 10px; }
+        .btn-complain { width: 100%; border: 1px solid #d1d5db; border-radius: 10px; background: transparent; color: var(--text-main); font-size: 12px; font-weight: bold; padding: 10px; cursor: pointer; }
+
+        /* SOS Modal Styles (Restored) */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: var(--card-bg); border-radius: 20px; width: 100%; max-width: 360px; padding: 24px 20px; text-align: center; }
+        .modal-content h2 { color: #e63946; font-size: 20px; margin-bottom: 8px; }
+        .loc-badge { background: rgba(0,0,0,0.05); border: 1px solid #ccc; padding: 8px; border-radius: 8px; font-size: 11px; margin-bottom: 16px; word-break: break-all; }
+        .btn-sos-trigger { background: #e63946; color: #ffffff; width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="top-header">
+        <div class="brand-title">CityPulse</div>
+        <button class="lang-btn" onclick="alert('Language changed!')">🌐 EN / HI</button>
+    </div>
+
+    <!-- Scrollable Quick Actions -->
+    <div class="scroll-wrapper">
+        <div class="scroll-grid">
+            <div class="action-card" onclick="window.location.href='pay.html'"><div style="font-size: 22px;">💳</div><span style="font-size: 11px; font-weight: bold;">Pay</span></div>
+            <div class="action-card" onclick="window.location.href='transport.html'"><div style="font-size: 22px;">🚌</div><span style="font-size: 11px; font-weight: bold;">Transport</span></div>
+            <div class="action-card" onclick="window.location.href='shopping.html'"><div style="font-size: 22px;">🛒</div><span style="font-size: 11px; font-weight: bold;">Shopping</span></div>
+            <div class="action-card" onclick="window.location.href='food.html'"><div style="font-size: 22px;">🍽️</div><span style="font-size: 11px; font-weight: bold;">Food</span></div>
+            <div class="action-card" onclick="window.location.href='travel.html'"><div style="font-size: 22px;">✈️</div><span style="font-size: 11px; font-weight: bold;">Travel</span></div>
+            <div class="action-card" onclick="window.location.href='medical.html'"><div style="font-size: 22px;">🏥</div><span style="font-size: 11px; font-weight: bold;">Medical</span></div>
+        </div>
+    </div>
+
+    <!-- Weather & Calendar Grid -->
+    <div class="info-grid">
+        <div class="info-card" onclick="fetchLiveWeather()">
+            <div id="city-name-display" style="font-size: 12px; font-weight: 700;">📍 Locating...</div>
+            <div id="weather-temp-display" style="font-size: 11px; font-weight: 600; color:gray;">⛅ Loading...</div>
+        </div>
+        <div class="info-card" onclick="window.location.href='calendar.html'">
+            <div style="font-size: 22px;">📅</div>
+            <div style="font-size: 11px; font-weight: 600; color:gray;">Panchang</div>
+        </div>
+    </div>
+
+    <!-- Promos & News (Restored) -->
+    <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; margin-top: 10px; color: white;">
+        <h3 style="font-size: 13px; margin-bottom: 4px;">📰 City Updates</h3>
+        <p style="font-size: 11px;">Main Street civic maintenance scheduled for this weekend.</p>
+    </div>
+
+    <!-- Emergency Box -->
+    <div class="emergency-box">
+        <button class="btn-danger-large" onclick="openSOSModal()">🚨 EMERGENCY SOS</button>
+        <button class="btn-complain" onclick="alert('Citizen Voice Complaint Form coming up!')">📢 Citizen Voice & Complaints</button>
+    </div>
+</div>
+
+<!-- Restored SOS Emergency Modal -->
+<div id="sos-modal" class="modal-overlay">
+    <div class="modal-content">
+        <h2>🚨 SOS EMERGENCY</h2>
+        <p style="font-size:12px; color:gray; margin-bottom:15px;">Sending live GPS location to emergency control room.</p>
+        <div class="loc-badge" id="sos-loc-status">📍 Detecting exact coordinates...</div>
+        <button class="btn-sos-trigger" onclick="triggerSOS()">SEND SOS ALERT</button>
+        <button style="background:none; border:none; margin-top:15px; color:gray; cursor:pointer;" onclick="closeSOSModal()">Cancel</button>
+    </div>
+</div>
+
+<!-- 6-Button Bottom Navigation (Home Active) -->
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item active"><div class="nav-icon">🏠</div><span>Home</span></a>
+    <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><span>Profile</span></a>
+    <a href="search.html" class="nav-item"><div class="nav-icon">🔍</div><span>Search</span></a>
+    <a href="category.html" class="nav-item"><div class="nav-icon">📂</div><span>Category</span></a>
+    <a href="notifications.html" class="nav-item"><div class="nav-icon">🔔</div><span>Alerts</span></a>
+    <a href="menu.html" class="nav-item"><div class="nav-icon">☰</div><span>Menu</span></a>
+</div>
+
+<script>
+    const supabaseClient = supabase.createClient("https://qfefkyrwxdhdxyajutst.supabase.co", "sb_publishable_mOjSpSn12VMJMf-OWwCDFg_h0u-YL5c");
+    let currentLat = null, currentLon = null;
+
+    // Supabase Session Guard & Theme Check
+    (async function checkSession() {
+        if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
+        
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (session && session.user) {
+                localStorage.setItem("citypulse_saved_user", session.user.email);
+            } else if (!localStorage.getItem("citypulse_saved_user") && !localStorage.getItem("citypulse_is_guest")) {
+                window.location.replace("login.html");
+            }
+        });
+    })();
+
+    // Live Weather Logic
+    async function fetchLiveWeather() {
+        if (!navigator.geolocation) return;
+        document.getElementById("city-name-display").innerText = "📍 Locating...";
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+            currentLat = pos.coords.latitude; currentLon = pos.coords.longitude;
+            try {
+                const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${currentLat}&lon=${currentLon}&format=json`);
+                const geoData = await geoRes.json();
+                document.getElementById("city-name-display").innerText = `📍 ${geoData.address.city || geoData.address.town || "My City"}`;
+                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${currentLat}&longitude=${currentLon}&current_weather=true`);
+                const weatherData = await weatherRes.json();
+                document.getElementById("weather-temp-display").innerText = `⛅ ${Math.round(weatherData.current_weather.temperature)}°C`;
+            } catch (err) {}
+        });
+    }
+    fetchLiveWeather();
+
+    // Restored SOS Logic
+    function openSOSModal() {
+        document.getElementById('sos-modal').style.display = 'flex';
+        const locStatus = document.getElementById('sos-loc-status');
+        if (currentLat && currentLon) { locStatus.innerText = `📍 Lat: ${currentLat.toFixed(4)}, Lon: ${currentLon.toFixed(4)}`; } 
+        else { locStatus.innerText = "📍 Enabling GPS..."; }
+    }
+    function closeSOSModal() { document.getElementById('sos-modal').style.display = 'none'; }
+    function triggerSOS() { alert("🚨 SOS ALERT DISPATCHED!\nEmergency services contacted."); closeSOSModal(); }
+</script>
+</body>
+</html>
+

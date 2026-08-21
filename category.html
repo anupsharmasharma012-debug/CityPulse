@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page-container">
+    <h2>All Services</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+        <div style="background: var(--card-bg); padding: 20px; border-radius: 15px; text-align: center; font-weight:bold;">⚡ Electricity</div>
+        <div style="background: var(--card-bg); padding: 20px; border-radius: 15px; text-align: center; font-weight:bold;">🚰 Water</div>
+        <div style="background: var(--card-bg); padding: 20px; border-radius: 15px; text-align: center; font-weight:bold;">♻️ Waste</div>
+        <div style="background: var(--card-bg); padding: 20px; border-radius: 15px; text-align: center; font-weight:bold;">🏥 Health</div>
+    </div>
+</div>
+
+<!-- Bottom Nav (CATEGORY ACTIVE) -->
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item"><div class="nav-icon">🏠</div><span>Home</span></a>
+    <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><span>Profile</span></a>
+    <a href="search.html" class="nav-item"><div class="nav-icon">🔍</div><span>Search</span></a>
+    <a href="category.html" class="nav-item active"><div class="nav-icon">📂</div><span>Category</span></a>
+    <a href="notifications.html" class="nav-item"><div class="nav-icon">🔔</div><span>Alerts</span></a>
+    <a href="menu.html" class="nav-item"><div class="nav-icon">☰</div><span>Menu</span></a>
+</div>
+<script>if(localStorage.getItem("citypulse_theme")==="dark") document.body.classList.add("dark-theme");</script>
+</body>
+</html>
+
