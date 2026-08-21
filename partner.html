@@ -2,7 +2,7 @@
 ================================================================================
   FILE NAME: partner.html
   PROJECT  : CityPulse
-  PURPOSE  : Driver Dashboard with Live Fare & Request Management
+  PURPOSE  : Driver Dashboard (Frontend-First, Local State Simulation)
 ================================================================================
 -->
 
@@ -12,7 +12,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CityPulse - Partner Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --bg-color: #f0f4f8;
@@ -52,7 +51,7 @@
         }
         
         .header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
-        .header h1 { font-size: 18px; font-weight: 700; }
+        .header h1 { font-size: 18px; font-weight: 700; color: var(--primary); }
         .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; padding: 4px; }
 
         .status-card { background: var(--card-bg); border-radius: 16px; padding: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
@@ -91,6 +90,7 @@
         <div style="width: 24px;"></div>
     </div>
 
+    <!-- Duty Status -->
     <div class="status-card">
         <div class="status-info">
             <h2>Partner Duty Status</h2>
@@ -110,70 +110,75 @@
 </div>
 
 <script>
-    const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
     function toggleDuty() {
         const isOnline = document.getElementById("duty-toggle").checked;
         const dutyText = document.getElementById("duty-text");
         dutyText.innerText = isOnline ? "You are Online & Receiving Requests" : "You are currently Offline";
         dutyText.style.color = isOnline ? "var(--success)" : "var(--text-sub)";
-        if (isOnline) fetchPendingRequests();
-        else document.getElementById("requests-container").innerHTML = `<div class="no-request">You are offline.</div>`;
+        
+        if (isOnline) {
+            loadLocalRequests();
+        } else {
+            document.getElementById("requests-container").innerHTML = `<div class="no-request">You are currently offline.</div>`;
+        }
         localStorage.setItem("citypulse_partner_online", isOnline ? "true" : "false");
     }
 
-    async function fetchPendingRequests() {
+    function loadLocalRequests() {
         if (!document.getElementById("duty-toggle").checked) return;
 
-        const { data, error } = await supabase.from('deliveries').select('*').eq('status', 'Pending').order('created_at', { ascending: false });
+        let orders = JSON.parse(localStorage.getItem('citypulse_local_orders') || '[]');
+        // Filter pending orders only
+        let pendingOrders = orders.filter(o => o.status === 'Pending');
         const container = document.getElementById("requests-container");
 
-        if (error || !data || data.length === 0) {
-            container.innerHTML = `<div class="no-request">Waiting for incoming customer requests...</div>`;
+        if (pendingOrders.length === 0) {
+            container.innerHTML = `<div class="no-request">No active requests found. Book from delivery page to test!</div>`;
             return;
         }
 
         container.innerHTML = "";
-        data.forEach(req => {
+        pendingOrders.forEach(req => {
             container.innerHTML += `
-                <div class="request-card">
+                <div class="request-card" id="card-${req.id}">
                     <div class="req-header">
                         <span>${req.type.toUpperCase()}</span>
-                        <span>Pending</span>
+                        <span>Status: Pending</span>
                     </div>
                     <div class="req-details">
                         <p><strong>Pickup:</strong> ${req.pickup}</p>
                         <p><strong>Drop:</strong> ${req.drop_loc}</p>
                         <p><strong>Details:</strong> ${req.details}</p>
-                        <div class="fare-badge">Collect Cash: ${req.details.split('|')[1] || 'As per fare'}</div>
+                        <div class="fare-badge">Collect: ${req.details.split('|')[1] || 'As per fare'}</div>
+                        <span>Time: ${new Date(req.created_at).toLocaleTimeString()}</span>
                     </div>
                     <div class="action-row">
-                        <button class="btn-reject" onclick="updateStatus('${req.id}', 'Rejected')">Reject</button>
-                        <button class="btn-accept" onclick="updateStatus('${req.id}', 'Accepted')">Accept Order</button>
+                        <button class="btn-reject" onclick="updateLocalStatus('${req.id}', 'Rejected')">Reject</button>
+                        <button class="btn-accept" onclick="updateLocalStatus('${req.id}', 'Accepted')">Accept Order</button>
                     </div>
                 </div>
             `;
         });
     }
 
-    async function updateStatus(id, newStatus) {
-        const { error } = await supabase.from('deliveries').update({ status: newStatus }).eq('id', id);
-        if (error) alert("Error: " + error.message);
-        else { alert("Order " + newStatus); fetchPendingRequests(); }
+    function updateLocalStatus(id, newStatus) {
+        let orders = JSON.parse(localStorage.getItem('citypulse_local_orders') || '[]');
+        orders = orders.map(o => {
+            if (o.id === id) o.status = newStatus;
+            return o;
+        });
+        localStorage.setItem('citypulse_local_orders', JSON.stringify(orders));
+        alert("Order " + newStatus + " successfully!");
+        loadLocalRequests();
     }
 
-    supabase.channel('public:deliveries').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'deliveries' }, () => {
-        if (document.getElementById("duty-toggle").checked) fetchPendingRequests();
-    }).subscribe();
-
-    (function init() {
+    // Init on load
+    (function initPartner() {
         if (localStorage.getItem("citypulse_partner_online") === "true") {
             document.getElementById("duty-toggle").checked = true;
             document.getElementById("duty-text").innerText = "You are Online & Receiving Requests";
             document.getElementById("duty-text").style.color = "var(--success)";
-            fetchPendingRequests();
+            loadLocalRequests();
         }
     })();
 </script>
