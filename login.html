@@ -137,8 +137,25 @@
     </div>
     
     <div class="button-section">
+        <!-- 0. Biometric (Hidden by default, shows if enrolled) -->
         <button id="bio-auth-btn" class="login-btn bio-btn" onclick="handleBiometricAuth()">⚡ Fingerprint / Quick Unlock</button>
+        
+        <!-- 1. Google -->
+        <button class="login-btn" onclick="loginWithGoogle()">G Continue with Google</button>
       
+        <!-- 2. Email -->
+        <button class="login-btn" onclick="toggleEmailBox()">✉️ Continue with email</button>
+        <div id="email-auth-box" class="auth-sub-box">
+            <div class="input-group">
+                <input type="email" id="user-email" placeholder="Enter your email">
+            </div>
+            <div class="input-group">
+                <input type="password" id="user-pass" placeholder="Password (min 6 chars)">
+            </div>
+            <button class="login-btn" style="padding: 10px; width: 100%; margin-top: 6px;" onclick="handleEmailLogin()">Sign In / Sign Up</button>
+        </div>
+
+        <!-- 3. Phone -->
         <button class="login-btn" onclick="togglePhoneBox()">📞 Continue with phone number</button>
         <div id="phone-auth-box" class="auth-sub-box">
             <div id="step-phone">
@@ -154,19 +171,8 @@
             </div>
         </div>
 
-        <button class="login-btn" onclick="toggleEmailBox()">✉️ Continue with email</button>
-        <div id="email-auth-box" class="auth-sub-box">
-            <div class="input-group">
-                <input type="email" id="user-email" placeholder="Enter your email">
-            </div>
-            <div class="input-group">
-                <input type="password" id="user-pass" placeholder="Password (min 6 chars)">
-            </div>
-            <button class="login-btn" style="padding: 10px; width: 100%; margin-top: 6px;" onclick="handleEmailLogin()">Sign In / Sign Up</button>
-        </div>
-
-        <button class="login-btn" onclick="loginWithGoogle()">G Continue with Google</button>
-        <button class="login-btn" onclick="setGuestAndEnter()">••• Skip / Guest Mode</button>
+        <!-- 4. Guest Mode -->
+        <button class="login-btn" onclick="setGuestAndEnter()" style="border:none; text-decoration:underline;">Guest mode</button>
     </div>
 
     <div class="footer-text">
