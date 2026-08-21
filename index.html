@@ -2,7 +2,7 @@
 ================================================================================
   FILE NAME: index.html
   PROJECT  : CityPulse
-  PURPOSE  : Exact Current UI Theme + All Restored Buttons & Ride/Parcel Integration
+  PURPOSE  : Complete Home Dashboard with Customer Ride & Partner Panel Links
 ================================================================================
 -->
 
@@ -22,6 +22,7 @@
             --border-color: #e2e8f0;
             --primary: #007a99;
             --primary-dark: #005f75;
+            --success: #10b981;
         }
 
         body.dark-theme {
@@ -55,7 +56,7 @@
         .header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
         .header h1 { font-size: 20px; font-weight: 700; color: var(--primary); }
 
-        /* Quick Actions Grid matching your exact current look + all options */
+        /* Quick Actions Grid */
         .quick-actions { 
             background: var(--card-bg); 
             border-radius: 16px; 
@@ -82,7 +83,19 @@
 
         .action-item:active .action-icon { background: var(--primary); color: white; }
 
-        /* Banner Card matching your screenshot style */
+        /* Section Card for Quick Access & Partner Mode */
+        .section-card { background: var(--card-bg); border-radius: 16px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 10px; }
+        .section-title { font-size: 13px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .mode-btn { 
+            display: flex; align-items: center; justify-content: space-between; 
+            padding: 12px 14px; background: var(--bg-color); border-radius: 12px; 
+            text-decoration: none; color: var(--text-main); font-size: 13px; font-weight: 600; 
+            border: 1px solid var(--border-color); transition: 0.2s;
+        }
+        .mode-btn.partner { border-color: var(--success); background: rgba(16, 185, 129, 0.05); }
+
+        /* Banner Card */
         .banner-card { 
             background: linear-gradient(135deg, #007a99, #005f75); 
             color: white; 
@@ -94,7 +107,7 @@
         .banner-card h2 { font-size: 16px; font-weight: 700; }
         .banner-card p { font-size: 11px; opacity: 0.9; line-height: 1.4; }
 
-        /* Bottom Navigation matching your screenshot exact style */
+        /* Bottom Navigation Bar */
         .bottom-nav { 
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
             width: 100%; max-width: 420px; height: 65px; background: #0f3443; 
@@ -110,7 +123,7 @@
 <body>
 
 <div class="container">
-    <!-- Header with Bhatpara location on the right -->
+    <!-- Header with Bhatpara location -->
     <div class="header">
         <h1>CityPulse</h1>
         <div style="font-size: 13px; font-weight: 600; color: var(--text-sub);">Bhatpara</div>
@@ -152,6 +165,19 @@
         </a>
     </div>
 
+    <!-- Mobility & Partner Switches -->
+    <div class="section-card">
+        <div class="section-title">Mobility & Delivery Access</div>
+        <a href="delivery.html" class="mode-btn">
+            <span>🛵 Book Ride / Send Parcel (Customer)</span>
+            <span>→</span>
+        </a>
+        <a href="partner.html" class="mode-btn partner">
+            <span style="color: var(--success);">👤 Driver / Partner Dashboard</span>
+            <span>→</span>
+        </a>
+    </div>
+
     <!-- Promotional Banner -->
     <div class="banner-card">
         <h2>Fast City Transit & Delivery</h2>
@@ -171,4 +197,3 @@
 
 </body>
 </html>
-
