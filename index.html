@@ -370,17 +370,12 @@
 
     <!-- Dual Compact Action Boxes -->
     <div class="dual-action-container">
-        
-        <!-- 1. Compact Emergency SOS Box -->
         <div class="action-box sos-box" onclick="window.location.href='emergency.html'">
             <h4 data-i18n="sos_emergency">🚨 SOS EMERGENCY</h4>
         </div>
-
-        <!-- 2. Compact Citizen Voice Box -->
         <div class="action-box citizen-box" onclick="window.location.href='complaints.html'">
             <h4 data-i18n="citizen_voice">📢 CITIZEN VOICE</h4>
         </div>
-
     </div>
 
     <!-- News Banner -->
@@ -410,38 +405,23 @@
 
     <!-- Bottom Navigation -->
     <div class="bottom-nav">
-        <a href="index.html" class="nav-item active">
-            <div class="nav-icon">🏠</div><span>Home</span>
-        </a>
-        <a href="profile.html" class="nav-item">
-            <div class="nav-icon">👤</div><span>Profile</span>
-        </a>
-        <a href="search.html" class="nav-item">
-            <div class="nav-icon">🔍</div><span>Search</span>
-        </a>
-        <a href="category.html" class="nav-item">
-            <div class="nav-icon">📂</div><span>Category</span>
-        </a>
-        <a href="notifications.html" class="nav-item">
-            <div class="nav-icon">🔔</div><span>Alerts</span>
-        </a>
-        <a href="menu.html" class="nav-item">
-            <div class="nav-icon">☰</div><span>Menu</span>
-        </a>
+        <a href="index.html" class="nav-item active"><div class="nav-icon">🏠</div><span>Home</span></a>
+        <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><span>Profile</span></a>
+        <a href="search.html" class="nav-item"><div class="nav-icon">🔍</div><span>Search</span></a>
+        <a href="category.html" class="nav-item"><div class="nav-icon">📂</div><span>Category</span></a>
+        <a href="notifications.html" class="nav-item"><div class="nav-icon">🔔</div><span>Alerts</span></a>
+        <a href="menu.html" class="nav-item"><div class="nav-icon">☰</div><span>Menu</span></a>
     </div>
 
 </div>
 
 <script>
-    // --- i18n Translation Logic ---
     async function applyTranslations() {
         const currentLang = localStorage.getItem('selectedLanguage') || 'en';
         try {
             const response = await fetch(`locales/${currentLang}.json`);
             if (!response.ok) throw new Error("Could not load translation file");
-            
             const translations = await response.json();
-            
             document.querySelectorAll('[data-i18n]').forEach(element => {
                 const key = element.getAttribute('data-i18n');
                 if (translations[key]) {
@@ -452,8 +432,6 @@
             console.error("Translation error:", error);
         }
     }
-
-    // Page load hote hi run karega
     window.addEventListener('DOMContentLoaded', applyTranslations);
 
     const SUPABASE_URL = "https://qfefkyrwxdhdxyajutst.supabase.co";
@@ -467,14 +445,11 @@
         if (localStorage.getItem("citypulse_theme") === "dark") {
             document.body.classList.add("dark-theme");
         }
-
         const isCallback = window.location.search.includes("code=") || window.location.hash.includes("access_token");
         const isGuest = localStorage.getItem("citypulse_is_guest") === "true";
         const savedUser = localStorage.getItem("citypulse_saved_user");
 
-        if (isGuest || savedUser) {
-            return; 
-        }
+        if (isGuest || savedUser) return; 
 
         if (!isCallback && !sessionStorage.getItem("checked_session")) {
             sessionStorage.setItem("checked_session", "true");
@@ -483,19 +458,6 @@
                 window.location.replace("login.html");
             }
         }
-
-        supabaseClient.auth.onAuthStateChange((event, session) => {
-            if (session && session.user) {
-                localStorage.setItem("citypulse_saved_user", session.user.email || session.user.phone || "Active Resident");
-                localStorage.removeItem("citypulse_is_guest");
-                if (isCallback) {
-                    window.history.replaceState(null, null, window.location.pathname);
-                }
-            } else if (event === 'SIGNED_OUT') {
-                localStorage.clear();
-                window.location.replace("login.html");
-            }
-        });
     })();
 
     function updateDateWidget() {
@@ -539,7 +501,7 @@
                     weatherElem.innerText = "⛅ 28°C";
                 }
             },
-            (err) => {
+            () => {
                 cityElem.innerText = "📍 Enable GPS";
                 weatherElem.innerText = "⛅ Tap to retry";
             },
