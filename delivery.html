@@ -2,7 +2,7 @@
 ================================================================================
   FILE NAME: delivery.html
   PROJECT  : CityPulse
-  PURPOSE  : Customer Ride/Parcel with Leaflet Map & Smart Fare Calculation
+  PURPOSE  : Customer Ride & Parcel Booking (Frontend-First, Local State Mode)
 ================================================================================
 -->
 
@@ -12,7 +12,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CityPulse - Ride & Delivery</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Leaflet CSS & JS for Free Map -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -56,7 +55,7 @@
         }
         
         .header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
-        .header h1 { font-size: 18px; font-weight: 700; }
+        .header h1 { font-size: 18px; font-weight: 700; color: var(--primary); }
         .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; padding: 4px; }
 
         .tab-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: var(--card-bg); padding: 4px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
@@ -67,19 +66,19 @@
         .input-group { display: flex; flex-direction: column; gap: 5px; }
         .input-group label { font-size: 12px; font-weight: 600; color: var(--text-sub); }
         .input-field { width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-main); font-size: 13px; outline: none; }
-        
+        .input-field:focus { border-color: var(--primary); }
+
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
         .option-box { border: 1.5px solid var(--border-color); border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; background: var(--bg-color); transition: 0.2s; }
         .option-box.selected { border-color: var(--primary); background: rgba(0, 122, 153, 0.05); }
         .option-box h3 { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
         .option-box p { font-size: 11px; color: var(--text-sub); }
 
-        /* Fare preview box */
         .fare-preview { background: rgba(0, 122, 153, 0.08); padding: 10px 14px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; color: var(--primary); }
 
         .submit-btn { background: var(--primary); color: white; border: none; border-radius: 12px; padding: 13px; font-weight: bold; font-size: 14px; cursor: pointer; text-align: center; width: 100%; }
-        
-        /* Map Container */
+        .submit-btn:active { background: var(--primary-dark); }
+
         #map { width: 100%; height: 160px; border-radius: 12px; border: 1px solid var(--border-color); }
 
         /* Bottom Nav */
@@ -105,7 +104,7 @@
         <div style="width: 24px;"></div>
     </div>
 
-    <!-- Map View -->
+    <!-- Free Leaflet Map -->
     <div id="map"></div>
 
     <div class="tab-row">
@@ -176,10 +175,6 @@
 </div>
 
 <script>
-    const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
     let selectedVehicleType = "bike";
     let calculatedFare = 45;
 
@@ -203,50 +198,59 @@
     }
 
     function updateEstimate() {
-        // Simulating smart distance calculation (Base 30 + km rate)
-        let simulatedKm = 1.5; // Default short local distance inside Bhatpara
+        let simulatedKm = 1.5; 
         let rate = (selectedVehicleType === 'bike') ? 10 : 15;
         calculatedFare = 30 + Math.round(simulatedKm * rate);
         document.getElementById("fare-amount").innerText = `₹${calculatedFare} (Est. ${simulatedKm} km)`;
     }
 
-    async function bookRide() {
+    function bookRide() {
         const pickup = document.getElementById("ride-pickup").value.trim();
         const drop = document.getElementById("ride-drop").value.trim();
 
         if (!pickup || !drop) { alert("Please enter locations!"); return; }
 
-        const { error } = await supabase.from('deliveries').insert([{
+        // Local State saving for frontend testing
+        const order = {
+            id: 'ORD-' + Date.now(),
             type: 'Ride (' + selectedVehicleType.toUpperCase() + ')',
             pickup: pickup,
             drop_loc: drop,
             details: `Vehicle: ${selectedVehicleType} | Fare: ₹${calculatedFare}`,
-            status: 'Pending'
-        }]);
+            status: 'Pending',
+            created_at: new Date().toISOString()
+        };
 
-        if (error) alert("Error: " + error.message);
-        else alert(`Ride booked successfully! Total Fare to Collect: ₹${calculatedFare}`);
+        saveLocalOrder(order);
+        alert(`Ride booked successfully! Total Fare to Collect: ₹${calculatedFare}`);
     }
 
-    async function bookParcel() {
+    function bookParcel() {
         const pickup = document.getElementById("parcel-pickup").value.trim();
         const drop = document.getElementById("parcel-drop").value.trim();
         const item = document.getElementById("parcel-item").value.trim();
 
         if (!pickup || !drop || !item) { alert("Fill all fields!"); return; }
 
-        const { error } = await supabase.from('deliveries').insert([{
+        const order = {
+            id: 'ORD-' + Date.now(),
             type: 'Parcel Delivery',
             pickup: pickup,
             drop_loc: drop,
             details: `Item: ${item} | Fare: ₹50`,
-            status: 'Pending'
-        }]);
+            status: 'Pending',
+            created_at: new Date().toISOString()
+        };
 
-        if (error) alert("Error: " + error.message);
-        else alert("Parcel order dispatched! Delivery Fee: ₹50");
+        saveLocalOrder(order);
+        alert("Parcel order dispatched! Delivery Fee: ₹50");
+    }
+
+    function saveLocalOrder(order) {
+        let orders = JSON.parse(localStorage.getItem('citypulse_local_orders') || '[]');
+        orders.unshift(order);
+        localStorage.setItem('citypulse_local_orders', JSON.stringify(orders));
     }
 </script>
 </body>
 </html>
-
