@@ -427,11 +427,11 @@
 </div>
 
 <script>
-    // --- i18n Translation Logic ---
+    // --- i18n Translation Logic with absolute relative path ---
     async function applyTranslations() {
         const currentLang = localStorage.getItem('selectedLanguage') || 'en';
         try {
-            const response = await fetch(`locales/${currentLang}.json`);
+            const response = await fetch(`./locales/${currentLang}.json`);
             if (!response.ok) throw new Error("Could not load translation file");
             
             const translations = await response.json();
@@ -544,3 +544,4 @@
 </script>
 </body>
 </html>
+```[cite: 1]
