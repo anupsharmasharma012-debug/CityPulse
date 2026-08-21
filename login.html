@@ -50,6 +50,29 @@
             padding: 24px 20px;
             box-sizing: border-box;
             text-align: center;
+            position: relative; /* Added to keep absolute language button contained */
+        }
+
+        /* Language Switcher Button Style */
+        .login-lang-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 6px 12px;
+            border-radius: 20px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.2s;
+        }
+        .login-lang-btn:active {
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .logo-section h1 { font-size: 36px; margin: 0 0 12px 0; font-weight: bold; }
@@ -126,6 +149,11 @@
 </div>
 
 <div id="login-app" class="login-container">
+    <!-- Language Switcher Button Top-Right -->
+    <button class="login-lang-btn" onclick="openLanguageSelector()">
+        🌐 Language
+    </button>
+
     <div class="logo-section">
         <h1>CityPulse</h1>
         <div class="logo-circle">🏙️</div> 
@@ -214,6 +242,12 @@
             document.getElementById('login-app').style.display = 'flex';
         }, 1200);
     })();
+
+    // Language Selector Navigation Handler
+    function openLanguageSelector() {
+        localStorage.setItem("citypulse_lang_ref", "login");
+        window.location.href = 'language.html';
+    }
 
     async function initBiometrics() {
         const bioBtn = document.getElementById('bio-auth-btn');
