@@ -68,15 +68,18 @@
             letter-spacing: 0.5px;
         }
 
-        .header-live-badge {
+        .lang-quick-btn {
             background: rgba(255, 255, 255, 0.15);
-            padding: 4px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 5px 12px;
             border-radius: 20px;
+            color: white;
             font-size: 11px;
-            color: #e0f2fe;
+            font-weight: bold;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
         }
 
         /* 1. Quick Action Cards */
@@ -162,7 +165,7 @@
 
         .action-box {
             flex: 1;
-            padding: 10px;
+            padding: 16px 10px;
             border-radius: 12px;
             display: flex;
             flex-direction: column;
@@ -176,47 +179,27 @@
         .sos-box {
             background: #e63946;
             border: 1px solid #d90429;
-            padding: 14px 10px; /* Thodi padding badha di taaki bada lage */
         }
 
         .sos-box h4 {
             color: #ffffff;
             margin: 0;
-            font-size: 14px; /* Font size 11px se badha kar 14px kar di */
+            font-size: 14px;
             font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
+            letter-spacing: 0.5px;
         }
 
         .citizen-box {
             background: #e0f2fe;
             border: 1px solid #bae6fd;
-            padding: 14px 10px;
         }
 
         .citizen-box h4 {
             color: #0284c7;
             margin: 0;
-            font-size: 14px; /* Ise bhi balance karne ke liye 14px kar diya */
+            font-size: 14px;
             font-weight: bold;
-        }
-
-        .mini-call-grid {
-            display: flex;
-            gap: 6px;
-            margin-top: 2px;
-        }
-
-        .mini-call {
-            font-size: 9px;
-            font-weight: 600;
-            color: #d90429;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 2px 6px;
-            border-radius: 4px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
+            letter-spacing: 0.5px;
         }
 
         /* 4. News Banner */
@@ -305,7 +288,7 @@
             display: block;
         }
 
-        /* 7. Bottom Navigation (UPDATED TO 6 BUTTONS & GRID) */
+        /* 7. Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -352,13 +335,7 @@
     <!-- Top Header -->
     <div class="top-header">
         <div class="brand-title">CityPulse</div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-            <!-- Language Quick Button -->
-            <button onclick="window.location.href='language.html'" style="background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); padding: 4px 10px; border-radius: 20px; color: white; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-                🌐 Lang
-            </button>
-            <div class="header-live-badge">🟢 Portal Active</div>
-        </div>
+        <button class="lang-quick-btn" onclick="window.location.href='language.html'">🌐 Language</button>
     </div>
 
     <!-- Quick Actions -->
@@ -380,26 +357,25 @@
             <div class="title" id="current-date-display">Today</div>
         </div>
         <div class="info-card" onclick="window.location.href='profile.html'">
-            <div class="icon">🌐</div>
-            <div class="title">Language</div>
+            <div class="icon">👤</div>
+            <div class="title">Profile</div>
         </div>
     </div>
 
     <!-- Dual Compact Action Boxes -->
     <div class="dual-action-container">
         
-        <!-- 1. Compact Emergency SOS Box (Red Background, White Text, Links to emergency.html) -->
-        <div class="action-box sos-box" onclick="window.location.href='emergency.html'" style="padding: 16px;">
-            <h4 style="font-size: 14px; letter-spacing: 0.5px;">🚨 SOS EMERGENCY</h4>
+        <!-- 1. Compact Emergency SOS Box -->
+        <div class="action-box sos-box" onclick="window.location.href='emergency.html'">
+            <h4>🚨 SOS EMERGENCY</h4>
         </div>
 
         <!-- 2. Compact Citizen Voice Box -->
-        <div class="action-box citizen-box" onclick="window.location.href='complaints.html'" style="padding: 16px;">
-            <h4 style="font-size: 14px; letter-spacing: 0.5px;">📢 CITIZEN VOICE</h4>
-            </div>
-      
+        <div class="action-box citizen-box" onclick="window.location.href='complaints.html'">
+            <h4>📢 CITIZEN VOICE</h4>
         </div>
 
+    </div>
 
     <!-- News Banner -->
     <div class="news-banner">
