@@ -4,11 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CityPulse - Home</title>
-    <!-- Shared CSS & CDN -->
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        /* ALL CSS INCLUDED HERE - NOTHING WILL DISAPPEAR */
+        :root { --bg-grad: linear-gradient(180deg, #1b4b60, #225c75, #2c6f8d); --card-bg: #ffffff; --text-dark: #1e3d4f; }
+        body.dark-theme { --bg-grad: linear-gradient(180deg, #0b1c24, #122c38, #183a4a); --card-bg: #1e293b; --text-dark: #f8fafc; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f0f4f8; display: flex; justify-content: center; color: var(--text-dark); }
+        
+        .app-container { width: 100%; max-width: 420px; background: var(--bg-grad); min-height: 100vh; padding: 16px; padding-bottom: 85px; display: flex; flex-direction: column; gap: 14px; }
+        
         .top-header { display: flex; justify-content: space-between; align-items: center; padding: 6px 2px; color: #ffffff; }
         .brand-title { font-size: 22px; font-weight: 800; }
         .lang-btn { background: rgba(255, 255, 255, 0.15); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; border: 1px solid rgba(255,255,255,0.3); color: white; }
@@ -23,14 +28,19 @@
         
         .emergency-box { background: var(--card-bg); border-radius: 14px; padding: 15px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); margin-top: 10px; }
         .btn-danger-large { width: 100%; border: none; border-radius: 10px; background: #e63946; color: white; font-size: 14px; font-weight: bold; padding: 12px; cursor: pointer; margin-bottom: 10px; }
-        .btn-complain { width: 100%; border: 1px solid #d1d5db; border-radius: 10px; background: transparent; color: var(--text-main); font-size: 12px; font-weight: bold; padding: 10px; cursor: pointer; }
+        .btn-complain { width: 100%; border: 1px solid #d1d5db; border-radius: 10px; background: transparent; color: var(--text-dark); font-size: 12px; font-weight: bold; padding: 10px; cursor: pointer; }
 
-        /* SOS Modal Styles */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: var(--card-bg); border-radius: 20px; width: 100%; max-width: 360px; padding: 24px 20px; text-align: center; }
         .modal-content h2 { color: #e63946; font-size: 20px; margin-bottom: 8px; }
         .loc-badge { background: rgba(0,0,0,0.05); border: 1px solid #ccc; padding: 8px; border-radius: 8px; font-size: 11px; margin-bottom: 16px; word-break: break-all; }
         .btn-sos-trigger { background: #e63946; color: #ffffff; width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; }
+
+        /* 6-Button Bottom Navigation */
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; height: 65px; background: #0f3443; display: grid; grid-template-columns: repeat(6, 1fr); align-items: center; border-top: 1px solid rgba(255,255,255,0.1); z-index: 9999; box-shadow: 0 -3px 10px rgba(0,0,0,0.25); }
+        .nav-item { text-align: center; color: #b0c4de; font-size: 9px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none;}
+        .nav-item.active { color: #00e5ff; }
+        .nav-item .nav-icon { font-size: 16px; }
     </style>
 </head>
 <body>
@@ -103,33 +113,21 @@
     const supabaseClient = supabase.createClient("https://qfefkyrwxdhdxyajutst.supabase.co", "sb_publishable_mOjSpSn12VMJMf-OWwCDFg_h0u-YL5c");
     let currentLat = null, currentLon = null;
 
-    // FIX: Advanced Session Guard
     (async function checkSession() {
         if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
-        
-        // Ensure supabase has time to process the login token from URL
         const { data: { session } } = await supabaseClient.auth.getSession();
-        
         if (session && session.user) {
             localStorage.setItem("citypulse_saved_user", session.user.email);
         } else if (!localStorage.getItem("citypulse_saved_user") && !localStorage.getItem("citypulse_is_guest")) {
-            // Agar URL me token hai, toh page load hone do, login page pe mat feko
-            if (!window.location.hash.includes('access_token')) {
-                window.location.replace("login.html");
-            }
+            if (!window.location.hash.includes('access_token')) window.location.replace("login.html");
         }
         
-        // Realtime Listener
         supabaseClient.auth.onAuthStateChange((event, session) => {
-            if (session && session.user) {
-                localStorage.setItem("citypulse_saved_user", session.user.email);
-            } else if (event === 'SIGNED_OUT') {
-                window.location.replace("login.html");
-            }
+            if (session && session.user) localStorage.setItem("citypulse_saved_user", session.user.email);
+            else if (event === 'SIGNED_OUT') window.location.replace("login.html");
         });
     })();
 
-    // Live Weather Logic
     async function fetchLiveWeather() {
         if (!navigator.geolocation) return;
         document.getElementById("city-name-display").innerText = "📍 Locating...";
@@ -147,7 +145,6 @@
     }
     fetchLiveWeather();
 
-    // SOS Logic
     function openSOSModal() {
         document.getElementById('sos-modal').style.display = 'flex';
         const locStatus = document.getElementById('sos-loc-status');
