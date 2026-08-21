@@ -39,6 +39,7 @@
             padding: 0;
             width: 100%;
             overflow-x: hidden !important;
+            overscroll-behavior-x: none !important;
             position: relative;
             background-color: #f0f4f8;
         }
@@ -337,14 +338,11 @@
 <body>
 
 <div class="app-container">
-
-    <!-- Top Header -->
     <div class="top-header">
         <div class="brand-title" data-i18n="app_title">CityPulse</div>
         <button class="lang-quick-btn" onclick="window.location.href='language.html'" data-i18n="btn_language">🌐 Language</button>
     </div>
 
-    <!-- Quick Actions -->
     <div class="top-grid">
         <div class="action-card"><div class="icon">💳</div><span>Pay</span></div>
         <div class="action-card"><div class="icon">🚌</div><span>Transport</span></div>
@@ -352,7 +350,6 @@
         <div class="action-card"><div class="icon">🍽️</div><span>Food</span></div>
     </div>
 
-    <!-- Info Widgets -->
     <div class="info-grid">
         <div class="info-card" id="weather-card" onclick="fetchLiveWeather()">
             <div class="title" id="city-name-display" data-i18n="weather_detecting">📍 Detecting...</div>
@@ -368,35 +365,26 @@
         </div>
     </div>
 
-    <!-- Dual Compact Action Boxes -->
     <div class="dual-action-container">
-        
-        <!-- 1. Compact Emergency SOS Box -->
         <div class="action-box sos-box" onclick="window.location.href='emergency.html'">
             <h4 data-i18n="sos_emergency">🚨 SOS EMERGENCY</h4>
         </div>
-
-        <!-- 2. Compact Citizen Voice Box -->
         <div class="action-box citizen-box" onclick="window.location.href='complaints.html'">
             <h4 data-i18n="citizen_voice">📢 CITIZEN VOICE</h4>
         </div>
-
     </div>
 
-    <!-- News Banner -->
     <div class="news-banner">
         <h3>City News & Updates</h3>
         <p>Main Street civic maintenance scheduled for this weekend...</p>
     </div>
 
-    <!-- Promos -->
     <div class="promo-grid">
         <div class="promo-card"><div class="icon">🏷️</div><span>Explore<br>Top Offers</span></div>
         <div class="promo-card"><div class="icon">🎉</div><span>Upcoming<br>City Events</span></div>
         <div class="promo-card"><div class="icon">💬</div><span>Community<br>Forums</span></div>
     </div>
 
-    <!-- Services Grid -->
     <div class="services-grid">
         <div class="service-card"><div class="icon">⚡</div><div class="title">Electricity</div><span class="subtitle">Bill Payment</span></div>
         <div class="service-card"><div class="icon">🚰</div><div class="title">Water</div><span class="subtitle">Meter Reading</span></div>
@@ -408,40 +396,23 @@
         <div class="service-card"><div class="icon">🅿️</div><div class="title">Parking</div><span class="subtitle">Nearby Garages</span></div>
     </div>
 
-    <!-- Bottom Navigation -->
     <div class="bottom-nav">
-        <a href="index.html" class="nav-item active">
-            <div class="nav-icon">🏠</div><span>Home</span>
-        </a>
-        <a href="profile.html" class="nav-item">
-            <div class="nav-icon">👤</div><span>Profile</span>
-        </a>
-        <a href="search.html" class="nav-item">
-            <div class="nav-icon">🔍</div><span>Search</span>
-        </a>
-        <a href="category.html" class="nav-item">
-            <div class="nav-icon">📂</div><span>Category</span>
-        </a>
-        <a href="notifications.html" class="nav-item">
-            <div class="nav-icon">🔔</div><span>Alerts</span>
-        </a>
-        <a href="menu.html" class="nav-item">
-            <div class="nav-icon">☰</div><span>Menu</span>
-        </a>
+        <a href="index.html" class="nav-item active"><div class="nav-icon">🏠</div><span>Home</span></a>
+        <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><span>Profile</span></a>
+        <a href="search.html" class="nav-item"><div class="nav-icon">🔍</div><span>Search</span></a>
+        <a href="category.html" class="nav-item"><div class="nav-icon">📂</div><span>Category</span></a>
+        <a href="notifications.html" class="nav-item"><div class="nav-icon">🔔</div><span>Alerts</span></a>
+        <a href="menu.html" class="nav-item"><div class="nav-icon">☰</div><span>Menu</span></a>
     </div>
-
 </div>
 
 <script>
-    // --- i18n Translation Logic ---
     async function applyTranslations() {
         const currentLang = localStorage.getItem('selectedLanguage') || 'en';
         try {
             const response = await fetch(`locales/${currentLang}.json`);
             if (!response.ok) throw new Error("Could not load translation file");
-            
             const translations = await response.json();
-            
             document.querySelectorAll('[data-i18n]').forEach(element => {
                 const key = element.getAttribute('data-i18n');
                 if (translations[key]) {
@@ -452,101 +423,7 @@
             console.error("Translation error:", error);
         }
     }
-
-    // Page load hote hi run karega
     window.addEventListener('DOMContentLoaded', applyTranslations);
-
-    const SUPABASE_URL = "https://qfefkyrwxdhdxyajutst.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_mOjSpSn12VMJMf-0WWcDFg_h0u-YL5c";
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    let currentLat = null;
-    let currentLon = null;
-
-    (async function checkSession() {
-        if (localStorage.getItem("citypulse_theme") === "dark") {
-            document.body.classList.add("dark-theme");
-        }
-
-        const isCallback = window.location.search.includes("code=") || window.location.hash.includes("access_token");
-        const isGuest = localStorage.getItem("citypulse_is_guest") === "true";
-        const savedUser = localStorage.getItem("citypulse_saved_user");
-
-        if (isGuest || savedUser) {
-            return; 
-        }
-
-        if (!isCallback && !sessionStorage.getItem("checked_session")) {
-            sessionStorage.setItem("checked_session", "true");
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session && !isCallback) {
-                window.location.replace("login.html");
-            }
-        }
-
-        supabaseClient.auth.onAuthStateChange((event, session) => {
-            if (session && session.user) {
-                localStorage.setItem("citypulse_saved_user", session.user.email || session.user.phone || "Active Resident");
-                localStorage.removeItem("citypulse_is_guest");
-                if (isCallback) {
-                    window.history.replaceState(null, null, window.location.pathname);
-                }
-            } else if (event === 'SIGNED_OUT') {
-                localStorage.clear();
-                window.location.replace("login.html");
-            }
-        });
-    })();
-
-    function updateDateWidget() {
-        const dateElem = document.getElementById("current-date-display");
-        if (dateElem) {
-            const today = new Date();
-            dateElem.innerText = today.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
-        }
-    }
-    updateDateWidget();
-
-    async function fetchLiveWeather() {
-        const cityElem = document.getElementById("city-name-display");
-        const weatherElem = document.getElementById("weather-temp-display");
-
-        if (!navigator.geolocation) {
-            cityElem.innerText = "📍 Bhatpara";
-            weatherElem.innerText = "⛅ 28°C";
-            return;
-        }
-
-        cityElem.innerText = "📍 Locating...";
-        weatherElem.innerText = "⛅ Loading...";
-
-        navigator.geolocation.getCurrentPosition(
-            async (pos) => {
-                currentLat = pos.coords.latitude;
-                currentLon = pos.coords.longitude;
-                try {
-                    const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${currentLat}&lon=${currentLon}&format=json`);
-                    const geoData = await geoRes.json();
-                    const city = geoData.address.city || geoData.address.town || geoData.address.suburb || geoData.address.county || "My City";
-                    cityElem.innerText = `📍 ${city}`;
-
-                    const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${currentLat}&longitude=${currentLon}&current_weather=true`);
-                    const weatherData = await weatherRes.json();
-                    const temp = Math.round(weatherData.current_weather.temperature);
-                    weatherElem.innerText = `⛅ Weather, ${temp}°C`;
-                } catch (err) {
-                    cityElem.innerText = "📍 Bhatpara";
-                    weatherElem.innerText = "⛅ 28°C";
-                }
-            },
-            (err) => {
-                cityElem.innerText = "📍 Enable GPS";
-                weatherElem.innerText = "⛅ Tap to retry";
-            },
-            { timeout: 10000 }
-        );
-    }
-    fetchLiveWeather();
 </script>
 </body>
 </html>

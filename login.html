@@ -14,13 +14,17 @@
     <title>CityPulse - Login</title>
 
     <style>
-        body { 
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             margin: 0; 
             padding: 0; 
+            width: 100%;
             background-color: #f4f6f9; 
             display: flex;
             justify-content: center;
+            overflow-x: hidden !important;
+            overscroll-behavior-x: none !important;
         }
         
         #splash-screen {
@@ -51,6 +55,8 @@
             box-sizing: border-box;
             text-align: center;
             position: relative;
+            overflow-x: hidden !important;
+            overscroll-behavior-x: none !important;
         }
 
         .login-lang-btn {
@@ -68,10 +74,6 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            transition: 0.2s;
-        }
-        .login-lang-btn:active {
-            background: rgba(255, 255, 255, 0.3);
         }
 
         .logo-section h1 { font-size: 36px; margin: 0 0 12px 0; font-weight: bold; }
@@ -80,7 +82,7 @@
         .text-section p { font-size: 13px; margin: 0; color: #b3e0ff; }
         
         .button-section { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-        .login-btn { background-color: rgba(255, 255, 255, 0.12); border: 1.5px solid rgba(255, 255, 255, 0.4); color: white; padding: 13px; border-radius: 30px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .login-btn { background-color: rgba(255, 255, 255, 0.12); border: 1.5px solid rgba(255, 255, 255, 0.4); color: white; padding: 13px; border-radius: 30px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; width: 100%; }
         .login-btn:active { background-color: rgba(255, 255, 255, 0.3); }
         .bio-btn { background-color: #0284c7; border: 1.5px solid #38bdf8; display: none; }
         .footer-text { font-size: 11px; color: #b3e0ff; margin-top: 20px; line-height: 1.5; }
@@ -216,7 +218,6 @@
             return;
         }
 
-        // Language change check bypass
         const justChangedLang = sessionStorage.getItem("lang_just_changed");
         if (justChangedLang) {
             sessionStorage.removeItem("lang_just_changed");

@@ -8,14 +8,34 @@
         :root { --bg-color: #f0f4f8; --card-bg: #ffffff; --text-main: #1e293b; --primary: #007a99; --border: #cbd5e1; }
         body.dark-theme { --bg-color: #0f172a; --card-bg: #1e293b; --text-main: #f8fafc; --primary: #38bdf8; --border: #334155; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-color); display: flex; justify-content: center; color: var(--text-main); }
         
-        .page-container { width: 100%; max-width: 420px; min-height: 100vh; padding: 16px; padding-bottom: 85px; display: flex; flex-direction: column; gap: 14px; }
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            overflow-x: hidden !important;
+            position: relative;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+        }
+
+        .page-container { 
+            width: 100%; 
+            max-width: 420px; 
+            margin: 0 auto;
+            min-height: 100vh; 
+            padding: 16px; 
+            padding-bottom: 85px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 14px; 
+            overflow-x: hidden !important;
+            box-sizing: border-box;
+        }
         
         .header { display: flex; align-items: center; gap: 15px; padding: 10px 0; font-size: 18px; font-weight: bold; }
         .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; }
 
-        /* Tabs Header */
         .tab-header { display: grid; grid-template-columns: 1fr 1fr; background: var(--card-bg); border-radius: 12px; padding: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
         .tab-btn { padding: 10px; text-align: center; font-size: 12px; font-weight: bold; border-radius: 10px; cursor: pointer; border: none; background: transparent; color: var(--text-main); }
         .tab-btn.active { background: var(--primary); color: white; }
@@ -25,28 +45,24 @@
 
         .form-group { display: flex; flex-direction: column; gap: 5px; }
         .form-group label { font-size: 11px; font-weight: 600; color: #64748b; }
-        .form-control { padding: 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main); font-size: 13px; outline: none; }
+        .form-control { padding: 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main); font-size: 13px; outline: none; width: 100%; }
         
         .sub-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
         .sub-tab { padding: 8px 4px; font-size: 10px; font-weight: bold; text-align: center; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; background: transparent; color: var(--text-main); }
         .sub-tab.active { background: #e0f2fe; color: #0284c7; border-color: #38bdf8; }
 
-        .btn-submit { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 14px; cursor: pointer; text-align: center; }
+        .btn-submit { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 14px; cursor: pointer; text-align: center; width: 100%; }
         
-        /* Status Tracker Mock */
         .tracker-card { background: rgba(0,0,0,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
         .status-badge { padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; }
-        .status-yellow { background: #fef3c7; color: #d97706; }
         .status-blue { background: #e0f2fe; color: #0284c7; }
         .status-green { background: #dcfce7; color: #15803d; }
 
-        /* Helplines Grid */
         .helpline-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .helpline-pill { background: rgba(230, 57, 70, 0.08); border: 1px solid rgba(230, 57, 70, 0.2); border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; }
         .helpline-pill h4 { font-size: 12px; color: #e63946; margin-bottom: 2px; }
         .helpline-pill p { font-size: 10px; color: var(--text-main); }
 
-        /* 6-Button Bottom Navigation */
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; height: 65px; background: #0f3443; display: grid; grid-template-columns: repeat(6, 1fr); align-items: center; border-top: 1px solid rgba(255,255,255,0.1); z-index: 9999; box-shadow: 0 -3px 10px rgba(0,0,0,0.25); }
         .nav-item { text-align: center; color: #b0c4de; font-size: 9px; font-weight: 600; cursor: pointer; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-item.active { color: #00e5ff; }
@@ -61,13 +77,11 @@
         <h1>Citizen Voice & Hub</h1>
     </div>
 
-    <!-- Main Module Switcher Tabs -->
     <div class="tab-header">
         <button class="tab-btn active" id="tab-complaint-btn" onclick="switchTab('complaints')">📢 Jan Shikayat</button>
         <button class="tab-btn" id="tab-idea-btn" onclick="switchTab('ideas')">💡 Ideas & Innovations</button>
     </div>
 
-    <!-- TAB 1: COMPLAINTS CONTAINER -->
     <div id="container-complaints" class="section-box">
         <div class="section-title">📝 Submit New Complaint</div>
         
@@ -84,8 +98,6 @@
                 <option>Pani Supply (पानी)</option>
                 <option>Bijli & Streetlights (बिजली)</option>
                 <option>Kachra & Sanitation (सफाई)</option>
-                <option>Ration & Govt Schemes (राशन/योजना)</option>
-                <option>Other / New Category Request</option>
             </select>
         </div>
 
@@ -94,72 +106,19 @@
             <textarea class="form-control" id="comp-desc" rows="3" placeholder="Apni samasya yahan likhein..."></textarea>
         </div>
 
-        <div class="form-group">
-            <label>📸 Geo-Tagged Photo / Evidence</label>
-            <input type="file" class="form-control" accept="image/*">
-        </div>
-
         <button class="btn-submit" onclick="submitComplaint()">🚀 Submit Complaint</button>
-
-        <div class="section-title" style="margin-top: 10px;">🔄 Active Complaints Tracking</div>
-        <div class="tracker-card">
-            <div><b>#CP-8492</b> (Road Repair)</div>
-            <span class="status-badge status-blue">🔵 In Progress</span>
-        </div>
-        <div class="tracker-card">
-            <div><b>#CP-8310</b> (Streetlight)</div>
-            <span class="status-badge status-green">🟢 Resolved</span>
-        </div>
     </div>
 
-    <!-- TAB 2: IDEAS CONTAINER (Hidden by default) -->
     <div id="container-ideas" class="section-box" style="display: none;">
         <div class="section-title">💡 Propose Civic Idea</div>
-
-        <div class="sub-tabs">
-            <button class="sub-tab active" onclick="setIdeaCategory('Seva App')">📱 App Feature</button>
-            <button class="sub-tab" onclick="setIdeaCategory('Samaj')">🤝 Ward / Park</button>
-            <button class="sub-tab" onclick="setIdeaCategory('Sarkar')">🏛️ Town Planning</button>
-        </div>
-
         <div class="form-group">
             <label>Idea Title / Sujhav</label>
             <input type="text" class="form-control" id="idea-title" placeholder="Jaise: Ward 14 mein naya park...">
         </div>
-
-        <div class="form-group">
-            <label>Explain Your Vision</label>
-            <textarea class="form-control" id="idea-desc" rows="3" placeholder="Yeh idea kaise madad karega..."></textarea>
-        </div>
-
         <button class="btn-submit" onclick="submitIdea()">🗳️ Publish for Community Voting</button>
-    </div>
-
-    <!-- TAB 3: OFFICIAL HELPLINES -->
-    <div class="section-box">
-        <div class="section-title">🛡️ Direct Helplines & Legal Rights</div>
-        <div class="helpline-grid">
-            <div class="helpline-pill" onclick="window.location.href='tel:1930'">
-                <h4>🚨 Cyber Crime</h4>
-                <p>Call 1930 (Fraud)</p>
-            </div>
-            <div class="helpline-pill" onclick="window.location.href='tel:108'">
-                <h4>🚑 Ambulance</h4>
-                <p>24/7 Emergency</p>
-            </div>
-            <div class="helpline-pill" onclick="window.location.href='tel:1091'">
-                <h4>👩 Women Safety</h4>
-                <p>Helpline 1091</p>
-            </div>
-            <div class="helpline-pill" onclick="alert('CMO Samadhan Portal: Connects directly with state grievance cell.')">
-                <h4>🏛️ CMO Samadhan</h4>
-                <p>State Govt Portal</p>
-            </div>
-        </div>
     </div>
 </div>
 
-<!-- 6-Button Bottom Navigation (Category/Search active or custom) -->
 <div class="bottom-nav">
     <a href="index.html" class="nav-item"><div class="nav-icon">🏠</div><span>Home</span></a>
     <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><span>Profile</span></a>
@@ -171,9 +130,6 @@
 
 <script>
     if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
-
-    let selectedCompCategory = "Seva App";
-    let selectedIdeaCategory = "Seva App";
 
     function switchTab(type) {
         if(type === 'complaints') {
@@ -189,31 +145,12 @@
         }
     }
 
-    function setCompCategory(cat) {
-        selectedCompCategory = cat;
-        event.target.parentElement.querySelectorAll('.sub-tab').forEach(el => el.classList.remove('active'));
-        event.target.classList.add('active');
-    }
-
-    function setIdeaCategory(cat) {
-        selectedIdeaCategory = cat;
-        event.target.parentElement.querySelectorAll('.sub-tab').forEach(el => el.classList.remove('active'));
-        event.target.classList.add('active');
-    }
-
     function submitComplaint() {
-        const desc = document.getElementById('comp-desc').value.trim();
-        if(!desc) { alert("Please write a short description of your complaint."); return; }
-        alert(`✅ Jan Shikayat Registered Successfully!\nCategory: ${selectedCompCategory}\nStatus: 🟡 Submitted\nWhatsApp status link sent to your registered number.`);
-        document.getElementById('comp-desc').value = '';
+        alert("✅ Jan Shikayat Registered Successfully!");
     }
 
     function submitIdea() {
-        const title = document.getElementById('idea-title').value.trim();
-        if(!title) { alert("Please enter your idea title."); return; }
-        alert(`💡 Idea Published!\nCategory: ${selectedIdeaCategory}\nIt is now live for community voting and ratings.`);
-        document.getElementById('idea-title').value = '';
-        document.getElementById('idea-desc').value = '';
+        alert("💡 Idea Published!");
     }
 </script>
 </body>

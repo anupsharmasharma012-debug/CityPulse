@@ -38,8 +38,32 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-color); display: flex; justify-content: center; color: var(--text-main); transition: background-color 0.2s; }
-        .profile-container { width: 100%; max-width: 420px; min-height: 100vh; padding: 16px; padding-bottom: 85px; display: flex; flex-direction: column; gap: 14px; }
+        
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            overflow-x: hidden !important;
+            overscroll-behavior-x: none !important;
+            position: relative;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: background-color 0.2s;
+        }
+
+        .profile-container { 
+            width: 100%; 
+            max-width: 420px; 
+            margin: 0 auto;
+            min-height: 100vh; 
+            padding: 16px; 
+            padding-bottom: 85px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 14px; 
+            overflow-x: hidden !important;
+            box-sizing: border-box;
+        }
         
         .header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
         .header h1 { font-size: 18px; font-weight: 700; }
@@ -71,7 +95,7 @@
         input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(18px); }
 
-        /* UPDATED: 6-Button Bottom Nav */
+        /* Bottom Nav */
         .bottom-nav { 
             position: fixed; 
             bottom: 0; left: 50%; transform: translateX(-50%); 
@@ -85,7 +109,7 @@
         .nav-item.active { color: #00e5ff; }
         .nav-item .nav-icon { font-size: 16px; }
 
-        .btn-logout { background: var(--card-bg); color: var(--danger); border: 1.5px solid var(--danger); border-radius: 12px; padding: 13px; font-weight: bold; font-size: 13px; cursor: pointer; margin-top: 10px; text-align: center; }
+        .btn-logout { background: var(--card-bg); color: var(--danger); border: 1.5px solid var(--danger); border-radius: 12px; padding: 13px; font-weight: bold; font-size: 13px; cursor: pointer; margin-top: 10px; text-align: center; width: 100%; }
     </style>
 </head>
 <body>
@@ -138,10 +162,6 @@
             <div class="menu-left"><span class="icon">🆘</span> Emergency SOS Contacts</div>
             <div class="menu-right" id="sos-count">2 Saved ›</div>
         </div>
-        <div class="menu-item" onclick="alert('Saved Notices & Community Posts: 0 items bookmarked.')">
-            <div class="menu-left"><span class="icon">🔖</span> Saved & Bookmarked</div>
-            <div class="menu-right">›</div>
-        </div>
     </div>
 
     <!-- 4. App Settings & Security -->
@@ -154,7 +174,7 @@
                 <span class="slider"></span>
             </label>
         </div>
-        <div class="menu-item" onclick="changeLanguage()">
+        <div class="menu-item" onclick="window.location.href='language.html'">
             <div class="menu-left"><span class="icon">🌐</span> Language Switcher</div>
             <div class="menu-right" id="lang-display">English ›</div>
         </div>
@@ -164,10 +184,6 @@
                 <input type="checkbox" id="bio-toggle" onchange="toggleBiometrics()">
                 <span class="slider"></span>
             </label>
-        </div>
-        <div class="menu-item" onclick="alert('Notification Settings: Weather, Emergency, and Bill alerts are enabled.')">
-            <div class="menu-left"><span class="icon">🔔</span> Notification Preferences</div>
-            <div class="menu-right">Enabled ›</div>
         </div>
     </div>
 
@@ -182,36 +198,20 @@
             <div class="menu-left"><span class="icon">🎧</span> Contact Support & Feedback</div>
             <div class="menu-right">›</div>
         </div>
-        <div class="menu-item" onclick="alert('Privacy Policy: All municipal citizen records are encrypted.')">
-            <div class="menu-left"><span class="icon">📜</span> Terms, Privacy & Disclaimer</div>
-            <div class="menu-right">›</div>
-        </div>
     </div>
 
     <!-- 6. Logout -->
     <button class="btn-logout" onclick="handleLogout()">🚪 Logout Account</button>
 </div>
 
-<!-- UPDATED: 6-Button Bottom Navigation (Profile Active) -->
+<!-- Bottom Navigation -->
 <div class="bottom-nav">
-    <a href="index.html" class="nav-item">
-        <div class="nav-icon">🏠</div><span>Home</span>
-    </a>
-    <a href="profile.html" class="nav-item active">
-        <div class="nav-icon">👤</div><span>Profile</span>
-    </a>
-    <a href="search.html" class="nav-item">
-        <div class="nav-icon">🔍</div><span>Search</span>
-    </a>
-    <a href="category.html" class="nav-item">
-        <div class="nav-icon">📂</div><span>Category</span>
-    </a>
-    <a href="notifications.html" class="nav-item">
-        <div class="nav-icon">🔔</div><span>Alerts</span>
-    </a>
-    <a href="menu.html" class="nav-item">
-        <div class="nav-icon">☰</div><span>Menu</span>
-    </a>
+    <a href="index.html" class="nav-item"><div class="nav-icon">🏠</div><span>Home</span></a>
+    <a href="profile.html" class="nav-item active"><div class="nav-icon">👤</div><span>Profile</span></a>
+    <a href="search.html" class="nav-item"><div class="nav-icon">🔍</div><span>Search</span></a>
+    <a href="category.html" class="nav-item"><div class="nav-icon">📂</div><span>Category</span></a>
+    <a href="notifications.html" class="nav-item"><div class="nav-icon">🔔</div><span>Alerts</span></a>
+    <a href="menu.html" class="nav-item"><div class="nav-icon">☰</div><span>Menu</span></a>
 </div>
 
 <script>
@@ -292,13 +292,6 @@
         const num2 = prompt("Emergency Contact 2 (Phone Number):", localStorage.getItem("citypulse_sos_2") || "");
         if (num2 !== null) localStorage.setItem("citypulse_sos_2", num2);
         alert("Emergency SOS Contacts saved!");
-    }
-
-    function changeLanguage() {
-        const lang = prompt("Choose Language (English / Hindi / Bengali):", "English");
-        if (lang) {
-            document.getElementById("lang-display").innerText = lang + " ›";
-        }
     }
 
     async function handleLogout() {
