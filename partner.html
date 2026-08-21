@@ -1,0 +1,186 @@
+<!-- 
+================================================================================
+  FILE NAME: partner.html
+  PROJECT  : CityPulse
+  PURPOSE  : Driver & Delivery Partner Live Dashboard
+================================================================================
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityPulse - Partner Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+            --primary: #007a99;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        body.dark-theme {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --border-color: #334155;
+            --primary: #38bdf8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            overflow-x: hidden !important;
+            overscroll-behavior-x: none !important;
+            position: relative;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+        }
+
+        .container { 
+            width: 100%; 
+            max-width: 420px; 
+            margin: 0 auto;
+            min-height: 100vh; 
+            padding: 16px; 
+            padding-bottom: 30px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 14px; 
+        }
+        
+        .header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
+        .header h1 { font-size: 18px; font-weight: 700; }
+        .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; padding: 4px; }
+
+        /* Status Toggle Card */
+        .status-card { background: var(--card-bg); border-radius: 16px; padding: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+        .status-info h2 { font-size: 15px; margin-bottom: 2px; }
+        .status-info p { font-size: 12px; color: var(--text-sub); }
+
+        /* Switch */
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .2s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .2s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--success); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        .section-title { font-size: 12px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; margin-top: 6px; letter-spacing: 0.5px; }
+
+        /* Request Cards */
+        .request-card { background: var(--card-bg); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border-left: 4px solid var(--primary); }
+        .req-header { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: bold; color: var(--primary); }
+        .req-details { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+        .req-details span { color: var(--text-sub); font-size: 11px; }
+        
+        .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
+        .btn-accept { background: var(--success); color: white; border: none; border-radius: 10px; padding: 10px; font-weight: bold; font-size: 12px; cursor: pointer; text-align: center; }
+        .btn-reject { background: var(--card-bg); color: var(--danger); border: 1px solid var(--danger); border-radius: 10px; padding: 10px; font-weight: bold; font-size: 12px; cursor: pointer; text-align: center; }
+
+        .no-request { text-align: center; color: var(--text-sub); font-size: 13px; padding: 30px; background: var(--card-bg); border-radius: 16px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <button class="back-btn" onclick="window.location.href='index.html'">←</button>
+        <h1>Partner Live Feed</h1>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <!-- Duty Status -->
+    <div class="status-card">
+        <div class="status-info">
+            <h2>Partner Duty Status</h2>
+            <p id="duty-text">You are currently Offline</p>
+        </div>
+        <label class="switch">
+            <input type="checkbox" id="duty-toggle" onchange="toggleDuty()">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="section-title">📡 Live Ride & Delivery Requests</div>
+
+    <!-- Requests Feed Container -->
+    <div id="requests-container">
+        <!-- Sample Request Card (Will be dynamically loaded from database later) -->
+        <div class="request-card">
+            <div class="req-header">
+                <span>🛵 BIKE TAXI RIDE</span>
+                <span>Est. ₹65</span>
+            </div>
+            <div class="req-details">
+                <p><strong>Pickup:</strong> Station Road, Bhatpara</p>
+                <p><strong>Drop:</strong> Kankinara More</p>
+                <span>Requested 2 mins ago</span>
+            </div>
+            <div class="action-row">
+                <button class="btn-reject" onclick="handleAction('Rejected')">Reject</button>
+                <button class="btn-accept" onclick="handleAction('Accepted')">Accept Ride</button>
+            </div>
+        </div>
+
+        <div class="request-card" style="border-left-color: #f59e0b;">
+            <div class="req-header" style="color: #f59e0b;">
+                <span>📦 PARCEL DELIVERY</span>
+                <span>Est. ₹90</span>
+            </div>
+            <div class="req-details">
+                <p><strong>Item:</strong> Medicine Box</p>
+                <p><strong>Route:</strong> Ward 14 to Hospital Gate</p>
+                <span>Requested 5 mins ago</span>
+            </div>
+            <div class="action-row">
+                <button class="btn-reject" onclick="handleAction('Rejected')">Reject</button>
+                <button class="btn-accept" onclick="handleAction('Accepted')">Accept Order</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleDuty() {
+        const isOnline = document.getElementById("duty-toggle").checked;
+        const dutyText = document.getElementById("duty-text");
+        if (isOnline) {
+            dutyText.innerText = "You are Online & Receiving Requests";
+            dutyText.style.color = "var(--success)";
+        } else {
+            dutyText.innerText = "You are currently Offline";
+            dutyText.style.color = "var(--text-sub)";
+        }
+        localStorage.setItem("citypulse_partner_online", isOnline ? "true" : "false");
+    }
+
+    function handleAction(status) {
+        if (status === 'Accepted') {
+            alert("Request Accepted! Navigating to pickup location...");
+        } else {
+            alert("Request ignored.");
+        }
+    }
+
+    (function initPartner() {
+        if (localStorage.getItem("citypulse_partner_online") === "true") {
+            document.getElementById("duty-toggle").checked = true;
+            document.getElementById("duty-text").innerText = "You are Online & Receiving Requests";
+            document.getElementById("duty-text").style.color = "var(--success)";
+        }
+    })();
+</script>
+</body>
+</html>
+
