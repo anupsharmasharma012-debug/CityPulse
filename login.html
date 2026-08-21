@@ -32,7 +32,7 @@
 
 <div id="splash-screen">
     <h1>CityPulse</h1>
-    <p>Loading Municipal Portal...</p>
+    <p id="splash-text">Loading Municipal Portal...</p>
 </div>
 
 <div id="login-app" class="login-container">
@@ -48,6 +48,7 @@
     
     <div class="button-section">
         <button id="bio-auth-btn" class="login-btn bio-btn" onclick="handleBiometricAuth()">⚡ Quick Unlock (Biometrics)</button>
+        <button class="login-btn" onclick="loginWithGoogle()">G Continue with Google</button>
       
         <button class="login-btn" onclick="togglePhoneBox()">📞 Continue with phone number</button>
         <div id="phone-auth-box" class="auth-sub-box">
@@ -68,7 +69,6 @@
             <button class="login-btn" style="padding: 10px; width: 100%; margin-top: 6px;" onclick="handleEmailLogin()">Sign In / Sign Up</button>
         </div>
 
-        <button class="login-btn" onclick="loginWithGoogle()">G Continue with Google</button>
         <button class="login-btn" onclick="setGuestAndEnter()" style="border:none; text-decoration:underline;">••• Skip as Guest</button>
     </div>
 </div>
@@ -76,10 +76,27 @@
 <script>
     const supabaseClient = supabase.createClient("https://qfefkyrwxdhdxyajutst.supabase.co", "sb_publishable_mOjSpSn12VMJMf-OWwCDFg_h0u-YL5c");
 
+    // 1. SUPABASE REALTIME LISTENER (The most important fix)
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+        if (session && session.user) {
+            localStorage.setItem("citypulse_saved_user", session.user.email || session.user.phone);
+            localStorage.removeItem("citypulse_is_guest");
+            window.location.replace("index.html");
+        }
+    });
+
+    // 2. INITIAL LOAD LOGIC
     (async function initLogin() {
-        // Handle Google Auth Loop Fix
+        // Agar URL me token hai, toh Splash screen dikhao aur wait karo (redirect mat maro)
         if (window.location.hash.includes("access_token")) {
-            window.location.replace("index.html" + window.location.hash);
+            document.getElementById('splash-screen').style.display = 'flex';
+            document.getElementById('splash-text').innerText = "Authenticating Google Login...";
+            return; // Wait for onAuthStateChange to fire
+        }
+
+        const savedUser = localStorage.getItem("citypulse_saved_user");
+        if (savedUser) {
+            window.location.replace("index.html");
             return;
         }
 
@@ -88,11 +105,6 @@
             document.getElementById('login-app').style.display = 'flex';
         }, 1200);
 
-        const savedUser = localStorage.getItem("citypulse_saved_user");
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if ((session && session.user) || savedUser) {
-            window.location.replace("index.html");
-        }
         if (window.PublicKeyCredential && localStorage.getItem("citypulse_bio_enrolled") === "true") {
             document.getElementById('bio-auth-btn').style.display = "block";
         }
@@ -115,7 +127,10 @@
     function sendOTP() { document.getElementById('step-phone').style.display = 'none'; document.getElementById('step-otp').style.display = 'block'; alert("Test OTP: 123456"); }
     function verifyOTP() { if (document.getElementById('user-otp').value === "123456") proceedSuccess("+91 " + document.getElementById('user-phone').value); else alert("Invalid OTP"); }
 
-    async function loginWithGoogle() { await supabaseClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + window.location.pathname.replace('login.html', 'index.html') } }); }
+    async function loginWithGoogle() { 
+        const redirectUrl = window.location.href.split('login.html')[0] + 'index.html';
+        await supabaseClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: redirectUrl } }); 
+    }
     
     async function handleBiometricAuth() {
         try {
