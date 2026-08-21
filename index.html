@@ -1,3 +1,11 @@
+<!-- 
+================================================================================
+  FILE NAME: index.html
+  PROJECT  : CityPulse
+  PURPOSE  : Dashboard with Clean Header, Live Weather, SOS Modal & Profile Nav
+================================================================================
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,135 +13,559 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CityPulse - Home</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
-        :root { --bg-grad: linear-gradient(180deg, #1b4b60, #225c75, #2c6f8d); --card-bg: #ffffff; --text-dark: #1e3d4f; }
-        body.dark-theme { --bg-grad: linear-gradient(180deg, #0b1c24, #122c38, #183a4a); --card-bg: #1e293b; --text-dark: #f8fafc; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f0f4f8; display: flex; justify-content: center; color: var(--text-dark); }
-        
-        .app-container { width: 100%; max-width: 420px; background: var(--bg-grad); min-height: 100vh; padding: 16px; padding-bottom: 85px; display: flex; flex-direction: column; gap: 14px; }
-        
-        .top-header { display: flex; justify-content: space-between; align-items: center; padding: 6px 2px; color: #ffffff; }
-        .brand-title { font-size: 22px; font-weight: 800; }
-        .lang-btn { background: rgba(255, 255, 255, 0.15); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; border: 1px solid rgba(255,255,255,0.3); color: white; }
-        
-        .scroll-wrapper { width: 100%; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
-        .scroll-wrapper::-webkit-scrollbar { display: none; }
-        .scroll-grid { display: flex; gap: 10px; width: max-content; }
-        .action-card { background: var(--card-bg); border-radius: 12px; padding: 10px 15px; text-align: center; cursor: pointer; min-width: 75px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-        
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-        .info-card { background: var(--card-bg); border-radius: 12px; padding: 12px; text-align: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-        
-        .emergency-box { background: var(--card-bg); border-radius: 14px; padding: 15px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); margin-top: 10px; }
-        .btn-danger-large { width: 100%; border: none; border-radius: 10px; background: #e63946; color: white; font-size: 14px; font-weight: bold; padding: 12px; cursor: pointer; margin-bottom: 10px; }
-        .btn-complain { width: 100%; border: 1px solid #d1d5db; border-radius: 10px; background: transparent; color: var(--text-dark); font-size: 12px; font-weight: bold; padding: 10px; cursor: pointer; }
+        :root {
+            --bg-grad: linear-gradient(180deg, #1b4b60, #225c75, #2c6f8d);
+            --card-bg: #ffffff;
+            --text-dark: #1e3d4f;
+        }
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
-        .modal-content { background: var(--card-bg); border-radius: 20px; width: 100%; max-width: 360px; padding: 24px 20px; text-align: center; }
-        .modal-content h2 { color: #e63946; font-size: 20px; margin-bottom: 8px; }
-        .loc-badge { background: rgba(0,0,0,0.05); border: 1px solid #ccc; padding: 8px; border-radius: 8px; font-size: 11px; margin-bottom: 16px; word-break: break-all; }
-        .btn-sos-trigger { background: #e63946; color: #ffffff; width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; }
+        body.dark-theme {
+            --bg-grad: linear-gradient(180deg, #0b1c24, #122c38, #183a4a);
+            --card-bg: #1e293b;
+            --text-dark: #f8fafc;
+        }
 
-        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; height: 65px; background: #0f3443; display: grid; grid-template-columns: repeat(6, 1fr); align-items: center; border-top: 1px solid rgba(255,255,255,0.1); z-index: 9999; box-shadow: 0 -3px 10px rgba(0,0,0,0.25); }
-        .nav-item { text-align: center; color: #b0c4de; font-size: 9px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none;}
-        .nav-item.active { color: #00e5ff; }
-        .nav-item .nav-icon { font-size: 16px; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--bg-grad);
+            min-height: 100vh;
+            padding: 16px;
+            padding-bottom: 85px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            position: relative;
+        }
+
+        /* Top Brand Header */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 2px;
+            color: #ffffff;
+        }
+
+        .brand-title {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .header-live-badge {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: #e0f2fe;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 1. Quick Action Cards */
+        .top-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .action-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 10px 4px;
+            text-align: center;
+            color: #1e3d4f;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            transition: transform 0.1s;
+        }
+
+        .action-card:active {
+            transform: scale(0.96);
+        }
+
+        .action-card .icon {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .action-card span {
+            font-size: 11px;
+            font-weight: 700;
+            display: block;
+        }
+
+        /* 2. Info Widgets */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr 1fr;
+            gap: 8px;
+        }
+
+        .info-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 10px 6px;
+            text-align: center;
+            color: #1e3d4f;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .info-card .icon {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+
+        .info-card .title {
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        .info-card .subtext {
+            font-size: 10px;
+            color: #555;
+            margin-top: 2px;
+            font-weight: 600;
+        }
+
+        /* 3. Emergency Section */
+        .emergency-box {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .emergency-top {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .btn-danger-large {
+            border: 2px solid #e63946;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #e63946;
+            font-size: 13px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .btn-danger-large:active {
+            background: #ffe5e5;
+        }
+
+        .btn-complain {
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #1e3d4f;
+            font-size: 11px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 8px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .emergency-contacts {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+
+        .contact-pill {
+            background: #fff5f5;
+            border: 1px solid #ffe0e0;
+            border-radius: 10px;
+            padding: 8px 4px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .contact-pill .label {
+            font-size: 10px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .contact-pill .call-icon {
+            color: #d90429;
+            font-size: 14px;
+        }
+
+        /* 4. News Banner */
+        .news-banner {
+            background: #0f3443;
+            color: #ffffff;
+            border-radius: 12px;
+            padding: 12px 14px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .news-banner h3 {
+            font-size: 13px;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        .news-banner p {
+            font-size: 11px;
+            color: #b0c4de;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 5. Middle Promo Cards */
+        .promo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .promo-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 10px 4px;
+            text-align: center;
+            color: #1e3d4f;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+
+        .promo-card .icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .promo-card span {
+            font-size: 10px;
+            font-weight: bold;
+            display: block;
+            line-height: 1.2;
+        }
+
+        /* 6. City Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .service-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 10px 4px;
+            text-align: center;
+            color: #1e3d4f;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+
+        .service-card .icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .service-card .title {
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .service-card .subtitle {
+            font-size: 8px;
+            color: #666;
+            margin-top: 2px;
+            display: block;
+        }
+
+        /* 7. Bottom Navigation (UPDATED TO 6 BUTTONS & GRID) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 420px;
+            height: 65px;
+            background: #0f3443;
+            display: grid; 
+            grid-template-columns: repeat(6, 1fr); 
+            align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            z-index: 9999;
+            box-shadow: 0 -3px 10px rgba(0,0,0,0.25);
+        }
+
+        .nav-item {
+            text-align: center;
+            color: #b0c4de;
+            font-size: 9px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-item.active {
+            color: #00e5ff;
+        }
+
+        .nav-item .nav-icon {
+            font-size: 16px;
+        }
+
+        /* 8. SOS Emergency Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 360px;
+            padding: 24px 20px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-content h2 {
+            color: #e63946;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .modal-content p {
+            color: #555;
+            font-size: 13px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .loc-badge {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            color: #475569;
+            margin-bottom: 16px;
+            word-break: break-all;
+        }
+
+        .btn-sos-trigger {
+            background: #e63946;
+            color: #ffffff;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            border: none;
+            margin-top: 12px;
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 6px;
+        }
     </style>
 </head>
 <body>
 
 <div class="app-container">
+
+    <!-- Top Header (Clean: No duplicate profile button) -->
     <div class="top-header">
         <div class="brand-title">CityPulse</div>
-        <button class="lang-btn" onclick="alert('Language changed!')">🌐 EN / HI</button>
+        <div class="header-live-badge">🟢 Portal Active</div>
     </div>
 
-    <!-- Scrollable Quick Actions -->
-    <div class="scroll-wrapper">
-        <div class="scroll-grid">
-            <div class="action-card" onclick="window.location.href='pay.html'"><div style="font-size: 22px;">💳</div><span style="font-size: 11px; font-weight: bold;">Pay</span></div>
-            <div class="action-card" onclick="window.location.href='transport.html'"><div style="font-size: 22px;">🚌</div><span style="font-size: 11px; font-weight: bold;">Transport</span></div>
-            <div class="action-card" onclick="window.location.href='shopping.html'"><div style="font-size: 22px;">🛒</div><span style="font-size: 11px; font-weight: bold;">Shopping</span></div>
-            <div class="action-card" onclick="window.location.href='food.html'"><div style="font-size: 22px;">🍽️</div><span style="font-size: 11px; font-weight: bold;">Food</span></div>
-            <div class="action-card" onclick="window.location.href='travel.html'"><div style="font-size: 22px;">✈️</div><span style="font-size: 11px; font-weight: bold;">Travel</span></div>
-            <div class="action-card" onclick="window.location.href='medical.html'"><div style="font-size: 22px;">🏥</div><span style="font-size: 11px; font-weight: bold;">Medical</span></div>
-        </div>
+    <!-- Quick Actions -->
+    <div class="top-grid">
+        <div class="action-card"><div class="icon">💳</div><span>Pay</span></div>
+        <div class="action-card"><div class="icon">🚌</div><span>Transport</span></div>
+        <div class="action-card"><div class="icon">🛒</div><span>Shopping</span></div>
+        <div class="action-card"><div class="icon">🍽️</div><span>Food</span></div>
     </div>
 
-    <!-- Weather & Calendar Grid -->
+    <!-- Info Widgets -->
     <div class="info-grid">
-        <div class="info-card" onclick="fetchLiveWeather()">
-            <div id="city-name-display" style="font-size: 12px; font-weight: 700;">📍 Locating...</div>
-            <div id="weather-temp-display" style="font-size: 11px; font-weight: 600; color:gray;">⛅ Loading...</div>
+        <div class="info-card" id="weather-card" onclick="fetchLiveWeather()">
+            <div class="title" id="city-name-display">📍 Detecting...</div>
+            <div class="subtext" id="weather-temp-display">⛅ Loading...</div>
         </div>
-        <div class="info-card" onclick="window.location.href='calendar.html'">
-            <div style="font-size: 22px;">📅</div>
-            <div style="font-size: 11px; font-weight: 600; color:gray;">Panchang</div>
+        <div class="info-card">
+            <div class="icon">📅</div>
+            <div class="title" id="current-date-display">Today</div>
         </div>
-    </div>
-
-    <!-- Promos & News -->
-    <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; margin-top: 10px; color: white;">
-        <h3 style="font-size: 13px; margin-bottom: 4px;">📰 City Updates</h3>
-        <p style="font-size: 11px;">Main Street civic maintenance scheduled for this weekend.</p>
+        <div class="info-card" onclick="window.location.href='profile.html'">
+            <div class="icon">🌐</div>
+            <div class="title">Language</div>
+        </div>
     </div>
 
     <!-- Emergency Box -->
     <div class="emergency-box">
-        <button class="btn-danger-large" onclick="openSOSModal()">🚨 EMERGENCY SOS</button>
-        <button class="btn-complain" onclick="alert('Citizen Voice Complaint Form coming up!')">📢 Citizen Voice & Complaints</button>
+        <div class="emergency-top">
+            <button class="btn-danger-large" onclick="openSOSModal()">➕ Emergency</button>
+            <button class="btn-complain" onclick="alert('Citizen Voice Complaint Form coming up!')">📢 Citizen Voice</button>
+        </div>
+        <div class="emergency-contacts">
+            <div class="contact-pill" onclick="window.location.href='tel:1091'"><div class="label">👩 Helpline</div><div class="call-icon">📞</div></div>
+            <div class="contact-pill" onclick="window.location.href='tel:100'"><div class="label">👮 Police</div><div class="call-icon">📞</div></div>
+            <div class="contact-pill" onclick="window.location.href='tel:108'"><div class="label">🚑 Ambulance</div><div class="call-icon">📞</div></div>
+        </div>
     </div>
+
+    <!-- News Banner -->
+    <div class="news-banner">
+        <h3>City News & Updates</h3>
+        <p>Main Street civic maintenance scheduled for this weekend...</p>
+    </div>
+
+    <!-- Promos -->
+    <div class="promo-grid">
+        <div class="promo-card"><div class="icon">🏷️</div><span>Explore<br>Top Offers</span></div>
+        <div class="promo-card"><div class="icon">🎉</div><span>Upcoming<br>City Events</span></div>
+        <div class="promo-card"><div class="icon">💬</div><span>Community<br>Forums</span></div>
+    </div>
+
+    <!-- Services Grid -->
+    <div class="services-grid">
+        <div class="service-card"><div class="icon">⚡</div><div class="title">Electricity</div><span class="subtitle">Bill Payment</span></div>
+        <div class="service-card"><div class="icon">🚰</div><div class="title">Water</div><span class="subtitle">Meter Reading</span></div>
+        <div class="service-card"><div class="icon">♻️</div><div class="title">Waste</div><span class="subtitle">Collection</span></div>
+        <div class="service-card"><div class="icon">🗺️</div><div class="title">Map</div><span class="subtitle">Routing</span></div>
+        <div class="service-card"><div class="icon">🚦</div><div class="title">Traffic</div><span class="subtitle">Live Updates</span></div>
+        <div class="service-card"><div class="icon">🎧</div><div class="title">Support</div><span class="subtitle">Customer Care</span></div>
+        <div class="service-card"><div class="icon">🏙️</div><div class="title">Local</div><span class="subtitle">Around You</span></div>
+        <div class="service-card"><div class="icon">🅿️</div><div class="title">Parking</div><span class="subtitle">Nearby Garages</span></div>
+    </div>
+
+    <!-- UPDATED: 6-Button Bottom Navigation (Home Active) -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item active">
+            <div class="nav-icon">🏠</div><span>Home</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <div class="nav-icon">👤</div><span>Profile</span>
+        </a>
+        <a href="search.html" class="nav-item">
+            <div class="nav-icon">🔍</div><span>Search</span>
+        </a>
+        <a href="category.html" class="nav-item">
+            <div class="nav-icon">📂</div><span>Category</span>
+        </a>
+        <a href="notifications.html" class="nav-item">
+            <div class="nav-icon">🔔</div><span>Alerts</span>
+        </a>
+        <a href="menu.html" class="nav-item">
+            <div class="nav-icon">☰</div><span>Menu</span>
+        </a>
+    </div>
+
 </div>
 
 <!-- SOS Emergency Modal -->
 <div id="sos-modal" class="modal-overlay">
     <div class="modal-content">
         <h2>🚨 SOS EMERGENCY</h2>
-        <p style="font-size:12px; color:gray; margin-bottom:15px;">Sending live GPS location to emergency control room.</p>
+        <p>Aapki live GPS location ke sath emergency control room ko alert bheja ja raha hai.</p>
         <div class="loc-badge" id="sos-loc-status">📍 Detecting exact coordinates...</div>
         <button class="btn-sos-trigger" onclick="triggerSOS()">SEND SOS ALERT</button>
-        <button style="background:none; border:none; margin-top:15px; color:gray; cursor:pointer;" onclick="closeSOSModal()">Cancel</button>
+        <br>
+        <button class="btn-cancel" onclick="closeSOSModal()">Cancel</button>
     </div>
 </div>
 
-<!-- 6-Button Bottom Navigation (Home Active) -->
-<div class="bottom-nav">
-    <a href="index.html" class="nav-item active"><div class="nav-icon">🏠</div><span>Home</span></a>
-    <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><span>Profile</span></a>
-    <a href="search.html" class="nav-item"><div class="nav-icon">🔍</div><span>Search</span></a>
-    <a href="category.html" class="nav-item"><div class="nav-icon">📂</div><span>Category</span></a>
-    <a href="notifications.html" class="nav-item"><div class="nav-icon">🔔</div><span>Alerts</span></a>
-    <a href="menu.html" class="nav-item"><div class="nav-icon">☰</div><span>Menu</span></a>
-</div>
-
 <script>
-    const supabaseClient = supabase.createClient("https://qfefkyrwxdhdxyajutst.supabase.co", "sb_publishable_mOjSpSn12VMJMf-OWwCDFg_h0u-YL5c");
-    let currentLat = null, currentLon = null;
+    const SUPABASE_URL = "https://qfefkyrwxdhdxyajutst.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_mOjSpSn12VMJMf-OWwCDFg_h0u-YL5c";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    let currentLat = null;
+    let currentLon = null;
+
+    // 1. [BUG FIX]: Robust Session Guard with PKCE Bypass
     (async function checkSession() {
-        if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
-        
-        // 1. Agar hash me token hai (Redirect from Google), toh login check bypass karo.
-        if (window.location.hash.includes("access_token")) {
-            console.log("Authenticating Google Token...");
-            // Let the realtime listener handle the rest
-        } else {
-            // Normal Check
-            const savedUser = localStorage.getItem("citypulse_saved_user");
-            const isGuest = localStorage.getItem("citypulse_is_guest");
-            if (!savedUser && !isGuest) {
-                window.location.replace("login.html");
-            }
+        if (localStorage.getItem("citypulse_theme") === "dark") {
+            document.body.classList.add("dark-theme");
         }
-        
-        // 2. Realtime Listener
+
+        const isCallback = window.location.search.includes("code=") || window.location.hash.includes("access_token");
+        const isGuest = localStorage.getItem("citypulse_is_guest") === "true";
+        const savedUser = localStorage.getItem("citypulse_saved_user");
+
+        // Sirf tabhi login par bhejenge jab token NAHI ho, user NAHI ho, guest NAHI ho.
+        if (!isCallback && !isGuest && !savedUser) {
+            window.location.replace("login.html");
+        }
+
+        // Realtime Listener to handle session setting silently
         supabaseClient.auth.onAuthStateChange((event, session) => {
             if (session && session.user) {
-                localStorage.setItem("citypulse_saved_user", session.user.email);
-                
-                // Clean the URL bar so the token doesn't stay there
-                if (window.location.hash.includes("access_token")) {
+                localStorage.setItem("citypulse_saved_user", session.user.email || session.user.phone || "Active Resident");
+                localStorage.removeItem("citypulse_is_guest");
+                if (isCallback) {
                     window.history.replaceState(null, null, window.location.pathname);
                 }
             } else if (event === 'SIGNED_OUT') {
@@ -143,31 +575,51 @@
         });
     })();
 
-    async function fetchLiveWeather() {
-        if (!navigator.geolocation) return;
-        document.getElementById("city-name-display").innerText = "📍 Locating...";
-        navigator.geolocation.getCurrentPosition(async (pos) => {
-            currentLat = pos.coords.latitude; currentLon = pos.coords.longitude;
-            try {
-                const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${currentLat}&lon=${currentLon}&format=json`);
-                const geoData = await geoRes.json();
-                document.getElementById("city-name-display").innerText = `📍 ${geoData.address.city || geoData.address.town || "My City"}`;
-                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${currentLat}&longitude=${currentLon}&current_weather=true`);
-                const weatherData = await weatherRes.json();
-                document.getElementById("weather-temp-display").innerText = `⛅ ${Math.round(weatherData.current_weather.temperature)}°C`;
-            } catch (err) {}
-        });
+    // 2. Live Date Display
+    function updateDateWidget() {
+        const dateElem = document.getElementById("current-date-display");
+        if (dateElem) {
+            const today = new Date();
+            dateElem.innerText = today.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+        }
     }
-    fetchLiveWeather();
+    updateDateWidget();
 
-    function openSOSModal() {
-        document.getElementById('sos-modal').style.display = 'flex';
-        const locStatus = document.getElementById('sos-loc-status');
-        if (currentLat && currentLon) { locStatus.innerText = `📍 Lat: ${currentLat.toFixed(4)}, Lon: ${currentLon.toFixed(4)}`; } 
-        else { locStatus.innerText = "📍 Enabling GPS..."; }
-    }
-    function closeSOSModal() { document.getElementById('sos-modal').style.display = 'none'; }
-    function triggerSOS() { alert("🚨 SOS ALERT DISPATCHED!\nEmergency services contacted."); closeSOSModal(); }
-</script>
-</body>
-</html>
+    // 3. Live City & Weather Integration
+    async function fetchLiveWeather() {
+        const cityElem = document.getElementById("city-name-display");
+        const weatherElem = document.getElementById("weather-temp-display");
+
+        if (!navigator.geolocation) {
+            cityElem.innerText = "📍 Bhatpara";
+            weatherElem.innerText = "⛅ 28°C";
+            return;
+        }
+
+        cityElem.innerText = "📍 Locating...";
+        weatherElem.innerText = "⛅ Loading...";
+
+        navigator.geolocation.getCurrentPosition(
+            async (pos) => {
+                currentLat = pos.coords.latitude;
+                currentLon = pos.coords.longitude;
+                try {
+                    const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${currentLat}&lon=${currentLon}&format=json`);
+                    const geoData = await geoRes.json();
+                    const city = geoData.address.city || geoData.address.town || geoData.address.suburb || geoData.address.county || "My City";
+                    cityElem.innerText = `📍 ${city}`;
+
+                    const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${currentLat}&longitude=${currentLon}&current_weather=true`);
+                    const weatherData = await weatherRes.json();
+                    const temp = Math.round(weatherData.current_weather.temperature);
+                    weatherElem.innerText = `⛅ Weather, ${temp}°C`;
+                } catch (err) {
+                    cityElem.innerText = "📍 Bhatpara";
+                    weatherElem.innerText = "⛅ 28°C";
+                }
+            },
+            (err) => {
+                cityElem.innerText = "📍 Enable GPS";
+                weatherElem.innerText = "⛅ Tap to retry";
+            },
+            { ti
