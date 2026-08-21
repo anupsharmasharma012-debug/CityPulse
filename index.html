@@ -2,7 +2,7 @@
 ================================================================================
   FILE NAME: index.html
   PROJECT  : CityPulse
-  PURPOSE  : Home Dashboard with Integrated Ride & Delivery Quick Action
+  PURPOSE  : Exact Current UI Theme + All Restored Buttons & Ride/Parcel Integration
 ================================================================================
 -->
 
@@ -37,9 +37,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
         html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
+            margin: 0; padding: 0; width: 100%;
             overflow-x: hidden !important;
             overscroll-behavior-x: none !important;
             position: relative;
@@ -49,25 +47,19 @@
         }
 
         .container { 
-            width: 100%; 
-            max-width: 420px; 
-            margin: 0 auto;
-            min-height: 100vh; 
-            padding: 16px; 
-            padding-bottom: 85px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 16px; 
+            width: 100%; max-width: 420px; margin: 0 auto;
+            min-height: 100vh; padding: 16px; padding-bottom: 85px; 
+            display: flex; flex-direction: column; gap: 14px; 
         }
 
         .header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
         .header h1 { font-size: 20px; font-weight: 700; color: var(--primary); }
 
-        /* Quick Actions Grid (Pay, Ride/Parcel, etc.) */
+        /* Quick Actions Grid matching your exact current look + all options */
         .quick-actions { 
             background: var(--card-bg); 
             border-radius: 16px; 
-            padding: 18px 12px; 
+            padding: 16px 12px; 
             display: grid; 
             grid-template-columns: repeat(4, 1fr); 
             gap: 12px; 
@@ -76,50 +68,36 @@
         }
 
         .action-item { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            text-decoration: none; 
-            color: var(--text-main); 
-            font-size: 11px; 
-            font-weight: 600; 
-            gap: 6px; 
+            display: flex; flex-direction: column; align-items: center; 
+            text-decoration: none; color: var(--text-main); 
+            font-size: 11px; font-weight: 600; gap: 6px; 
         }
 
         .action-icon { 
-            width: 48px; 
-            height: 48px; 
-            border-radius: 14px; 
-            background: rgba(0, 122, 153, 0.1); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 20px; 
-            transition: 0.2s;
+            width: 48px; height: 48px; border-radius: 14px; 
+            background: rgba(0, 122, 153, 0.08); 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 20px; transition: 0.2s;
         }
 
         .action-item:active .action-icon { background: var(--primary); color: white; }
 
-        /* Banner Card */
+        /* Banner Card matching your screenshot style */
         .banner-card { 
             background: linear-gradient(135deg, #007a99, #005f75); 
             color: white; 
             border-radius: 16px; 
-            padding: 20px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 8px; 
-            box-shadow: 0 4px 12px rgba(0,122,153,0.2); 
+            padding: 18px; 
+            display: flex; flex-direction: column; gap: 6px; 
+            box-shadow: 0 4px 12px rgba(0,122,153,0.15); 
         }
-        .banner-card h2 { font-size: 18px; font-weight: 700; }
-        .banner-card p { font-size: 12px; opacity: 0.9; }
+        .banner-card h2 { font-size: 16px; font-weight: 700; }
+        .banner-card p { font-size: 11px; opacity: 0.9; line-height: 1.4; }
 
-        /* Bottom Navigation */
+        /* Bottom Navigation matching your screenshot exact style */
         .bottom-nav { 
-            position: fixed; 
-            bottom: 0; left: 50%; transform: translateX(-50%); 
-            width: 100%; max-width: 420px; height: 65px; 
-            background: #0f3443; 
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
+            width: 100%; max-width: 420px; height: 65px; background: #0f3443; 
             display: grid; grid-template-columns: repeat(6, 1fr); align-items: center; 
             border-top: 1px solid rgba(255,255,255,0.1); z-index: 9999; 
             box-shadow: 0 -3px 10px rgba(0,0,0,0.25); 
@@ -132,13 +110,13 @@
 <body>
 
 <div class="container">
-    <!-- App Header -->
+    <!-- Header with Bhatpara location on the right -->
     <div class="header">
         <h1>CityPulse</h1>
         <div style="font-size: 13px; font-weight: 600; color: var(--text-sub);">Bhatpara</div>
     </div>
 
-    <!-- Quick Actions Row (Pay, Ride/Parcel, etc.) -->
+    <!-- Quick Actions Grid (All original options + Pay + Ride/Parcel) -->
     <div class="quick-actions">
         <a href="pay.html" class="action-item">
             <div class="action-icon">💳</div>
@@ -156,16 +134,32 @@
             <div class="action-icon">📂</div>
             <span>Services</span>
         </a>
+        <a href="Callender.html" class="action-item">
+            <div class="action-icon">📅</div>
+            <span>Calendar</span>
+        </a>
+        <a href="complaints.html" class="action-item">
+            <div class="action-icon">📝</div>
+            <span>Complaints</span>
+        </a>
+        <a href="search.html" class="action-item">
+            <div class="action-icon">🔍</div>
+            <span>Search</span>
+        </a>
+        <a href="menu.html" class="action-item">
+            <div class="action-icon">☰</div>
+            <span>More</span>
+        </a>
     </div>
 
-    <!-- Promotional / Info Banner -->
+    <!-- Promotional Banner -->
     <div class="banner-card">
         <h2>Fast City Transit & Delivery</h2>
         <p>Book local bike taxis, auto rides, or send packages securely across the town instantly.</p>
     </div>
 </div>
 
-<!-- Bottom Navigation -->
+<!-- Bottom Navigation Bar -->
 <div class="bottom-nav">
     <a href="index.html" class="nav-item active"><div class="nav-icon">🏠</div><span>Home</span></a>
     <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><span>Profile</span></a>
@@ -177,3 +171,4 @@
 
 </body>
 </html>
+
