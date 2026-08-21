@@ -2,7 +2,7 @@
 ================================================================================
   FILE NAME: index.html
   PROJECT  : CityPulse
-  PURPOSE  : Dashboard with Clean Header, Live Weather, SOS Modal & Profile Nav
+  PURPOSE  : Home Dashboard with Integrated Ride & Delivery Quick Action
 ================================================================================
 -->
 
@@ -13,27 +13,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CityPulse - Home</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <style>
         :root {
-            --bg-grad: linear-gradient(180deg, #1b4b60, #225c75, #2c6f8d);
+            --bg-color: #f0f4f8;
             --card-bg: #ffffff;
-            --text-dark: #1e3d4f;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+            --primary: #007a99;
+            --primary-dark: #005f75;
         }
 
         body.dark-theme {
-            --bg-grad: linear-gradient(180deg, #0b1c24, #122c38, #183a4a);
+            --bg-color: #0f172a;
             --card-bg: #1e293b;
-            --text-dark: #f8fafc;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --border-color: #334155;
+            --primary: #38bdf8;
+            --primary-dark: #0ea5e9;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
         html, body {
             margin: 0;
             padding: 0;
@@ -41,389 +43,137 @@
             overflow-x: hidden !important;
             overscroll-behavior-x: none !important;
             position: relative;
-            background-color: #f0f4f8;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: background-color 0.2s;
         }
 
-        .app-container {
-            width: 100%;
-            max-width: 420px;
+        .container { 
+            width: 100%; 
+            max-width: 420px; 
             margin: 0 auto;
-            background: var(--bg-grad);
-            min-height: 100vh;
-            padding: 16px;
-            padding-bottom: 85px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            position: relative;
-            box-sizing: border-box;
-            overflow-x: hidden !important;
+            min-height: 100vh; 
+            padding: 16px; 
+            padding-bottom: 85px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 16px; 
         }
 
-        /* Top Brand Header */
-        .top-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px 2px;
-            color: #ffffff;
-        }
+        .header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
+        .header h1 { font-size: 20px; font-weight: 700; color: var(--primary); }
 
-        .brand-title {
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-
-        .lang-quick-btn {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 5px 12px;
-            border-radius: 20px;
-            color: white;
-            font-size: 11px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        /* 1. Quick Action Cards */
-        .top-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-        }
-
-        .action-card {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 10px 4px;
-            text-align: center;
-            color: #1e3d4f;
-            cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            transition: transform 0.1s;
-        }
-
-        .action-card:active {
-            transform: scale(0.96);
-        }
-
-        .action-card .icon {
-            font-size: 22px;
-            margin-bottom: 4px;
-        }
-
-        .action-card span {
-            font-size: 11px;
-            font-weight: 700;
-            display: block;
-        }
-
-        /* 2. Info Widgets */
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1.3fr 1fr 1fr;
-            gap: 8px;
-        }
-
-        .info-card {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 10px 6px;
-            text-align: center;
-            color: #1e3d4f;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .info-card .icon {
-            font-size: 18px;
-            margin-bottom: 2px;
-        }
-
-        .info-card .title {
-            font-size: 11px;
-            font-weight: 700;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100%;
-        }
-
-        .info-card .subtext {
-            font-size: 10px;
-            color: #555;
-            margin-top: 2px;
-            font-weight: 600;
-        }
-
-        /* 3. Dual Compact Emergency & Citizen Voice Boxes */
-        .dual-action-container {
-            display: flex;
-            gap: 10px;
-        }
-
-        .action-box {
-            flex: 1;
-            padding: 16px 10px;
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-
-        .sos-box {
-            background: #e63946;
-            border: 1px solid #d90429;
-        }
-
-        .sos-box h4 {
-            color: #ffffff;
-            margin: 0;
-            font-size: 14px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-        }
-
-        .citizen-box {
-            background: #e0f2fe;
-            border: 1px solid #bae6fd;
-        }
-
-        .citizen-box h4 {
-            color: #0284c7;
-            margin: 0;
-            font-size: 14px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-        }
-
-        /* 4. News Banner */
-        .news-banner {
-            background: #0f3443;
-            color: #ffffff;
-            border-radius: 12px;
-            padding: 12px 14px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-        }
-
-        .news-banner h3 {
-            font-size: 13px;
-            margin-bottom: 4px;
-            font-weight: 700;
-        }
-
-        .news-banner p {
-            font-size: 11px;
-            color: #b0c4de;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* 5. Middle Promo Cards */
-        .promo-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
-
-        .promo-card {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 10px 4px;
-            text-align: center;
-            color: #1e3d4f;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            cursor: pointer;
-        }
-
-        .promo-card .icon {
-            font-size: 20px;
-            margin-bottom: 4px;
-        }
-
-        .promo-card span {
-            font-size: 10px;
-            font-weight: bold;
-            display: block;
-            line-height: 1.2;
-        }
-
-        /* 6. City Services Grid */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-        }
-
-        .service-card {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 10px 4px;
-            text-align: center;
-            color: #1e3d4f;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            cursor: pointer;
-        }
-
-        .service-card .icon {
-            font-size: 20px;
-            margin-bottom: 4px;
-        }
-
-        .service-card .title {
-            font-size: 10px;
-            font-weight: 700;
-        }
-
-        .service-card .subtitle {
-            font-size: 8px;
-            color: #666;
-            margin-top: 2px;
-            display: block;
-        }
-
-        /* 7. Bottom Navigation */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 420px;
-            height: 65px;
-            background: #0f3443;
+        /* Quick Actions Grid (Pay, Ride/Parcel, etc.) */
+        .quick-actions { 
+            background: var(--card-bg); 
+            border-radius: 16px; 
+            padding: 18px 12px; 
             display: grid; 
-            grid-template-columns: repeat(6, 1fr); 
-            align-items: center;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            z-index: 9999;
-            box-shadow: 0 -3px 10px rgba(0,0,0,0.25);
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 12px; 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05); 
+            text-align: center; 
         }
 
-        .nav-item {
-            text-align: center;
-            color: #b0c4de;
-            font-size: 9px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
+        .action-item { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            text-decoration: none; 
+            color: var(--text-main); 
+            font-size: 11px; 
+            font-weight: 600; 
+            gap: 6px; 
         }
 
-        .nav-item.active {
-            color: #00e5ff;
+        .action-icon { 
+            width: 48px; 
+            height: 48px; 
+            border-radius: 14px; 
+            background: rgba(0, 122, 153, 0.1); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 20px; 
+            transition: 0.2s;
         }
 
-        .nav-item .nav-icon {
-            font-size: 16px;
+        .action-item:active .action-icon { background: var(--primary); color: white; }
+
+        /* Banner Card */
+        .banner-card { 
+            background: linear-gradient(135deg, #007a99, #005f75); 
+            color: white; 
+            border-radius: 16px; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+            box-shadow: 0 4px 12px rgba(0,122,153,0.2); 
         }
+        .banner-card h2 { font-size: 18px; font-weight: 700; }
+        .banner-card p { font-size: 12px; opacity: 0.9; }
+
+        /* Bottom Navigation */
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 0; left: 50%; transform: translateX(-50%); 
+            width: 100%; max-width: 420px; height: 65px; 
+            background: #0f3443; 
+            display: grid; grid-template-columns: repeat(6, 1fr); align-items: center; 
+            border-top: 1px solid rgba(255,255,255,0.1); z-index: 9999; 
+            box-shadow: 0 -3px 10px rgba(0,0,0,0.25); 
+        }
+        .nav-item { text-align: center; color: #b0c4de; font-size: 9px; font-weight: 600; cursor: pointer; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-item.active { color: #00e5ff; }
+        .nav-item .nav-icon { font-size: 16px; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="top-header">
-        <div class="brand-title" data-i18n="app_title">CityPulse</div>
-        <button class="lang-quick-btn" onclick="window.location.href='language.html'" data-i18n="btn_language">🌐 Language</button>
+<div class="container">
+    <!-- App Header -->
+    <div class="header">
+        <h1>CityPulse</h1>
+        <div style="font-size: 13px; font-weight: 600; color: var(--text-sub);">Bhatpara</div>
     </div>
 
-    <div class="top-grid">
-        <div class="action-card"><div class="icon">💳</div><span>Pay</span></div>
-        <div class="action-card"><div class="icon">🚌</div><span>Transport</span></div>
-        <div class="action-card"><div class="icon">🛒</div><span>Shopping</span></div>
-        <div class="action-card"><div class="icon">🍽️</div><span>Food</span></div>
+    <!-- Quick Actions Row (Pay, Ride/Parcel, etc.) -->
+    <div class="quick-actions">
+        <a href="pay.html" class="action-item">
+            <div class="action-icon">💳</div>
+            <span>Pay</span>
+        </a>
+        <a href="delivery.html" class="action-item">
+            <div class="action-icon">🛵</div>
+            <span>Ride/Parcel</span>
+        </a>
+        <a href="emergency.html" class="action-item">
+            <div class="action-icon">🚨</div>
+            <span>Emergency</span>
+        </a>
+        <a href="category.html" class="action-item">
+            <div class="action-icon">📂</div>
+            <span>Services</span>
+        </a>
     </div>
 
-    <div class="info-grid">
-        <div class="info-card" id="weather-card" onclick="fetchLiveWeather()">
-            <div class="title" id="city-name-display" data-i18n="weather_detecting">📍 Detecting...</div>
-            <div class="subtext" id="weather-temp-display">⛅ Loading...</div>
-        </div>
-        <div class="info-card">
-            <div class="icon">📅</div>
-            <div class="title" id="current-date-display">Today</div>
-        </div>
-        <div class="info-card" onclick="window.location.href='profile.html'">
-            <div class="icon">👤</div>
-            <div class="title" data-i18n="profile_title">Profile</div>
-        </div>
-    </div>
-
-    <div class="dual-action-container">
-        <div class="action-box sos-box" onclick="window.location.href='emergency.html'">
-            <h4 data-i18n="sos_emergency">🚨 SOS EMERGENCY</h4>
-        </div>
-        <div class="action-box citizen-box" onclick="window.location.href='complaints.html'">
-            <h4 data-i18n="citizen_voice">📢 CITIZEN VOICE</h4>
-        </div>
-    </div>
-
-    <div class="news-banner">
-        <h3>City News & Updates</h3>
-        <p>Main Street civic maintenance scheduled for this weekend...</p>
-    </div>
-
-    <div class="promo-grid">
-        <div class="promo-card"><div class="icon">🏷️</div><span>Explore<br>Top Offers</span></div>
-        <div class="promo-card"><div class="icon">🎉</div><span>Upcoming<br>City Events</span></div>
-        <div class="promo-card"><div class="icon">💬</div><span>Community<br>Forums</span></div>
-    </div>
-
-    <div class="services-grid">
-        <div class="service-card"><div class="icon">⚡</div><div class="title">Electricity</div><span class="subtitle">Bill Payment</span></div>
-        <div class="service-card"><div class="icon">🚰</div><div class="title">Water</div><span class="subtitle">Meter Reading</span></div>
-        <div class="service-card"><div class="icon">♻️</div><div class="title">Waste</div><span class="subtitle">Collection</span></div>
-        <div class="service-card"><div class="icon">🗺️</div><div class="title">Map</div><span class="subtitle">Routing</span></div>
-        <div class="service-card"><div class="icon">🚦</div><div class="title">Traffic</div><span class="subtitle">Live Updates</span></div>
-        <div class="service-card"><div class="icon">🎧</div><div class="title">Support</div><span class="subtitle">Customer Care</span></div>
-        <div class="service-card"><div class="icon">🏙️</div><div class="title">Local</div><span class="subtitle">Around You</span></div>
-        <div class="service-card"><div class="icon">🅿️</div><div class="title">Parking</div><span class="subtitle">Nearby Garages</span></div>
-    </div>
-
-    <div class="bottom-nav">
-        <a href="index.html" class="nav-item active"><div class="nav-icon">🏠</div><span>Home</span></a>
-        <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><span>Profile</span></a>
-        <a href="search.html" class="nav-item"><div class="nav-icon">🔍</div><span>Search</span></a>
-        <a href="category.html" class="nav-item"><div class="nav-icon">📂</div><span>Category</span></a>
-        <a href="notifications.html" class="nav-item"><div class="nav-icon">🔔</div><span>Alerts</span></a>
-        <a href="menu.html" class="nav-item"><div class="nav-icon">☰</div><span>Menu</span></a>
+    <!-- Promotional / Info Banner -->
+    <div class="banner-card">
+        <h2>Fast City Transit & Delivery</h2>
+        <p>Book local bike taxis, auto rides, or send packages securely across the town instantly.</p>
     </div>
 </div>
 
-<script>
-    async function applyTranslations() {
-        const currentLang = localStorage.getItem('selectedLanguage') || 'en';
-        try {
-            const response = await fetch(`locales/${currentLang}.json`);
-            if (!response.ok) throw new Error("Could not load translation file");
-            const translations = await response.json();
-            document.querySelectorAll('[data-i18n]').forEach(element => {
-                const key = element.getAttribute('data-i18n');
-                if (translations[key]) {
-                    element.innerText = translations[key];
-                }
-            });
-        } catch (error) {
-            console.error("Translation error:", error);
-        }
-    }
-    window.addEventListener('DOMContentLoaded', applyTranslations);
-</script>
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item active"><div class="nav-icon">🏠</div><span>Home</span></a>
+    <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><span>Profile</span></a>
+    <a href="search.html" class="nav-item"><div class="nav-icon">🔍</div><span>Search</span></a>
+    <a href="category.html" class="nav-item"><div class="nav-icon">📂</div><span>Category</span></a>
+    <a href="notification.html" class="nav-item"><div class="nav-icon">🔔</div><span>Alerts</span></a>
+    <a href="menu.html" class="nav-item"><div class="nav-icon">☰</div><span>Menu</span></a>
+</div>
+
 </body>
 </html>
