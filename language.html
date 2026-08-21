@@ -1,3 +1,11 @@
+<!-- 
+================================================================================
+  FILE NAME: language.html
+  PROJECT  : CityPulse
+  PURPOSE  : Language Selection Hub with Search & Persistence
+================================================================================
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,7 +31,7 @@
         .section-title { font-size: 12px; font-weight: bold; color: #64748b; text-transform: uppercase; margin-top: 10px; }
 
         /* Language Grid / List */
-        .lang-list { display: flex; flex-direction: column; gap: 8px; }
+        .lang-list { display: flex; flex-direction: column; gap: 8px; padding-bottom: 20px; }
         .lang-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
         .lang-card:hover { border-color: var(--primary); }
         .lang-card.selected { border: 2px solid var(--primary); background: rgba(2, 132, 199, 0.05); }
@@ -69,7 +77,7 @@
             <div class="check-mark">✓</div>
         </div>
 
-        <div class="lang-card selected" onclick="selectLanguage('en', 'English')">
+        <div class="lang-card" onclick="selectLanguage('en', 'English')">
             <div>
                 <div class="lang-name">English</div>
                 <div class="lang-native">English</div>
@@ -146,13 +154,12 @@
         event.currentTarget.classList.add('selected');
 
         setTimeout(() => {
-            // Check kahan se aaya hai user (login se ya index se)
             const ref = localStorage.getItem("citypulse_lang_ref");
             if(ref === "login") {
                 localStorage.removeItem("citypulse_lang_ref");
-                window.location.href = 'index.html'; // Login ke baad direct dashboard
+                window.location.href = 'index.html'; 
             } else {
-                history.back(); // Normal flow mein wapas purane page par
+                history.back(); 
             }
         }, 300);
     }
