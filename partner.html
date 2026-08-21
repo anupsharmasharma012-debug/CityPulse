@@ -2,7 +2,7 @@
 ================================================================================
   FILE NAME: partner.html
   PROJECT  : CityPulse
-  PURPOSE  : Driver Dashboard with Supabase Real-Time Feed & Status Management
+  PURPOSE  : Driver Dashboard with Live Fare & Request Management
 ================================================================================
 -->
 
@@ -55,12 +55,10 @@
         .header h1 { font-size: 18px; font-weight: 700; }
         .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; padding: 4px; }
 
-        /* Status Toggle Card */
         .status-card { background: var(--card-bg); border-radius: 16px; padding: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
         .status-info h2 { font-size: 15px; margin-bottom: 2px; }
         .status-info p { font-size: 12px; color: var(--text-sub); }
 
-        /* Switch */
         .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .2s; border-radius: 24px; }
@@ -70,17 +68,17 @@
 
         .section-title { font-size: 12px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; margin-top: 6px; letter-spacing: 0.5px; }
 
-        /* Request Cards Feed */
         #requests-container { display: flex; flex-direction: column; gap: 12px; }
         .request-card { background: var(--card-bg); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border-left: 4px solid var(--primary); }
         .req-header { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: bold; color: var(--primary); }
         .req-details { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
         .req-details span { color: var(--text-sub); font-size: 11px; }
         
+        .fare-badge { background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 6px 10px; border-radius: 8px; font-weight: 700; font-size: 13px; display: inline-block; margin-top: 4px; }
+
         .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
         .btn-accept { background: var(--success); color: white; border: none; border-radius: 10px; padding: 10px; font-weight: bold; font-size: 12px; cursor: pointer; text-align: center; }
         .btn-reject { background: var(--card-bg); color: var(--danger); border: 1px solid var(--danger); border-radius: 10px; padding: 10px; font-weight: bold; font-size: 12px; cursor: pointer; text-align: center; }
-
         .no-request { text-align: center; color: var(--text-sub); font-size: 13px; padding: 30px; background: var(--card-bg); border-radius: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
     </style>
 </head>
@@ -93,7 +91,6 @@
         <div style="width: 24px;"></div>
     </div>
 
-    <!-- Duty Status -->
     <div class="status-card">
         <div class="status-info">
             <h2>Partner Duty Status</h2>
@@ -105,16 +102,14 @@
         </label>
     </div>
 
-    <div class="section-title">📡 Live Ride & Delivery Requests</div>
+    <div class="section-title">📡 Live Orders & Earnings</div>
 
-    <!-- Dynamic Requests Feed Container -->
     <div id="requests-container">
-        <div class="no-request">You are offline or no active requests found. Turn on duty to receive live orders.</div>
+        <div class="no-request">Turn on duty to receive incoming requests.</div>
     </div>
 </div>
 
 <script>
-    // Supabase Configuration (Apna URL aur Key yahan enter karein)
     const SUPABASE_URL = 'YOUR_SUPABASE_URL';
     const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -122,28 +117,17 @@
     function toggleDuty() {
         const isOnline = document.getElementById("duty-toggle").checked;
         const dutyText = document.getElementById("duty-text");
-        if (isOnline) {
-            dutyText.innerText = "You are Online & Receiving Requests";
-            dutyText.style.color = "var(--success)";
-            fetchPendingRequests();
-        } else {
-            dutyText.innerText = "You are currently Offline";
-            dutyText.style.color = "var(--text-sub)";
-            document.getElementById("requests-container").innerHTML = `<div class="no-request">You are currently offline.</div>`;
-        }
+        dutyText.innerText = isOnline ? "You are Online & Receiving Requests" : "You are currently Offline";
+        dutyText.style.color = isOnline ? "var(--success)" : "var(--text-sub)";
+        if (isOnline) fetchPendingRequests();
+        else document.getElementById("requests-container").innerHTML = `<div class="no-request">You are offline.</div>`;
         localStorage.setItem("citypulse_partner_online", isOnline ? "true" : "false");
     }
 
     async function fetchPendingRequests() {
-        const isOnline = document.getElementById("duty-toggle").checked;
-        if (!isOnline) return;
+        if (!document.getElementById("duty-toggle").checked) return;
 
-        const { data, error } = await supabase
-            .from('deliveries')
-            .select('*')
-            .eq('status', 'Pending')
-            .order('created_at', { ascending: false });
-
+        const { data, error } = await supabase.from('deliveries').select('*').eq('status', 'Pending').order('created_at', { ascending: false });
         const container = document.getElementById("requests-container");
 
         if (error || !data || data.length === 0) {
@@ -154,16 +138,16 @@
         container.innerHTML = "";
         data.forEach(req => {
             container.innerHTML += `
-                <div class="request-card" id="req-${req.id}">
+                <div class="request-card">
                     <div class="req-header">
                         <span>${req.type.toUpperCase()}</span>
-                        <span>Status: Pending</span>
+                        <span>Pending</span>
                     </div>
                     <div class="req-details">
                         <p><strong>Pickup:</strong> ${req.pickup}</p>
                         <p><strong>Drop:</strong> ${req.drop_loc}</p>
                         <p><strong>Details:</strong> ${req.details}</p>
-                        <span>Requested on: ${new Date(req.created_at).toLocaleTimeString()}</span>
+                        <div class="fare-badge">Collect Cash: ${req.details.split('|')[1] || 'As per fare'}</div>
                     </div>
                     <div class="action-row">
                         <button class="btn-reject" onclick="updateStatus('${req.id}', 'Rejected')">Reject</button>
@@ -175,31 +159,16 @@
     }
 
     async function updateStatus(id, newStatus) {
-        const { error } = await supabase
-            .from('deliveries')
-            .update({ status: newStatus })
-            .eq('id', id);
-
-        if (error) {
-            alert("Failed to update status: " + error.message);
-        } else {
-            alert("Order " + newStatus + " successfully!");
-            fetchPendingRequests();
-        }
+        const { error } = await supabase.from('deliveries').update({ status: newStatus }).eq('id', id);
+        if (error) alert("Error: " + error.message);
+        else { alert("Order " + newStatus); fetchPendingRequests(); }
     }
 
-    // Realtime Listener to auto-fetch new requests when customer books
-    supabase
-        .channel('public:deliveries')
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'deliveries' }, payload => {
-            if (document.getElementById("duty-toggle").checked) {
-                fetchPendingRequests();
-            }
-        })
-        .subscribe();
+    supabase.channel('public:deliveries').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'deliveries' }, () => {
+        if (document.getElementById("duty-toggle").checked) fetchPendingRequests();
+    }).subscribe();
 
-    // Init on load
-    (function initPartner() {
+    (function init() {
         if (localStorage.getItem("citypulse_partner_online") === "true") {
             document.getElementById("duty-toggle").checked = true;
             document.getElementById("duty-text").innerText = "You are Online & Receiving Requests";
