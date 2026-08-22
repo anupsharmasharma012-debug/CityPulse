@@ -34,7 +34,8 @@
         .input-icon { font-size: 16px; }
         .input-field { border: none; background: transparent; outline: none; font-size: 13px; color: var(--text-main); width: 100%; font-weight: 600; }
 
-        .submit-btn { background: var(--primary); color: white; padding: 14px; border-radius: 8px; border: none; font-size: 14px; font-weight: bold; cursor: pointer; width: 100%; }
+        .submit-btn { background: var(--primary); color: white; padding: 14px; border-radius: 8px; border: none; font-size: 14px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
+        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* Social Login Buttons */
         .social-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; font-weight: 700; color: var(--text-main); cursor: pointer; }
@@ -44,13 +45,15 @@
         .divider::before { margin-right: 10px; }
         .divider::after { margin-left: 10px; }
 
-        /* Checkbox & Terms */
-        .terms-row { display: flex; align-items: flex-start; gap: 8px; font-size: 11px; color: var(--text-sub); }
-        .terms-row input { margin-top: 2px; accent-color: var(--primary); }
+        /* Strict Checkbox & Terms Row Layout (Checkbox beside text) */
+        .terms-container { display: flex; align-items: center; gap: 10px; background: var(--card-bg); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); }
+        .terms-container input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0; }
+        .terms-container label { font-size: 11px; color: var(--text-main); cursor: pointer; font-weight: 600; line-height: 1.3; }
 
-        /* Biometric / Fingerprint Section */
-        .bio-box { background: rgba(0, 122, 153, 0.05); border: 1px dashed var(--primary); border-radius: 12px; padding: 14px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
-        .bio-icon { font-size: 28px; }
+        /* Biometric / Fingerprint Section (Positioned before index/action) */
+        .bio-box { background: rgba(0, 122, 153, 0.05); border: 1px dashed var(--primary); border-radius: 12px; padding: 12px; text-align: center; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .bio-icon { font-size: 24px; }
+        .bio-info { text-align: left; flex: 1; }
         .bio-title { font-size: 12px; font-weight: 800; color: var(--primary); }
         .bio-sub { font-size: 10px; color: var(--text-sub); }
 
@@ -99,17 +102,34 @@
     <div class="auth-card" id="areaLogin">
         <div style="font-size: 14px; font-weight: 800; color: var(--text-main);">Welcome Back to CityPulse</div>
         
+        <!-- Mobile / Email Login Options -->
         <div class="input-group">
             <span class="input-icon">📱</span>
-            <input type="tel" class="input-field" placeholder="Enter mobile number">
+            <input type="text" class="input-field" placeholder="Enter mobile number or Email ID">
         </div>
         
         <div class="input-group">
             <span class="input-icon">🔑</span>
-            <input type="password" class="input-field" placeholder="Enter password or OTP">
+            <input type="password" class="input-field" placeholder="Enter Password or OTP">
         </div>
 
-        <button class="submit-btn" onclick="alert('Successfully Logged In to CityPulse!')">Sign In</button>
+        <!-- Biometric Login Option (Placed strictly before final action) -->
+        <div class="bio-box" onclick="triggerBiometricLogin()">
+            <div class="bio-icon">👆</div>
+            <div class="bio-info">
+                <div class="bio-title">Quick Biometric Login</div>
+                <div class="bio-sub">Tap to authenticate via Fingerprint / Face ID</div>
+            </div>
+        </div>
+
+        <!-- Privacy Policy & Mandatory Checkbox (Strict Validation) -->
+        <div class="terms-container">
+            <input type="checkbox" id="privacyCheckLogin" onchange="validateForm()">
+            <label for="privacyCheckLogin">I agree to the Privacy Policy & Terms of Service under local compliance guidelines.</label>
+        </div>
+
+        <!-- Final Action Button (Redirects to index.html on success) -->
+        <button class="submit-btn" id="loginBtn" disabled onclick="handleSuccessfulAuth()">Sign In to CityPulse</button>
 
         <div class="divider">or continue with</div>
 
@@ -143,22 +163,25 @@
             <input type="password" class="input-field" placeholder="Create Password">
         </div>
 
-        <div class="terms-row">
-            <input type="checkbox" id="termsCheck" checked>
-            <label for="termsCheck">I agree to the <b>Terms of Service</b> and <b>Privacy Policy</b> under local compliance guidelines.</label>
+        <!-- Biometric Setup Option (Placed before registration action) -->
+        <div class="bio-box" onclick="alert('Biometric Fingerprint registered for future logins!')">
+            <div class="bio-icon">👆</div>
+            <div class="bio-info">
+                <div class="bio-title">Enable Biometric Verification</div>
+                <div class="bio-sub">Link fingerprint for instant secure access</div>
+            </div>
         </div>
 
-        <button class="submit-btn" style="background: var(--success);" onclick="alert('Account Created Successfully!')">Register Account</button>
+        <!-- Privacy Policy & Mandatory Checkbox -->
+        <div class="terms-container">
+            <input type="checkbox" id="privacyCheckSignup" onchange="validateForm()">
+            <label for="privacyCheckSignup">I accept the Privacy Policy and local data protection guidelines.</label>
+        </div>
+
+        <!-- Final Registration Button -->
+        <button class="submit-btn" id="signupBtn" disabled style="background: var(--success);" onclick="handleSuccessfulAuth()">Register & Continue</button>
     </div>
     <!-- [HTML] SIGNUP FORM CONTAINER END -->
-
-    <!-- [HTML] BIOMETRIC / FINGERPRINT SETUP START -->
-    <div class="bio-box" onclick="alert('Biometric Fingerprint Authentication Enabled Successfully!')">
-        <div class="bio-icon">👆</div>
-        <div class="bio-title">Enable Biometric Login</div>
-        <div class="bio-sub">Tap to secure your account with Fingerprint / Face ID</div>
-    </div>
-    <!-- [HTML] BIOMETRIC / FINGERPRINT SETUP END -->
 
 </div>
 <!-- [HTML] MAIN CONTENT CONTAINER END -->
@@ -181,7 +204,7 @@
         <div class="nav-icon">🔔</div><span>Alerts</span>
     </a>
 </div>
-<!-- [HTML] MODERN 5-TAB BOTTOM NAVIGATION END -->
+<!-- [HTML] BOTTOM NAVIGATION END -->
 
 <!-- [JS] SCRIPT LOGIC START -->
 <script>
@@ -202,6 +225,36 @@
             document.getElementById('tabSignup').classList.add('active');
             document.getElementById('areaSignup').style.display = 'flex';
         }
+        validateForm();
+    }
+
+    // Strict validation: Button enables only when Privacy Policy checkbox is checked
+    function validateForm() {
+        const isLoginActive = document.getElementById('areaLogin').style.display !== 'none';
+        if (isLoginActive) {
+            const checked = document.getElementById('privacyCheckLogin').checked;
+            document.getElementById('loginBtn').disabled = !checked;
+        } else {
+            const checked = document.getElementById('privacyCheckSignup').checked;
+            document.getElementById('signupBtn').disabled = !checked;
+        }
+    }
+
+    // Biometric Login Simulation
+    function triggerBiometricLogin() {
+        const isChecked = document.getElementById('privacyCheckLogin').checked;
+        if (!isChecked) {
+            alert("⚠️ Please check and agree to the Privacy Policy first.");
+            return;
+        }
+        alert("👆 Biometric Verified Successfully! Logging in...");
+        window.location.href = 'index.html';
+    }
+
+    // Successful Authentication Redirect to index.html
+    function handleSuccessfulAuth() {
+        alert("✅ Authentication Successful! Redirecting to CityPulse Home...");
+        window.location.href = 'index.html';
     }
 </script>
 <!-- [JS] SCRIPT LOGIC END -->
