@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- ==========================================
+       [HTML] FILE HEADER & METADATA START
+       ========================================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityPulse - Login & Authentication</title>
+    <title>CityPulse - Sign In & Security</title>
     <!-- [CSS] LINKED TO MASTER STYLESHEET -->
     <link rel="stylesheet" href="style.css">
     <style>
@@ -11,28 +14,44 @@
            [CSS] PAGE-SPECIFIC CUSTOM STYLES START
            ========================================== */
         :root { --success: #10b981; }
-        body.dark-theme { --success: #10b981; }
+        body.dark-theme { --success: #34d399; }
         
         /* Header Layout Styles */
         .header { display: flex; align-items: center; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
         .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; }
         .header h1 { font-size: 18px; font-weight: bold; }
 
-        /* Login Card Container */
-        .login-card { background: var(--card-bg); border-radius: 16px; padding: 24px 16px; display: flex; flex-direction: column; gap: 16px; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.02); text-align: center; margin-top: 20px; }
-        .login-logo { font-size: 48px; margin-bottom: -4px; }
-        .login-title { font-size: 18px; font-weight: 800; color: var(--text-main); }
-        .login-sub { font-size: 12px; color: var(--text-sub); line-height: 1.4; }
+        /* Auth Tabs (Login vs Sign Up) */
+        .auth-tabs { display: flex; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; margin-top: 4px; }
+        .auth-tab { flex: 1; text-align: center; padding: 10px; font-size: 12px; font-weight: bold; cursor: pointer; color: var(--text-sub); }
+        .auth-tab.active { background: var(--primary); color: white; }
 
-        /* Input Group */
-        .phone-input-box { display: flex; align-items: center; background: var(--bg-color); border: 1px solid var(--border); border-radius: 10px; padding: 4px 12px; gap: 8px; }
-        .country-code { font-size: 14px; font-weight: 700; color: var(--text-main); border-right: 1px solid var(--border); padding-right: 8px; }
-        .phone-input { width: 100%; padding: 10px 0; border: none; background: transparent; outline: none; font-size: 15px; color: var(--text-main); font-weight: 600; letter-spacing: 0.5px; }
+        /* Auth Container Card */
+        .auth-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
 
-        .submit-btn { background: var(--primary); color: white; padding: 14px; border-radius: 10px; border: none; font-size: 14px; font-weight: bold; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(0, 122, 153, 0.2); transition: 0.2s; }
-        .submit-btn:active { opacity: 0.9; transform: scale(0.99); }
+        .input-group { display: flex; align-items: center; gap: 10px; background: var(--bg-color); padding: 12px; border-radius: 8px; border: 1px solid var(--border); }
+        .input-icon { font-size: 16px; }
+        .input-field { border: none; background: transparent; outline: none; font-size: 13px; color: var(--text-main); width: 100%; font-weight: 600; }
 
-        .privacy-note { font-size: 10px; color: var(--text-sub); text-align: center; margin-top: 8px; }
+        .submit-btn { background: var(--primary); color: white; padding: 14px; border-radius: 8px; border: none; font-size: 14px; font-weight: bold; cursor: pointer; width: 100%; }
+
+        /* Social Login Buttons */
+        .social-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; font-weight: 700; color: var(--text-main); cursor: pointer; }
+        
+        .divider { display: flex; align-items: center; text-align: center; color: var(--text-sub); font-size: 11px; margin: 4px 0; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border); }
+        .divider::before { margin-right: 10px; }
+        .divider::after { margin-left: 10px; }
+
+        /* Checkbox & Terms */
+        .terms-row { display: flex; align-items: flex-start; gap: 8px; font-size: 11px; color: var(--text-sub); }
+        .terms-row input { margin-top: 2px; accent-color: var(--primary); }
+
+        /* Biometric / Fingerprint Section */
+        .bio-box { background: rgba(0, 122, 153, 0.05); border: 1px dashed var(--primary); border-radius: 12px; padding: 14px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
+        .bio-icon { font-size: 28px; }
+        .bio-title { font-size: 12px; font-weight: 800; color: var(--primary); }
+        .bio-sub { font-size: 10px; color: var(--text-sub); }
         /* ==========================================
            [CSS] PAGE-SPECIFIC CUSTOM STYLES END
            ========================================== */
@@ -40,60 +59,115 @@
 </head>
 <body>
 
-<!-- [HTML] MAIN CONTENT CONTAINER START -->
-<div class="page-container">
+<!-- ==========================================
+   [HTML] MAIN CONTENT CONTAINER START
+   ========================================== -->
+<div class="page-container" style="padding-bottom: 40px;">
     
-    <!-- [HTML] HEADER SECTION START -->
+    <!-- [HTML] HEADER START -->
     <div class="header">
         <button class="back-btn" onclick="history.back()">←</button>
         <h1>Sign In / Register</h1>
     </div>
-    <!-- [HTML] HEADER SECTION END -->
+    <!-- [HTML] HEADER END -->
 
-    <!-- [HTML] LOGIN CARD START -->
-    <div class="login-card">
-        <div class="login-logo">🌆</div>
-        <div class="login-title">Welcome to CityPulse</div>
-        <div class="login-sub">Enter your mobile number to access civic services, emergency SOS, and local marketplace.</div>
+    <!-- [HTML] AUTH TABS START -->
+    <div class="auth-tabs">
+        <div class="auth-tab active" id="tabLogin" onclick="switchAuthMode('login')">Sign In</div>
+        <div class="auth-tab" id="tabSignup" onclick="switchAuthMode('signup')">Create Account</div>
+    </div>
+    <!-- [HTML] AUTH TABS END -->
 
-        <div class="phone-input-box">
-            <span class="country-code">+91</span>
-            <input type="tel" class="phone-input" placeholder="Enter mobile number" maxlength="10">
+    <!-- [HTML] LOGIN FORM CONTAINER START -->
+    <div class="auth-card" id="areaLogin">
+        <div style="font-size: 14px; font-weight: 800; color: var(--text-main);">Welcome Back to CityPulse</div>
+        
+        <div class="input-group">
+            <span class="input-icon">📱</span>
+            <input type="tel" class="input-field" placeholder="Enter mobile number">
+        </div>
+        
+        <div class="input-group">
+            <span class="input-icon">🔑</span>
+            <input type="password" class="input-field" placeholder="Enter password or OTP">
         </div>
 
-        <button class="submit-btn" onclick="alert('OTP sent successfully to your mobile number!')">Get Verification OTP</button>
+        <button class="submit-btn" onclick="alert('Successfully Logged In to CityPulse!')">Sign In</button>
 
-        <div class="privacy-note">🔒 Your data is secure & encrypted under local compliance guidelines.</div>
+        <div class="divider">or continue with</div>
+
+        <div class="social-btn" onclick="alert('Redirecting to Google Sign-In...')">
+            <span>🌐</span> Sign in with Google
+        </div>
     </div>
-    <!-- [HTML] LOGIN CARD END -->
+    <!-- [HTML] LOGIN FORM CONTAINER END -->
+
+    <!-- [HTML] SIGNUP FORM CONTAINER START -->
+    <div class="auth-card" id="areaSignup" style="display: none;">
+        <div style="font-size: 14px; font-weight: 800; color: var(--text-main);">Join Bhatpara's Super App</div>
+        
+        <div class="input-group">
+            <span class="input-icon">👤</span>
+            <input type="text" class="input-field" placeholder="Full Name (e.g. Anup Sharma)">
+        </div>
+
+        <div class="input-group">
+            <span class="input-icon">📱</span>
+            <input type="tel" class="input-field" placeholder="Mobile Number">
+        </div>
+
+        <div class="input-group">
+            <span class="input-icon">📧</span>
+            <input type="email" class="input-field" placeholder="Email Address">
+        </div>
+
+        <div class="input-group">
+            <span class="input-icon">🔒</span>
+            <input type="password" class="input-field" placeholder="Create Password">
+        </div>
+
+        <div class="terms-row">
+            <input type="checkbox" id="termsCheck" checked>
+            <label for="termsCheck">I agree to the <b>Terms of Service</b> and <b>Privacy Policy</b> under local compliance guidelines.</label>
+        </div>
+
+        <button class="submit-btn" style="background: var(--success);" onclick="alert('Account Created Successfully!')">Register Account</button>
+    </div>
+    <!-- [HTML] SIGNUP FORM CONTAINER END -->
+
+    <!-- [HTML] BIOMETRIC / FINGERPRINT SETUP START -->
+    <div class="bio-box" onclick="alert('Biometric Fingerprint Authentication Enabled Successfully!')">
+        <div class="bio-icon">👆</div>
+        <div class="bio-title">Enable Biometric Login</div>
+        <div class="bio-sub">Tap to secure your account with Fingerprint / Face ID</div>
+    </div>
+    <!-- [HTML] BIOMETRIC / FINGERPRINT SETUP END -->
 
 </div>
 <!-- [HTML] MAIN CONTENT CONTAINER END -->
 
-<!-- [HTML] MODERN 5-TAB BOTTOM NAVIGATION START -->
-<div class="bottom-nav">
-    <a href="index.html" class="nav-item">
-        <div class="nav-icon">🏠</div><span>Home</span>
-    </a>
-    <a href="search.html" class="nav-item">
-        <div class="nav-icon">🔍</div><span>Search</span>
-    </a>
-    <a href="pay.html" class="nav-item">
-        <div class="nav-icon">🛡️</div><span>Pay</span>
-    </a>
-    <a href="category.html" class="nav-item">
-        <div class="nav-icon">📂</div><span>Category</span>
-    </a>
-    <a href="notifications.html" class="nav-item">
-        <div class="nav-icon">🔔</div><span>Alerts</span>
-    </a>
-</div>
-<!-- [HTML] MODERN 5-TAB BOTTOM NAVIGATION END -->
-
-<!-- [JS] SCRIPT LOGIC START -->
+<!-- ==========================================
+   [JS] SCRIPT LOGIC START
+   ========================================== -->
 <script>
     // Global Dark Mode Sync
     if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
+
+    // Switch between Login and Sign Up modes
+    function switchAuthMode(mode) {
+        document.getElementById('tabLogin').classList.remove('active');
+        document.getElementById('tabSignup').classList.remove('active');
+        document.getElementById('areaLogin').style.display = 'none';
+        document.getElementById('areaSignup').style.display = 'none';
+
+        if(mode === 'login') {
+            document.getElementById('tabLogin').classList.add('active');
+            document.getElementById('areaLogin').style.display = 'flex';
+        } else {
+            document.getElementById('tabSignup').classList.add('active');
+            document.getElementById('areaSignup').style.display = 'flex';
+        }
+    }
 </script>
 <!-- [JS] SCRIPT LOGIC END -->
 
