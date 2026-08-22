@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ==========================================
+       [HTML] FILE HEADER & METADATA START
+       ========================================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityPulse - Local Marketplace & B2B Hub</title>
+    <!-- [CSS] LINKED TO MASTER STYLESHEET -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ==========================================
+           [CSS] PAGE-SPECIFIC CUSTOM STYLES START
+           ========================================== */
+        :root { --success: #10b981; --warning: #f59e0b; }
+        body.dark-theme { --success: #34d399; }
+        
+        /* Header Layout Styles */
+        .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; }
+        .header h1 { font-size: 18px; font-weight: bold; }
+        
+        .cart-icon { font-size: 20px; color: var(--primary); cursor: pointer; background: rgba(0, 122, 153, 0.1); padding: 6px 10px; border-radius: 8px; position: relative; }
+        .cart-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; font-size: 9px; font-weight: bold; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+        /* Delivery Location Banner Styles */
+        .location-banner { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--text-sub); }
+        .location-banner span { color: var(--primary); cursor: pointer; }
+
+        /* Area Search Bar Styles */
+        .search-box { position: relative; width: 100%; }
+        .search-input { width: 100%; padding: 12px 16px 12px 40px; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main); font-size: 13px; outline: none; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .search-input:focus { border-color: var(--primary); }
+        .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 16px; color: var(--text-sub); }
+
+        /* Filter Tabs Styles */
+        .filter-tabs { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 4px; }
+        .filter-tabs::-webkit-scrollbar { display: none; }
+        .tab-chip { white-space: nowrap; padding: 6px 14px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; font-size: 11px; font-weight: 600; color: var(--text-sub); cursor: pointer; display: flex; align-items: center; gap: 4px; }
+        .tab-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+        /* ROCKET FEATURE: B2B Wholesale Garment Card Styles */
+        .b2b-card { background: linear-gradient(135deg, #2c3e50, #4ca1af); padding: 16px; border-radius: 14px; color: white; display: flex; flex-direction: column; gap: 6px; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 12px; }
+        .b2b-title { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
+        .b2b-sub { font-size: 11px; opacity: 0.9; }
+
+        /* Grid Layout for Products & Stores Styles */
+        .market-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .product-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; }
+        .product-img { width: 100%; height: 110px; background: rgba(0, 122, 153, 0.05); display: flex; align-items: center; justify-content: center; font-size: 40px; border-bottom: 1px solid var(--border); }
+        .product-info { padding: 10px; display: flex; flex-direction: column; gap: 4px; flex: 1; justify-content: space-between; }
+        .product-title { font-size: 12px; font-weight: 700; color: var(--text-main); line-height: 1.2; }
+        .product-seller { font-size: 9px; color: var(--text-sub); }
+        .price-row { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+        .product-price { font-size: 13px; font-weight: 800; color: var(--primary); }
+        .add-btn { background: rgba(0, 122, 153, 0.1); color: var(--primary); border: none; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; }
+        
+        /* Full Width Card Styles */
+        .list-card { background: var(--card-bg); padding: 14px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 12px; }
+        .list-left { display: flex; flex-direction: column; gap: 4px; }
+        .list-title { font-size: 14px; font-weight: 700; }
+        .list-desc { font-size: 11px; color: var(--text-sub); }
+        .trend-up { color: var(--success); font-weight: bold; font-size: 12px; }
+
+        .add-vendor-btn { width: 100%; padding: 12px; background: var(--card-bg); border: 2px dashed var(--primary); border-radius: 12px; text-align: center; color: var(--primary); font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+        /* ==========================================
+           [CSS] PAGE-SPECIFIC CUSTOM STYLES END
+           ========================================== */
+    </style>
+</head>
+<body>
+
+<!-- ==========================================
+   [HTML] MAIN CONTENT CONTAINER START
+   ========================================== -->
+<div class="page-container">
+    
+    <!-- [HTML] HEADER SECTION START -->
+    <div class="header">
+        <div class="header-left">
+            <button class="back-btn" onclick="history.back()">←</button>
+            <h1>Local Marketplace</h1>
+        </div>
+        <div class="cart-icon" onclick="alert('Opening Cart...')">
+            🛒<div class="cart-badge">2</div>
+        </div>
+    </div>
+    <!-- [HTML] HEADER SECTION END -->
+
+    <!-- [HTML] LOCATION CONTEXT BANNER START -->
+    <div class="location-banner">
+        📍 Exploring area: <span onclick="window.location.href='location.html'">Bhatpara (Ward 14) ⬇</span>
+    </div>
+    <!-- [HTML] LOCATION CONTEXT BANNER END -->
+
+    <!-- [HTML] SEARCH BAR START -->
+    <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" placeholder="Search grocery, food, or local vendors...">
+    </div>
+    <!-- [HTML] SEARCH BAR END -->
+
+    <!-- [HTML] HORIZONTAL CATEGORY FILTERS START -->
+    <div class="filter-tabs">
+        <div class="tab-chip active">🛍️ All</div>
+        <div class="tab-chip">🛒 Grocery</div>
+        <div class="tab-chip">👕 B2B Wholesale</div>
+        <div class="tab-chip">🍲 Food</div>
+        <div class="tab-chip">📊 Mandi Rates</div>
+    </div>
+    <!-- [HTML] HORIZONTAL CATEGORY FILTERS END -->
+
+    <!-- [HTML] ROCKET FEATURE: B2B WHOLESALE GARMENT HUB START -->
+    <div class="b2b-card" onclick="triggerB2BHub()">
+        <div class="b2b-title">🏷️ B2B Wholesale Garment & Secret Price Hub</div>
+        <div class="b2b-sub">Connect direct with Tirupur & local West Bengal dealers. Access bulk catalog & secret margin price tags.</div>
+    </div>
+    <!-- [HTML] ROCKET FEATURE: B2B WHOLESALE GARMENT HUB END -->
+
+    <!-- [HTML] HIGHLIGHTED MANDI RATES CARD START -->
+    <div class="list-card" onclick="alert('Opening Daily Market Rates...')">
+        <div class="list-left">
+            <span class="list-title">📊 Daily Mandi & Vegetable Rates</span>
+            <span class="list-desc">Check live wholesale prices in your area</span>
+        </div>
+        <div class="trend-up">Live 🟢</div>
+    </div>
+    <!-- [HTML] HIGHLIGHTED MANDI RATES CARD END -->
+
+    <!-- [HTML] PRODUCT & VENDOR GRID START -->
+    <div class="market-grid">
+        
+        <div class="product-card">
+            <div class="product-img">🍅</div>
+            <div class="product-info">
+                <div>
+                    <div class="product-title">Fresh Tomatoes (1kg)</div>
+                    <div class="product-seller">Ramu Sabji Wala • 800m</div>
+                </div>
+                <div class="price-row">
+                    <span class="product-price">₹40</span>
+                    <button class="add-btn">ADD</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-img">🥘</div>
+            <div class="product-info">
+                <div>
+                    <div class="product-title">Chicken Dum Biryani</div>
+                    <div class="product-seller">Bismillah Hotel • 1.2km</div>
+                </div>
+                <div class="price-row">
+                    <span class="product-price">₹180</span>
+                    <button class="add-btn">ADD</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-img">👕</div>
+            <div class="product-info">
+                <div>
+                    <div class="product-title">Mens Cotton T-Shirts</div>
+                    <div class="product-seller">Sharma Garments (Wholesale)</div>
+                </div>
+                <div class="price-row">
+                    <span class="product-price">₹150 <span style="font-size:9px; color:var(--text-sub);">/pc</span></span>
+                    <button class="add-btn">CALL</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card" style="border-style: dashed; background: transparent;">
+            <div class="product-img" style="background: transparent;">📖</div>
+            <div class="product-info" style="align-items: center; text-align: center; justify-content: center;">
+                <div class="product-title">Cooking Ideas & Recipes</div>
+                <div class="product-seller">15-Min Meals</div>
+                <button class="add-btn" style="margin-top:8px; width: 100%;">EXPLORE</button>
+            </div>
+        </div>
+
+    </div>
+    <!-- [HTML] PRODUCT & VENDOR GRID END -->
+
+    <!-- [HTML] ADD VENDOR BUTTON START -->
+    <div class="add-vendor-btn" onclick="alert('Open form to register your shop/products locally')">
+        + Register Your Shop or Product
+    </div>
+    <!-- [HTML] ADD VENDOR BUTTON END -->
+
+</div>
+<!-- [HTML] MAIN CONTENT CONTAINER END -->
+
+<!-- ==========================================
+   [HTML] BOTTOM NAVIGATION START
+   ========================================== -->
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item"><div class="nav-icon">🏠</div><span>Home</span></a>
+    <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><span>Profile</span></a>
+    <a href="search.html" class="nav-item"><div class="nav-icon">🔍</div><span>Search</span></a>
+    <a href="category.html" class="nav-item"><div class="nav-icon">📂</div><span>Category</span></a>
+    <a href="notifications.html" class="nav-item"><div class="nav-icon">🔔</div><span>Alerts</span></a>
+</div>
+<!-- [HTML] BOTTOM NAVIGATION END -->
+
+<!-- ==========================================
+   [JS] SCRIPT LOGIC START
+   ========================================== -->
+<script>
+    // Global Dark Mode Sync
+    if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
+    
+    // B2B Wholesale Hub Interactive Trigger
+    function triggerB2BHub() {
+        const category = prompt("🏷️ B2B Wholesale Hub: Enter garment category (e.g., Cotton T-Shirts, Kids Wear):");
+        if(category) {
+            alert("📦 Fetching bulk wholesale rates & secret price tags for '" + category + "' from Tirupur & WB dealers...");
+        }
+    }
+
+    // Filter Tab Switching Logic
+    document.querySelectorAll('.tab-chip').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.tab-chip').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+</script>
+<!-- [JS] SCRIPT LOGIC END -->
+
+</body>
+</html>
+

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityPulse - Pay & Bills</title>
+    <!-- [CSS] LINKED TO MASTER STYLESHEET -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ==========================================
+           [CSS] PAGE-SPECIFIC CUSTOM STYLES START
+           ========================================== */
+        :root { --success: #10b981; }
+        body.dark-theme { --success: #10b981; }
+        
+        /* Header Layout Styles */
+        .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; }
+        .header h1 { font-size: 18px; font-weight: bold; }
+        
+        .history-icon { font-size: 20px; color: var(--primary); cursor: pointer; background: rgba(0, 122, 153, 0.1); padding: 6px; border-radius: 8px; }
+
+        .section-title { font-size: 12px; font-weight: bold; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: -6px; }
+
+        /* Grid Layout for Quick Actions (4 Cols) Styles */
+        .pay-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; background: var(--card-bg); padding: 16px; border-radius: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); border: 1px solid var(--border); }
+        .pay-item { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; text-decoration: none; cursor: pointer; }
+        .pay-icon { font-size: 24px; }
+        .pay-name { font-size: 10px; font-weight: 600; color: var(--text-main); line-height: 1.2; }
+
+        /* Grid Layout for Utilities (3 Cols) Styles */
+        .pay-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 12px; background: var(--card-bg); padding: 16px; border-radius: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); border: 1px solid var(--border); }
+
+        /* List Layout for Govt & Financial Styles */
+        .pay-list { display: flex; flex-direction: column; gap: 8px; }
+        .list-card { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border); cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .list-left { display: flex; align-items: center; gap: 12px; }
+        .list-icon { font-size: 20px; background: rgba(0, 122, 153, 0.05); padding: 8px; border-radius: 50%; border: 1px solid rgba(0, 122, 153, 0.1); }
+        .list-text { display: flex; flex-direction: column; }
+        .list-title { font-size: 14px; font-weight: 700; color: var(--text-main); }
+        .list-sub { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+        .list-arrow { color: var(--text-sub); font-weight: bold; }
+        /* ==========================================
+           [CSS] PAGE-SPECIFIC CUSTOM STYLES END
+           ========================================== */
+    </style>
+</head>
+<body>
+
+<!-- [HTML] MAIN CONTENT CONTAINER START -->
+<div class="page-container">
+    
+    <!-- [HTML] HEADER SECTION START -->
+    <div class="header">
+        <div class="header-left">
+            <button class="back-btn" onclick="history.back()">←</button>
+            <h1>Pay & Bills</h1>
+        </div>
+        <div class="history-icon" onclick="alert('Opening Payment History & Receipts...')">🧾</div>
+    </div>
+    <!-- [HTML] HEADER SECTION END -->
+
+    <!-- [HTML] QUICK RECHARGES GRID START -->
+    <div class="section-title">Recharges & Transit</div>
+    <div class="pay-grid-4">
+        <div class="pay-item" onclick="alert('Mobile Prepaid/Postpaid')">
+            <div class="pay-icon">📱</div>
+            <div class="pay-name">Mobile</div>
+        </div>
+        <div class="pay-item" onclick="alert('DTH Recharge')">
+            <div class="pay-icon">📺</div>
+            <div class="pay-name">DTH</div>
+        </div>
+        <div class="pay-item" onclick="alert('FASTag Recharge')">
+            <div class="pay-icon">🚘</div>
+            <div class="pay-name">FASTag</div>
+        </div>
+        <div class="pay-item" onclick="alert('Metro & NCMC Card')">
+            <div class="pay-icon">🚇</div>
+            <div class="pay-name">Metro Card</div>
+        </div>
+    </div>
+    <!-- [HTML] QUICK RECHARGES GRID END -->
+
+    <!-- [HTML] HOME UTILITIES GRID START -->
+    <div class="section-title">Home Utilities</div>
+    <div class="pay-grid-3">
+        <div class="pay-item" onclick="alert('WBSEDCL / Electricity Bill')">
+            <div class="pay-icon">⚡</div>
+            <div class="pay-name">Electricity</div>
+        </div>
+        <div class="pay-item" onclick="alert('Water Tax / Bill')">
+            <div class="pay-icon">🚰</div>
+            <div class="pay-name">Water</div>
+        </div>
+        <div class="pay-item" onclick="alert('LPG Cylinder Booking')">
+            <div class="pay-icon">🍳</div>
+            <div class="pay-name">Book LPG</div>
+        </div>
+        <div class="pay-item" onclick="alert('Piped Gas Bill')">
+            <div class="pay-icon">🔥</div>
+            <div class="pay-name">Piped Gas</div>
+        </div>
+        <div class="pay-item" onclick="alert('Broadband & Landline')">
+            <div class="pay-icon">🌐</div>
+            <div class="pay-name">Broadband</div>
+        </div>
+        <div class="pay-item" onclick="alert('Apartment Maintenance')">
+            <div class="pay-icon">🏢</div>
+            <div class="pay-name">Maintenance</div>
+        </div>
+    </div>
+    <!-- [HTML] HOME UTILITIES GRID END -->
+
+    <!-- [HTML] GOVT TAXES & FINANCIAL LIST START -->
+    <div class="section-title">Govt Taxes & Financial</div>
+    <div class="pay-list">
+        
+        <div class="list-card" onclick="alert('Bhatpara Municipality Tax & Trade License')">
+            <div class="list-left">
+                <div class="list-icon">🏛️</div>
+                <div class="list-text">
+                    <span class="list-title">Municipal Tax</span>
+                    <span class="list-sub">Property Tax, Trade License</span>
+                </div>
+            </div>
+            <div class="list-arrow">→</div>
+        </div>
+
+        <div class="list-card" onclick="alert('WB Traffic Challan Payment')">
+            <div class="list-left">
+                <div class="list-icon">🚦</div>
+                <div class="list-text">
+                    <span class="list-title">Traffic Challan</span>
+                    <span class="list-sub">Pay pending e-challans</span>
+                </div>
+            </div>
+            <div class="list-arrow">→</div>
+        </div>
+
+        <div class="list-card" onclick="alert('LIC & General Insurance Premiums')">
+            <div class="list-left">
+                <div class="list-icon">🛡️</div>
+                <div class="list-text">
+                    <span class="list-title">LIC & Insurance</span>
+                    <span class="list-sub">Pay premium installments</span>
+                </div>
+            </div>
+            <div class="list-arrow">→</div>
+        </div>
+
+        <div class="list-card" onclick="alert('Loan EMI Payment')">
+            <div class="list-left">
+                <div class="list-icon">🏦</div>
+                <div class="list-text">
+                    <span class="list-title">Loan EMI</span>
+                    <span class="list-sub">Banks, NBFCs, Microfinance</span>
+                </div>
+            </div>
+            <div class="list-arrow">→</div>
+        </div>
+
+    </div>
+    <!-- [HTML] GOVT TAXES & FINANCIAL LIST END -->
+
+</div>
+<!-- [HTML] MAIN CONTENT CONTAINER END -->
+
+<!-- [HTML] MODERN 5-TAB BOTTOM NAVIGATION START -->
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item">
+        <div class="nav-icon">🏠</div><span>Home</span>
+    </a>
+    <a href="search.html" class="nav-item">
+        <div class="nav-icon">🔍</div><span>Search</span>
+    </a>
+    <a href="pay.html" class="nav-item">
+        <div class="nav-icon">🛡️</div><span>Pay</span>
+    </a>
+    <a href="category.html" class="nav-item">
+        <div class="nav-icon">📂</div><span>Category</span>
+    </a>
+    <a href="notifications.html" class="nav-item">
+        <div class="nav-icon">🔔</div><span>Alerts</span>
+    </a>
+</div>
+<!-- [HTML] MODERN 5-TAB BOTTOM NAVIGATION END -->
+
+<!-- [JS] SCRIPT LOGIC START -->
+<script>
+    // Global Dark Mode Sync
+    if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
+</script>
+<!-- [JS] SCRIPT LOGIC END -->
+
+</body>
+</html>
+

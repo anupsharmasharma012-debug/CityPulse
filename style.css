@@ -1,45 +1,91 @@
 /* ==========================================
-  FILE: style.css
-  PURPOSE: Shared Global Styles & Bottom Nav
-=========================================== */
-:root {
-    --bg-color: #f0f4f8;
-    --app-bg: linear-gradient(180deg, #1b4b60, #225c75, #2c6f8d);
-    --card-bg: #ffffff;
-    --text-main: #1e3d4f;
-    --nav-bg: #0f3443;
-    --nav-text: #b0c4de;
-    --nav-active: #00e5ff;
+   MASTER STYLESHEET - CityPulse Super App
+   ========================================== */
+
+:root { 
+    --bg-color: #f0f4f8; 
+    --card-bg: #ffffff; 
+    --text-main: #1e293b; 
+    --text-sub: #64748b; 
+    --primary: #007a99; 
+    --border: #e2e8f0; 
+    --danger: #ef4444; 
+    --success: #10b981;
 }
 
-body.dark-theme {
-    --bg-color: #0b1c24;
-    --app-bg: linear-gradient(180deg, #0b1c24, #122c38, #183a4a);
-    --card-bg: #1e293b;
-    --text-main: #f8fafc;
+body.dark-theme { 
+    --bg-color: #0f172a; 
+    --card-bg: #1e293b; 
+    --text-main: #f8fafc; 
+    --text-sub: #94a3b8; 
+    --primary: #38bdf8; 
+    --border: #334155; 
+    --danger: #f87171; 
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-body { background-color: var(--bg-color); display: flex; justify-content: center; color: var(--text-main); }
-
-.app-container {
-    width: 100%; max-width: 420px; background: var(--app-bg);
-    min-height: 100vh; padding: 16px; padding-bottom: 85px; 
-    display: flex; flex-direction: column; gap: 14px; position: relative;
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
 }
 
-.page-container {
-    width: 100%; max-width: 420px; background: var(--bg-color);
-    min-height: 100vh; padding: 16px; padding-bottom: 85px;
+body { 
+    background-color: var(--bg-color); 
+    color: var(--text-main); 
+    display: flex; 
+    justify-content: center; 
 }
 
-/* 6-Button Bottom Navigation */
-.bottom-nav {
-    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-    width: 100%; max-width: 420px; height: 65px; background: var(--nav-bg);
-    display: grid; grid-template-columns: repeat(6, 1fr); align-items: center;
-    border-top: 1px solid rgba(255,255,255,0.1); z-index: 9999; box-shadow: 0 -3px 10px rgba(0,0,0,0.25);
+.page-container { 
+    width: 100%; 
+    max-width: 420px; 
+    min-height: 100vh; 
+    padding: 16px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 16px; 
+    padding-bottom: 85px; 
 }
-.nav-item { text-align: center; color: var(--nav-text); font-size: 9px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none;}
-.nav-item.active { color: var(--nav-active); }
-.nav-item .nav-icon { font-size: 16px; }
+
+/* --- MASTER MODERN BOTTOM NAVIGATION BAR --- */
+.bottom-nav { 
+    position: fixed; 
+    bottom: 0; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    width: 100%; 
+    max-width: 420px; 
+    height: 62px; 
+    background: rgba(15, 52, 67, 0.95); 
+    backdrop-filter: blur(10px);
+    display: grid; 
+    grid-template-columns: repeat(5, 1fr); 
+    align-items: center; 
+    border-top: 1px solid rgba(255, 255, 255, 0.1); 
+    z-index: 9999; 
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+}
+
+.nav-item { 
+    text-align: center; 
+    color: #94a3b8; 
+    font-size: 9px; 
+    font-weight: 700; 
+    cursor: pointer; 
+    text-decoration: none; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 3px; 
+    transition: 0.2s ease-in-out;
+}
+
+.nav-item:hover, .nav-item.active { 
+    color: #00e5ff; 
+    transform: translateY(-2px); 
+}
+
+.nav-item .nav-icon { 
+    font-size: 18px; 
+}

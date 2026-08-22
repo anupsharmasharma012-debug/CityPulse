@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ==========================================
+       [HTML] FILE HEADER & METADATA START
+       ========================================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityPulse - Saved Addresses & Location</title>
+    <!-- [CSS] LINKED TO MASTER STYLESHEET -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ==========================================
+           [CSS] PAGE-SPECIFIC CUSTOM STYLES START
+           ========================================== */
+        :root { --success: #10b981; }
+        body.dark-theme { --success: #10b981; }
+        
+        /* Header Layout Styles */
+        .header { display: flex; align-items: center; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+        .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; }
+        .header h1 { font-size: 18px; font-weight: bold; }
+
+        /* Auto-Detect GPS Card Styles */
+        .gps-card { background: rgba(0, 122, 153, 0.05); border: 1px dashed var(--primary); border-radius: 14px; padding: 16px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: 0.2s; }
+        .gps-icon { font-size: 28px; background: rgba(0, 122, 153, 0.1); padding: 10px; border-radius: 50%; }
+        .gps-text { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+        .gps-title { font-size: 14px; font-weight: 800; color: var(--primary); }
+        .gps-sub { font-size: 11px; color: var(--text-sub); }
+
+        .section-title { font-size: 12px; font-weight: bold; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+
+        /* Address List Styles */
+        .address-list { display: flex; flex-direction: column; gap: 10px; }
+        .address-card { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border); cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .address-left { display: flex; align-items: center; gap: 12px; }
+        .address-icon { font-size: 22px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--bg-color); border-radius: 10px; border: 1px solid var(--border); }
+        .address-info { display: flex; flex-direction: column; gap: 2px; }
+        .address-label { font-size: 13px; font-weight: 700; color: var(--text-main); }
+        .address-detail { font-size: 11px; color: var(--text-sub); line-height: 1.3; }
+        .address-action { font-size: 16px; color: var(--text-sub); font-weight: bold; }
+
+        .add-address-btn { width: 100%; padding: 14px; background: var(--card-bg); border: 2px dashed var(--border); border-radius: 12px; text-align: center; color: var(--primary); font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 4px; }
+        /* ==========================================
+           [CSS] PAGE-SPECIFIC CUSTOM STYLES END
+           ========================================== */
+    </style>
+</head>
+<body>
+
+<!-- ==========================================
+   [HTML] MAIN CONTENT CONTAINER START
+   ========================================== -->
+<div class="page-container">
+    
+    <!-- [HTML] HEADER SECTION START -->
+    <div class="header">
+        <button class="back-btn" onclick="history.back()">←</button>
+        <h1>Saved Addresses & Location</h1>
+    </div>
+    <!-- [HTML] HEADER SECTION END -->
+
+    <!-- [HTML] AUTO-DETECT GPS CARD START -->
+    <div class="gps-card" onclick="detectCurrentLocation()">
+        <div class="gps-icon">📍</div>
+        <div class="gps-text">
+            <span class="gps-title">Use Current Location</span>
+            <span class="gps-sub">Enable GPS to auto-detect your exact spot in Bhatpara</span>
+        </div>
+        <div style="font-size: 18px; color: var(--primary);">➔</div>
+    </div>
+    <!-- [HTML] AUTO-DETECT GPS CARD END -->
+
+    <!-- [HTML] SAVED ADDRESSES SECTION START -->
+    <div class="section-title">Saved Locations</div>
+    <div class="address-list">
+        
+        <div class="address-card" onclick="alert('Selected: Home (Ward 14, Bhatpara)')">
+            <div class="address-left">
+                <div class="address-icon">🏠</div>
+                <div class="address-info">
+                    <span class="address-label">Home</span>
+                    <span class="address-detail">Ward 14, Ghosh Para Road, Bhatpara - 743126</span>
+                </div>
+            </div>
+            <div class="address-action">✓</div>
+        </div>
+
+        <div class="address-card" onclick="alert('Selected: Workplace (Kankinara Market)')">
+            <div class="address-left">
+                <div class="address-icon">💼</div>
+                <div class="address-info">
+                    <span class="address-label">Workplace</span>
+                    <span class="address-detail">Station Road Wholesale Hub, Kankinara</span>
+                </div>
+            </div>
+            <div class="address-action">⋮</div>
+        </div>
+
+        <div class="address-card" onclick="alert('Selected: Parents House')">
+            <div class="address-left">
+                <div class="address-icon">🏡</div>
+                <div class="address-info">
+                    <span class="address-label">Parents House</span>
+                    <span class="address-detail">Near Bhatpara Municipality Building, West Bengal</span>
+                </div>
+            </div>
+            <div class="address-action">⋮</div>
+        </div>
+
+    </div>
+    <!-- [HTML] SAVED ADDRESSES SECTION END -->
+
+    <!-- [HTML] ADD NEW ADDRESS BUTTON START -->
+    <div class="add-address-btn" onclick="alert('Opening Add New Address Form...')">
+        + Add New Address
+    </div>
+    <!-- [HTML] ADD NEW ADDRESS BUTTON END -->
+
+</div>
+<!-- [HTML] MAIN CONTENT CONTAINER END -->
+
+<!-- ==========================================
+   [HTML] BOTTOM NAVIGATION START
+   ========================================== -->
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item">
+        <div class="nav-icon">🏠</div><span>Home</span>
+    </a>
+    <a href="search.html" class="nav-item">
+        <div class="nav-icon">🔍</div><span>Search</span>
+    </a>
+    <a href="pay.html" class="nav-item">
+        <div class="nav-icon">🛡️</div><span>Pay</span>
+    </a>
+    <a href="category.html" class="nav-item">
+        <div class="nav-icon">📂</div><span>Category</span>
+    </a>
+    <a href="notifications.html" class="nav-item">
+        <div class="nav-icon">🔔</div><span>Alerts</span>
+    </a>
+</div>
+<!-- [HTML] BOTTOM NAVIGATION END -->
+
+<!-- ==========================================
+   [JS] SCRIPT LOGIC START
+   ========================================== -->
+<script>
+    // Global Dark Mode Sync
+    if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
+
+    // Geolocation Detection Handler
+    function detectCurrentLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    alert("📍 Location Detected! Lat: " + position.coords.latitude.toFixed(4) + ", Lon: " + position.coords.longitude.toFixed(4) + " (Bhatpara Region)");
+                },
+                (error) => {
+                    alert("📍 Default Location Set: Bhatpara 743126, West Bengal.");
+                }
+            );
+        } else {
+            alert("📍 Geolocation is not supported by this browser. Using default Bhatpara profile.");
+        }
+    }
+</script>
+<!-- [JS] SCRIPT LOGIC END -->
+
+</body>
+</html>
+

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ==========================================
+       [HTML] FILE HEADER & METADATA START
+       ========================================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityPulse - Health & Medical</title>
+    <!-- [CSS] LINKED TO MASTER STYLESHEET -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ==========================================
+           [CSS] PAGE-SPECIFIC CUSTOM STYLES START
+           ========================================== */
+        :root { --danger: #ef4444; --danger-bg: #fef2f2; }
+        body.dark-theme { --danger: #f87171; --danger-bg: rgba(239, 68, 68, 0.1); }
+        
+        /* Header Layout Styles */
+        .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; }
+        .header h1 { font-size: 18px; font-weight: bold; }
+
+        .sos-icon { font-size: 20px; color: var(--danger); cursor: pointer; background: var(--danger-bg); padding: 6px 10px; border-radius: 8px; font-weight: bold; display: flex; align-items: center; gap: 4px; border: 1px solid rgba(239, 68, 68, 0.2); }
+
+        /* Emergency Critical Care Card Styles */
+        .emergency-card { background: var(--danger-bg); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 12px; padding: 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.05); }
+        .emergency-left { display: flex; align-items: center; gap: 12px; }
+        .emergency-icon { font-size: 32px; animation: pulse 2s infinite; }
+        .emergency-text { display: flex; flex-direction: column; gap: 2px; }
+        .emergency-title { font-size: 15px; font-weight: 800; color: var(--danger); }
+        .emergency-sub { font-size: 11px; color: var(--text-main); font-weight: 600; }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .section-title { font-size: 12px; font-weight: bold; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: -6px; margin-top: 4px; }
+
+        /* Health Grid Styles (4 Cols) */
+        .health-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; background: var(--card-bg); padding: 16px; border-radius: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); border: 1px solid var(--border); }
+        .health-item { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; cursor: pointer; }
+        .health-icon { font-size: 24px; background: rgba(0, 122, 153, 0.05); width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px; border: 1px solid rgba(0, 122, 153, 0.1); }
+        .health-name { font-size: 10px; font-weight: 600; color: var(--text-main); line-height: 1.2; }
+
+        /* Consultations & Schemes List Styles */
+        .health-list { display: flex; flex-direction: column; gap: 10px; }
+        .list-card { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border); cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .list-left { display: flex; align-items: center; gap: 12px; }
+        .list-icon { font-size: 20px; }
+        .list-text { display: flex; flex-direction: column; }
+        .list-title { font-size: 13px; font-weight: 700; color: var(--text-main); }
+        .list-sub { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+        .list-arrow { color: var(--primary); font-weight: bold; font-size: 16px; }
+        /* ==========================================
+           [CSS] PAGE-SPECIFIC CUSTOM STYLES END
+           ========================================== */
+    </style>
+</head>
+<body>
+
+<!-- ==========================================
+   [HTML] MAIN CONTENT CONTAINER START
+   ========================================== -->
+<div class="page-container">
+    
+    <!-- [HTML] HEADER SECTION START -->
+    <div class="header">
+        <div class="header-left">
+            <button class="back-btn" onclick="history.back()">←</button>
+            <h1>Health & Medical</h1>
+        </div>
+        <div class="sos-icon" onclick="window.location.href='emergency.html'">
+            🚨 SOS
+        </div>
+    </div>
+    <!-- [HTML] HEADER SECTION END -->
+
+    <!-- [HTML] CRITICAL CARE / AMBULANCE CARD START -->
+    <div class="emergency-card" onclick="alert('Connecting to 24/7 Ambulance Directory...')">
+        <div class="emergency-left">
+            <div class="emergency-icon">🚑</div>
+            <div class="emergency-text">
+                <span class="emergency-title">Book Ambulance</span>
+                <span class="emergency-sub">24/7 Emergency & Govt Hospitals</span>
+            </div>
+        </div>
+        <div style="color: var(--danger); font-size: 20px; font-weight: bold;">📞</div>
+    </div>
+    <!-- [HTML] CRITICAL CARE / AMBULANCE CARD END -->
+
+    <!-- [HTML] MEDICAL SERVICES GRID START -->
+    <div class="section-title">Medical Services</div>
+    <div class="health-grid">
+        <div class="health-item" onclick="alert('Opening Doctors Directory...')">
+            <div class="health-icon">🩺</div>
+            <div class="health-name">Doctors</div>
+        </div>
+        <div class="health-item" onclick="alert('Opening Local Pharmacies...')">
+            <div class="health-icon">💊</div>
+            <div class="health-name">Pharmacy</div>
+        </div>
+        <div class="health-item" onclick="alert('Opening Pathology Labs...')">
+            <div class="health-icon">🧪</div>
+            <div class="health-name">Lab Tests</div>
+        </div>
+        <div class="health-item" onclick="alert('Opening Blood Bank Live Status...')">
+            <div class="health-icon">🩸</div>
+            <div class="health-name">Blood Bank</div>
+        </div>
+    </div>
+    <!-- [HTML] MEDICAL SERVICES GRID END -->
+
+    <!-- [HTML] CONSULTATIONS & SCHEMES LIST START -->
+    <div class="section-title">Consultations & Schemes</div>
+    <div class="health-list">
+        
+        <div class="list-card" onclick="alert('Opening Govt Tele-Consultation Portal...')">
+            <div class="list-left">
+                <div class="list-icon">📱</div>
+                <div class="list-text">
+                    <span class="list-title">Govt Tele-Consultation</span>
+                    <span class="list-sub">Free online doctor advice & prescriptions</span>
+                </div>
+            </div>
+            <div class="list-arrow">→</div>
+        </div>
+
+        <div class="list-card" onclick="alert('Opening OPD Timings...')">
+            <div class="list-left">
+                <div class="list-icon">🏥</div>
+                <div class="list-text">
+                    <span class="list-title">OPD & Govt Hospitals</span>
+                    <span class="list-sub">Check timings & book appointments</span>
+                </div>
+            </div>
+            <div class="list-arrow">→</div>
+        </div>
+
+        <div class="list-card" onclick="alert('Opening Health Schemes / Swasthya Sathi...')">
+            <div class="list-left">
+                <div class="list-icon">💳</div>
+                <div class="list-text">
+                    <span class="list-title">Govt Health Schemes</span>
+                    <span class="list-sub">Swasthya Sathi, Generic Medicines</span>
+                </div>
+            </div>
+            <div class="list-arrow">→</div>
+        </div>
+
+        <div class="list-card" onclick="alert('Opening Wellness Guides...')">
+            <div class="list-left">
+                <div class="list-icon">🧘‍♂️</div>
+                <div class="list-text">
+                    <span class="list-title">Fitness, Yoga & First-Aid</span>
+                    <span class="list-sub">Daily wellness guides and emergency tips</span>
+                </div>
+            </div>
+            <div class="list-arrow">→</div>
+        </div>
+
+    </div>
+    <!-- [HTML] CONSULTATIONS & SCHEMES LIST END -->
+
+</div>
+<!-- [HTML] MAIN CONTENT CONTAINER END -->
+
+<!-- [HTML] MODERN 5-TAB BOTTOM NAVIGATION START -->
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item">
+        <div class="nav-icon">🏠</div><span>Home</span>
+    </a>
+    <a href="search.html" class="nav-item">
+        <div class="nav-icon">🔍</div><span>Search</span>
+    </a>
+    <a href="pay.html" class="nav-item">
+        <div class="nav-icon">🛡️</div><span>Pay</span>
+    </a>
+    <a href="category.html" class="nav-item">
+        <div class="nav-icon">📂</div><span>Category</span>
+    </a>
+    <a href="notifications.html" class="nav-item">
+        <div class="nav-icon">🔔</div><span>Alerts</span>
+    </a>
+</div>
+<!-- [HTML] BOTTOM NAVIGATION END -->
+
+<!-- ==========================================
+   [JS] SCRIPT LOGIC START
+   ========================================== -->
+<script>
+    // Global Dark Mode Sync[span_7](start_span)[span_7](end_span)
+    if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
+</script>
+<!-- [JS] SCRIPT LOGIC END -->
+
+</body>
+</html>
+

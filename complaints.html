@@ -3,155 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityPulse - Citizen Voice & Complaints</title>
+    <title>CityPulse - Geo-Tagged Complaints & Voting</title>
+    <!-- [CSS] LINKED TO MASTER STYLESHEET -->
+    <link rel="stylesheet" href="style.css">
     <style>
-        :root { --bg-color: #f0f4f8; --card-bg: #ffffff; --text-main: #1e293b; --primary: #007a99; --border: #cbd5e1; }
-        body.dark-theme { --bg-color: #0f172a; --card-bg: #1e293b; --text-main: #f8fafc; --primary: #38bdf8; --border: #334155; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            overflow-x: hidden !important;
-            position: relative;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-        }
+        /* ==========================================
+           [CSS] PAGE-SPECIFIC CUSTOM STYLES START
+           ========================================== */
+        :root { --accent: #10b981; }
+        body.dark-theme { --accent: #10b981; }
 
-        .page-container { 
-            width: 100%; 
-            max-width: 420px; 
-            margin: 0 auto;
-            min-height: 100vh; 
-            padding: 16px; 
-            padding-bottom: 85px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 14px; 
-            overflow-x: hidden !important;
-            box-sizing: border-box;
-        }
-        
-        .header { display: flex; align-items: center; gap: 15px; padding: 10px 0; font-size: 18px; font-weight: bold; }
+        /* Header Layout Styles */
+        .header { display: flex; align-items: center; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
         .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; }
+        .header h1 { font-size: 18px; font-weight: bold; }
 
-        .tab-header { display: grid; grid-template-columns: 1fr 1fr; background: var(--card-bg); border-radius: 12px; padding: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
-        .tab-btn { padding: 10px; text-align: center; font-size: 12px; font-weight: bold; border-radius: 10px; cursor: pointer; border: none; background: transparent; color: var(--text-main); }
-        .tab-btn.active { background: var(--primary); color: white; }
+        /* Tabs for Submission vs Voting Styles */
+        .tabs { display: flex; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
+        .tab { flex: 1; text-align: center; padding: 12px; font-size: 12px; font-weight: bold; cursor: pointer; color: var(--text-sub); }
+        .tab.active { background: var(--primary); color: white; }
 
-        .section-box { background: var(--card-bg); border-radius: 15px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 12px; }
-        .section-title { font-size: 13px; font-weight: bold; color: var(--primary); text-transform: uppercase; }
-
-        .form-group { display: flex; flex-direction: column; gap: 5px; }
-        .form-group label { font-size: 11px; font-weight: 600; color: #64748b; }
-        .form-control { padding: 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main); font-size: 13px; outline: none; width: 100%; }
+        /* Form Area Styles */
+        .form-area { display: flex; flex-direction: column; gap: 12px; }
+        .form-input, .form-textarea { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-color); color: var(--text-main); font-size: 13px; outline: none; }
+        .form-textarea { height: 80px; resize: none; }
         
-        .sub-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-        .sub-tab { padding: 8px 4px; font-size: 10px; font-weight: bold; text-align: center; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; background: transparent; color: var(--text-main); }
-        .sub-tab.active { background: #e0f2fe; color: #0284c7; border-color: #38bdf8; }
+        /* Geo-Tag Button Styles */
+        .geo-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background: rgba(16, 185, 129, 0.1); color: var(--accent); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .upload-box { border: 2px dashed var(--border); padding: 16px; text-align: center; border-radius: 8px; cursor: pointer; color: var(--text-sub); font-size: 12px; }
+        .submit-btn { background: var(--primary); color: white; padding: 14px; border-radius: 8px; border: none; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 4px; }
 
-        .btn-submit { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 14px; cursor: pointer; text-align: center; width: 100%; }
-        
-        .tracker-card { background: rgba(0,0,0,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
-        .status-badge { padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; }
-        .status-blue { background: #e0f2fe; color: #0284c7; }
-        .status-green { background: #dcfce7; color: #15803d; }
-
-        .helpline-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .helpline-pill { background: rgba(230, 57, 70, 0.08); border: 1px solid rgba(230, 57, 70, 0.2); border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; }
-        .helpline-pill h4 { font-size: 12px; color: #e63946; margin-bottom: 2px; }
-        .helpline-pill p { font-size: 10px; color: var(--text-main); }
-
-        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; height: 65px; background: #0f3443; display: grid; grid-template-columns: repeat(6, 1fr); align-items: center; border-top: 1px solid rgba(255,255,255,0.1); z-index: 9999; box-shadow: 0 -3px 10px rgba(0,0,0,0.25); }
-        .nav-item { text-align: center; color: #b0c4de; font-size: 9px; font-weight: 600; cursor: pointer; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .nav-item.active { color: #00e5ff; }
-        .nav-item .nav-icon { font-size: 16px; }
+        /* Community Voting System Styles */
+        .voting-area { display: none; flex-direction: column; gap: 12px; }
+        .issue-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: flex; gap: 12px; }
+        .vote-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .vote-btn { background: rgba(0, 122, 153, 0.1); color: var(--primary); border: none; width: 32px; height: 32px; border-radius: 6px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .vote-count { font-size: 14px; font-weight: bold; color: var(--text-main); }
+        .issue-details { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .issue-title { font-size: 13px; font-weight: 700; color: var(--text-main); }
+        .issue-meta { font-size: 10px; color: var(--text-sub); display: flex; gap: 8px; align-items: center; }
+        .status-badge { background: #fef08a; color: #854d0e; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: bold; text-transform: uppercase; }
+        /* ==========================================
+           [CSS] PAGE-SPECIFIC CUSTOM STYLES END
+           ========================================== */
     </style>
 </head>
 <body>
 
+<!-- [HTML] MAIN CONTENT CONTAINER START -->
 <div class="page-container">
+    
+    <!-- [HTML] HEADER SECTION START -->
     <div class="header">
-        <button class="back-btn" onclick="window.location.href='index.html'">←</button>
-        <h1>Citizen Voice & Hub</h1>
+        <div class="header-left">
+            <button class="back-btn" onclick="history.back()">←</button>
+            <h1>Jan Shikayat</h1>
+        </div>
     </div>
+    <!-- [HTML] HEADER SECTION END -->
 
-    <div class="tab-header">
-        <button class="tab-btn active" id="tab-complaint-btn" onclick="switchTab('complaints')">📢 Jan Shikayat</button>
-        <button class="tab-btn" id="tab-idea-btn" onclick="switchTab('ideas')">💡 Ideas & Innovations</button>
+    <!-- [HTML] TOGGLE SYSTEM TABS START -->
+    <div class="tabs">
+        <div class="tab active" id="tabNew" onclick="switchTab('new')">New Complaint</div>
+        <div class="tab" id="tabVote" onclick="switchTab('vote')">Community Voting</div>
     </div>
+    <!-- [HTML] TOGGLE SYSTEM TABS END -->
 
-    <div id="container-complaints" class="section-box">
-        <div class="section-title">📝 Submit New Complaint</div>
+    <!-- [HTML] GEO-TAGGED SUBMISSION FORM START -->
+    <div class="form-area" id="areaNew">
+        <select class="form-input">
+            <option>Select Category (Water, Road, Garbage)</option>
+        </select>
+        <textarea class="form-textarea" placeholder="Describe the civic issue clearly..."></textarea>
         
-        <div class="sub-tabs">
-            <button class="sub-tab active" onclick="setCompCategory('Seva App')">📱 Seva App</button>
-            <button class="sub-tab" onclick="setCompCategory('Samaj')">🤝 Samaj</button>
-            <button class="sub-tab" onclick="setCompCategory('Sarkar')">🏛️ Sarkar</button>
-        </div>
-
-        <div class="form-group">
-            <label>Select Issue Type / Category</label>
-            <select class="form-control" id="comp-type">
-                <option>Sadak & Potholes (सड़क)</option>
-                <option>Pani Supply (पानी)</option>
-                <option>Bijli & Streetlights (बिजली)</option>
-                <option>Kachra & Sanitation (सफाई)</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Detailed Description</label>
-            <textarea class="form-control" id="comp-desc" rows="3" placeholder="Apni samasya yahan likhein..."></textarea>
-        </div>
-
-        <button class="btn-submit" onclick="submitComplaint()">🚀 Submit Complaint</button>
+        <!-- Strict Rule Feature: Geo-Tagging Button -->
+        <button class="geo-btn" onclick="alert('GPS Location Fetched: Ward 14, Lat 22.82, Lon 88.40 (Geo-Tag Added)')">
+            📍 Auto-Fetch Geo-Tag (Required)
+        </button>
+        
+        <div class="upload-box" onclick="alert('Opening Camera...')">📸 Add Live Photo</div>
+        <button class="submit-btn" onclick="alert('Geo-Tagged Complaint Submitted to Municipality!')">Submit to Auth</button>
     </div>
+    <!-- [HTML] GEO-TAGGED SUBMISSION FORM END -->
 
-    <div id="container-ideas" class="section-box" style="display: none;">
-        <div class="section-title">💡 Propose Civic Idea</div>
-        <div class="form-group">
-            <label>Idea Title / Sujhav</label>
-            <input type="text" class="form-control" id="idea-title" placeholder="Jaise: Ward 14 mein naya park...">
+    <!-- [HTML] COMMUNITY VOTING SYSTEM START -->
+    <div class="voting-area" id="areaVote">
+        <div style="font-size: 11px; color: var(--text-sub); margin-bottom: 4px;">Top voted issues are fast-tracked to officials.</div>
+        
+        <div class="issue-card">
+            <div class="vote-col">
+                <button class="vote-btn" onclick="alert('Upvoted!')">▲</button>
+                <span class="vote-count">142</span>
+            </div>
+            <div class="issue-details">
+                <div class="issue-title">Broken Streetlight near Ghosh Para Crossing</div>
+                <div class="issue-meta">
+                    <span class="status-badge">Under Review</span>
+                    <span>📍 Ward 14</span>
+                </div>
+            </div>
         </div>
-        <button class="btn-submit" onclick="submitIdea()">🗳️ Publish for Community Voting</button>
+
+        <div class="issue-card">
+            <div class="vote-col">
+                <button class="vote-btn" onclick="alert('Upvoted!')">▲</button>
+                <span class="vote-count">89</span>
+            </div>
+            <div class="issue-details">
+                <div class="issue-title">Irregular garbage collection for 3 days</div>
+                <div class="issue-meta">
+                    <span class="status-badge" style="background:#bbf7d0; color:#166534;">Resolved</span>
+                    <span>📍 Ward 10</span>
+                </div>
+            </div>
+        </div>
     </div>
+    <!-- [HTML] COMMUNITY VOTING SYSTEM END -->
+
 </div>
+<!-- [HTML] MAIN CONTENT CONTAINER END -->
 
+<!-- [HTML] MODERN 5-TAB BOTTOM NAVIGATION START -->
 <div class="bottom-nav">
-    <a href="index.html" class="nav-item"><div class="nav-icon">🏠</div><span>Home</span></a>
-    <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><span>Profile</span></a>
-    <a href="search.html" class="nav-item"><div class="nav-icon">🔍</div><span>Search</span></a>
-    <a href="category.html" class="nav-item active"><div class="nav-icon">📂</div><span>Category</span></a>
-    <a href="notifications.html" class="nav-item"><div class="nav-icon">🔔</div><span>Alerts</span></a>
-    <a href="menu.html" class="nav-item"><div class="nav-icon">☰</div><span>Menu</span></a>
+    <a href="index.html" class="nav-item">
+        <div class="nav-icon">🏠</div><span>Home</span>
+    </a>
+    <a href="search.html" class="nav-item">
+        <div class="nav-icon">🔍</div><span>Search</span>
+    </a>
+    <a href="pay.html" class="nav-item">
+        <div class="nav-icon">🛡️</div><span>Pay</span>
+    </a>
+    <a href="category.html" class="nav-item active">
+        <div class="nav-icon">📂</div><span>Category</span>
+    </a>
+    <a href="notifications.html" class="nav-item">
+        <div class="nav-icon">🔔</div><span>Alerts</span>
+    </a>
 </div>
+<!-- [HTML] MODERN 5-TAB BOTTOM NAVIGATION END -->
 
+<!-- [JS] SCRIPT LOGIC START -->
 <script>
+    // Global Dark Mode Sync
     if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
-
+    
+    // Function to switch between New Complaint form and Community Voting feed
     function switchTab(type) {
-        if(type === 'complaints') {
-            document.getElementById('container-complaints').style.display = 'flex';
-            document.getElementById('container-ideas').style.display = 'none';
-            document.getElementById('tab-complaint-btn').classList.add('active');
-            document.getElementById('tab-idea-btn').classList.remove('active');
+        document.getElementById('tabNew').classList.remove('active');
+        document.getElementById('tabVote').classList.remove('active');
+        document.getElementById('areaNew').style.display = 'none';
+        document.getElementById('areaVote').style.display = 'none';
+
+        if(type === 'new') {
+            document.getElementById('tabNew').classList.add('active');
+            document.getElementById('areaNew').style.display = 'flex';
         } else {
-            document.getElementById('container-complaints').style.display = 'none';
-            document.getElementById('container-ideas').style.display = 'flex';
-            document.getElementById('tab-idea-btn').classList.add('active');
-            document.getElementById('tab-complaint-btn').classList.remove('active');
+            document.getElementById('tabVote').classList.add('active');
+            document.getElementById('areaVote').style.display = 'flex';
         }
     }
-
-    function submitComplaint() {
-        alert("✅ Jan Shikayat Registered Successfully!");
-    }
-
-    function submitIdea() {
-        alert("💡 Idea Published!");
-    }
 </script>
+<!-- [JS] SCRIPT LOGIC END -->
+
 </body>
 </html>
+

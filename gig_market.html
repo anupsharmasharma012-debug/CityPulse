@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ==========================================
+       [HTML] FILE HEADER & METADATA START
+       ========================================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityPulse - Local Vyapar & Gig Board</title>
+    <!-- [CSS] LINKED TO MASTER STYLESHEET -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ==========================================
+           [CSS] PAGE-SPECIFIC CUSTOM STYLES START
+           ========================================== */
+        :root { --success: #10b981; --warning: #f59e0b; }
+        body.dark-theme { --success: #34d399; }
+        
+        /* Header Layout Styles */
+        .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; }
+        .header h1 { font-size: 18px; font-weight: bold; }
+
+        /* Tabs Styles */
+        .tabs { display: flex; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
+        .tab { flex: 1; text-align: center; padding: 10px; font-size: 11px; font-weight: bold; cursor: pointer; color: var(--text-sub); }
+        .tab.active { background: var(--primary); color: white; }
+
+        /* Gig & Vyapar Card Styles */
+        .card-container { display: flex; flex-direction: column; gap: 12px; }
+        .vyapar-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .card-left { display: flex; align-items: center; gap: 12px; }
+        .card-icon { font-size: 24px; background: rgba(0, 122, 153, 0.05); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 10px; border: 1px solid rgba(0, 122, 153, 0.1); }
+        .card-info { display: flex; flex-direction: column; gap: 2px; }
+        .card-title { font-size: 13px; font-weight: 700; color: var(--text-main); }
+        .card-sub { font-size: 11px; color: var(--text-sub); }
+        .action-btn { background: var(--primary); color: white; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; border: none; cursor: pointer; }
+
+        .register-banner { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); padding: 16px; border-radius: 14px; color: white; display: flex; flex-direction: column; gap: 8px; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .register-title { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 6px; color: #34e89e; }
+        .register-sub { font-size: 11px; opacity: 0.9; }
+        /* ==========================================
+           [CSS] PAGE-SPECIFIC CUSTOM STYLES END
+           ========================================== */
+    </style>
+</head>
+<body>
+
+<!-- ==========================================
+   [HTML] MAIN CONTENT CONTAINER START
+   ========================================== -->
+<div class="page-container">
+    
+    <!-- [HTML] HEADER START -->
+    <div class="header">
+        <div class="header-left">
+            <button class="back-btn" onclick="history.back()">←</button>
+            <h1>Local Vyapar & Gig Board</h1>
+        </div>
+    </div>
+    <!-- [HTML] HEADER END -->
+
+    <!-- [HTML] TABS START -->
+    <div class="tabs">
+        <div class="tab active" id="tabGigs" onclick="switchTab('gigs')">🛠️ Bhatpara Gigs</div>
+        <div class="tab" id="tabVyapar" onclick="switchTab('vyapar')">🏬 Dukaan Digital</div>
+    </div>
+    <!-- [HTML] TABS END -->
+
+    <!-- [HTML] REGISTER BANNER START -->
+    <div class="register-banner" onclick="alert('Opening Digital Storefront & Gig Registration Form...')">
+        <div class="register-title">🚀 List Your Business or Skill Free</div>
+        <div class="register-sub">Are you a local shopkeeper or service provider in Bhatpara? Get discovered by thousands instantly.</div>
+    </div>
+    <!-- [HTML] REGISTER BANNER END -->
+
+    <!-- [HTML] GIGS SECTION START -->
+    <div class="card-container" id="areaGigs">
+        <div style="font-size: 12px; font-weight: bold; color: var(--text-sub); text-transform: uppercase;">Available Micro-Jobs Nearby</div>
+        
+        <div class="vyapar-card">
+            <div class="card-left">
+                <div class="card-icon">⚡</div>
+                <div class="card-info">
+                    <span class="card-title">Electrician Needed (2 Hours)</span>
+                    <span class="card-sub">Ward 14 • Pay: ₹350</span>
+                </div>
+            </div>
+            <button class="action-btn" onclick="alert('Gig Accepted! Contact shared.')">Accept</button>
+        </div>
+
+        <div class="vyapar-card">
+            <div class="card-left">
+                <div class="card-icon">📦</div>
+                <div class="card-info">
+                    <span class="card-title">Delivery Boy for Local Store</span>
+                    <span class="card-sub">Station Road • Pay: ₹400/day</span>
+                </div>
+            </div>
+            <button class="action-btn" onclick="alert('Gig Accepted! Contact shared.')">Accept</button>
+        </div>
+
+        <div class="vyapar-card">
+            <div class="card-left">
+                <div class="card-icon">🚰</div>
+                <div class="card-info">
+                    <span class="card-title">Plumber for Pipe Repair</span>
+                    <span class="card-sub">Ghosh Para • Pay: ₹300</span>
+                </div>
+            </div>
+            <button class="action-btn" onclick="alert('Gig Accepted! Contact shared.')">Accept</button>
+        </div>
+    </div>
+    <!-- [HTML] GIGS SECTION END -->
+
+    <!-- [HTML] VYAPAR / DUKAAN SECTION START -->
+    <div class="card-container" id="areaVyapar" style="display: none;">
+        <div style="font-size: 12px; font-weight: bold; color: var(--text-sub); text-transform: uppercase;">Verified Neighborhood Shops</div>
+        
+        <div class="vyapar-card">
+            <div class="card-left">
+                <div class="card-icon">👕</div>
+                <div class="card-info">
+                    <span class="card-title">Gupta Garments & Wholesale</span>
+                    <span class="card-sub">Open • Cotton T-Shirts & Kids Wear</span>
+                </div>
+            </div>
+            <button class="action-btn" style="background: var(--success);" onclick="alert('Opening Store Catalog...')">Catalog</button>
+        </div>
+
+        <div class="vyapar-card">
+            <div class="card-left">
+                <div class="card-icon">🛒</div>
+                <div class="card-info">
+                    <span class="card-title">Bhatpara General Store</span>
+                    <span class="card-sub">Open • Grocery & Daily Essentials</span>
+                </div>
+            </div>
+            <button class="action-btn" style="background: var(--success);" onclick="alert('Opening Store Catalog...')">Catalog</button>
+        </div>
+    </div>
+    <!-- [HTML] VYAPAR / DUKAAN SECTION END -->
+
+</div>
+<!-- [HTML] MAIN CONTENT CONTAINER END -->
+
+<!-- [HTML] BOTTOM NAVIGATION START -->
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item"><div class="nav-icon">🏠</div><span>Home</span></a>
+    <a href="search.html" class="nav-item"><div class="nav-icon">🔍</div><span>Search</span></a>
+    <a href="pay.html" class="nav-item"><div class="nav-icon">🛡️</div><span>Pay</span></a>
+    <a href="category.html" class="nav-item active"><div class="nav-icon">📂</div><span>Category</span></a>
+    <a href="notifications.html" class="nav-item"><div class="nav-icon">🔔</div><span>Alerts</span></a>
+</div>
+<!-- [HTML] BOTTOM NAVIGATION END -->
+
+<!-- [JS] SCRIPT LOGIC START -->
+<script>
+    // Global Dark Mode Sync
+    if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
+
+    // Tab Switching Logic for Gigs and Vyapar Modes
+    function switchTab(type) {
+        document.getElementById('tabGigs').classList.remove('active');
+        document.getElementById('tabVyapar').classList.remove('active');
+        document.getElementById('areaGigs').style.display = 'none';
+        document.getElementById('areaVyapar').style.display = 'none';
+
+        if(type === 'gigs') {
+            document.getElementById('tabGigs').classList.add('active');
+            document.getElementById('areaGigs').style.display = 'flex';
+        } else {
+            document.getElementById('tabVyapar').classList.add('active');
+            document.getElementById('areaVyapar').style.display = 'flex';
+        }
+    }
+</script>
+<!-- [JS] SCRIPT LOGIC END -->
+
+</body>
+</html>

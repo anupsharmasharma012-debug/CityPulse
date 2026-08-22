@@ -1,199 +1,237 @@
-<!-- 
-================================================================================
-  FILE NAME: index.html
-  PROJECT  : CityPulse
-  PURPOSE  : Complete Home Dashboard with Customer Ride & Partner Panel Links
-================================================================================
--->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- ==========================================
+       [HTML] FILE HEADER & METADATA START
+       ========================================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityPulse - Home</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>CityPulse - The Bhatpara Super App</title>
+    <!-- [CSS] LINKED TO MASTER STYLESHEET -->
+    <link rel="stylesheet" href="style.css">
     <style>
-        :root {
-            --bg-color: #f0f4f8;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-sub: #64748b;
-            --border-color: #e2e8f0;
-            --primary: #007a99;
-            --primary-dark: #005f75;
-            --success: #10b981;
-        }
-
-        body.dark-theme {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-main: #f8fafc;
-            --text-sub: #94a3b8;
-            --border-color: #334155;
-            --primary: #38bdf8;
-            --primary-dark: #0ea5e9;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        /* ==========================================
+           [CSS] PAGE-SPECIFIC CUSTOM STYLES START
+           ========================================== */
+        :root { --primary-light: #34e89e; --danger: #ef4444; }
+        body.dark-theme { --danger: #f87171; }
         
-        html, body {
-            margin: 0; padding: 0; width: 100%;
-            overflow-x: hidden !important;
-            overscroll-behavior-x: none !important;
-            position: relative;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            transition: background-color 0.2s;
-        }
-
-        .container { 
-            width: 100%; max-width: 420px; margin: 0 auto;
-            min-height: 100vh; padding: 16px; padding-bottom: 85px; 
-            display: flex; flex-direction: column; gap: 14px; 
-        }
-
-        .header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
-        .header h1 { font-size: 20px; font-weight: 700; color: var(--primary); }
-
-        /* Quick Actions Grid */
-        .quick-actions { 
-            background: var(--card-bg); 
-            border-radius: 16px; 
-            padding: 16px 12px; 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 12px; 
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05); 
-            text-align: center; 
-        }
-
-        .action-item { 
-            display: flex; flex-direction: column; align-items: center; 
-            text-decoration: none; color: var(--text-main); 
-            font-size: 11px; font-weight: 600; gap: 6px; 
-        }
-
-        .action-icon { 
-            width: 48px; height: 48px; border-radius: 14px; 
-            background: rgba(0, 122, 153, 0.08); 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 20px; transition: 0.2s;
-        }
-
-        .action-item:active .action-icon { background: var(--primary); color: white; }
-
-        /* Section Card for Quick Access & Partner Mode */
-        .section-card { background: var(--card-bg); border-radius: 16px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 10px; }
-        .section-title { font-size: 13px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; }
+        .page-container { width: 100%; max-width: 420px; min-height: 100vh; display: flex; flex-direction: column; gap: 14px; padding-bottom: 90px; }
         
-        .mode-btn { 
-            display: flex; align-items: center; justify-content: space-between; 
-            padding: 12px 14px; background: var(--bg-color); border-radius: 12px; 
-            text-decoration: none; color: var(--text-main); font-size: 13px; font-weight: 600; 
-            border: 1px solid var(--border-color); transition: 0.2s;
-        }
-        .mode-btn.partner { border-color: var(--success); background: rgba(16, 185, 129, 0.05); }
+        /* 1. Header (Profile, Logo, SOS) */
+        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--card-bg); border-bottom: 1px solid var(--border); }
+        .profile-btn { font-size: 24px; cursor: pointer; background: rgba(15, 52, 67, 0.1); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .brand-name { font-size: 18px; font-weight: 900; color: var(--primary); letter-spacing: 0.5px; }
+        .sos-btn { background: var(--danger); color: white; padding: 6px 12px; border-radius: 20px; font-weight: 900; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4); animation: pulse 2s infinite; }
+        
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-        /* Banner Card */
-        .banner-card { 
-            background: linear-gradient(135deg, #007a99, #005f75); 
-            color: white; 
-            border-radius: 16px; 
-            padding: 18px; 
-            display: flex; flex-direction: column; gap: 6px; 
-            box-shadow: 0 4px 12px rgba(0,122,153,0.15); 
-        }
-        .banner-card h2 { font-size: 16px; font-weight: 700; }
-        .banner-card p { font-size: 11px; opacity: 0.9; line-height: 1.4; }
+        /* 2. Amazon Style Location & Search */
+        .search-loc-section { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+        .location-banner { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--text-main); cursor: pointer; }
+        .search-bar { display: flex; align-items: center; background: var(--card-bg); padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); cursor: pointer; }
+        .search-bar span { color: var(--text-sub); font-size: 14px; margin-left: 8px; flex: 1; font-weight: 500; }
+        .search-icons { display: flex; gap: 12px; color: var(--text-sub); font-size: 18px; }
 
-        /* Bottom Navigation Bar */
-        .bottom-nav { 
-            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
-            width: 100%; max-width: 420px; height: 65px; background: #0f3443; 
-            display: grid; grid-template-columns: repeat(6, 1fr); align-items: center; 
-            border-top: 1px solid rgba(255,255,255,0.1); z-index: 9999; 
-            box-shadow: 0 -3px 10px rgba(0,0,0,0.25); 
-        }
-        .nav-item { text-align: center; color: #b0c4de; font-size: 9px; font-weight: 600; cursor: pointer; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .nav-item.active { color: #00e5ff; }
-        .nav-item .nav-icon { font-size: 16px; }
+        /* 3. Amazon Style Top Scrolling Buttons */
+        .top-scroll-container { display: flex; overflow-x: auto; gap: 10px; padding: 4px 16px 12px 16px; scroll-snap-type: x mandatory; }
+        .top-scroll-container::-webkit-scrollbar { display: none; }
+        .scroll-item { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 8px 12px; width: 75px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .scroll-item .s-icon { font-size: 28px; margin-bottom: 6px; }
+        .scroll-item span { font-size: 10px; font-weight: 700; color: var(--text-main); text-align: center; line-height: 1.1; }
+
+        .section-title { font-size: 14px; font-weight: 900; color: var(--text-main); padding: 0 16px; margin-bottom: -4px; margin-top: 8px; }
+
+        /* 4. Tata Neu Style News Banner (Left to Right Scroll) */
+        .banner-scroll { display: flex; overflow-x: auto; gap: 12px; padding: 8px 16px; scroll-snap-type: x mandatory; }
+        .banner-scroll::-webkit-scrollbar { display: none; }
+        .news-card { scroll-snap-align: center; flex: 0 0 85%; background: linear-gradient(to right, #0f2027, #203a43, #2c5364); border-radius: 16px; padding: 16px; color: white; display: flex; flex-direction: column; justify-content: flex-end; height: 160px; position: relative; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer; }
+        .news-tag { position: absolute; top: 12px; left: 12px; background: var(--danger); font-size: 9px; font-weight: bold; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; }
+        .news-title { font-size: 16px; font-weight: 800; line-height: 1.2; margin-bottom: 4px; z-index: 2; }
+        .news-source { font-size: 11px; opacity: 0.8; z-index: 2; }
+
+        /* 5. Tata Neu Style Offers (Left to Right Scroll) */
+        .offer-card { scroll-snap-align: center; flex: 0 0 75%; background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); border-radius: 16px; padding: 16px; color: #fff; height: 120px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer; }
+        .offer-title { font-size: 20px; font-weight: 900; color: #831843; line-height: 1; margin-bottom: 4px; }
+        .offer-sub { font-size: 12px; color: #9f1239; font-weight: 700; }
+
+        /* 6. Vertical Category Feed (Amazon Style Products/Services) */
+        .vertical-feed { display: flex; flex-direction: column; gap: 16px; padding: 0 16px; }
+        .feed-section { background: var(--card-bg); border-radius: 16px; padding: 16px; border: 1px solid var(--border); box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .feed-title { font-size: 15px; font-weight: 800; margin-bottom: 12px; }
+        .feed-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .feed-item { display: flex; flex-direction: column; gap: 6px; cursor: pointer; }
+        .feed-img { width: 100%; height: 100px; background: var(--bg-color); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 32px; border: 1px solid var(--border); }
+        .feed-item-title { font-size: 12px; font-weight: 700; line-height: 1.2; }
+        .feed-item-price { font-size: 13px; font-weight: 800; color: var(--primary); }
+
+        /* 7. Bottom Nav (Tata Neu Style - Home, Search, Pay, Category, Alerts) */
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; height: 65px; background: var(--card-bg); border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(5, 1fr); align-items: center; z-index: 9999; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); }
+        .nav-item { text-align: center; color: var(--text-sub); font-size: 9px; font-weight: 700; cursor: pointer; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; }
+        .nav-item.active { color: var(--primary); }
+        body.dark-theme .nav-item.active { color: #38bdf8; }
+        .nav-icon { font-size: 18px; }
+        
+        /* Prominent Middle Scan & Pay Button (Tata Neu Style) */
+        .nav-pay-btn { position: relative; top: -15px; background: var(--primary); color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(15, 52, 67, 0.4); border: 4px solid var(--bg-color); }
+        body.dark-theme .nav-pay-btn { border-color: #0f172a; background: #38bdf8; color: #0f172a; box-shadow: 0 4px 10px rgba(56, 189, 248, 0.3); }
+        .nav-pay-btn .nav-icon { font-size: 22px; margin-bottom: -2px; }
+        .nav-pay-btn span { font-size: 9px; font-weight: 800; }
+        /* ==========================================
+           [CSS] PAGE-SPECIFIC CUSTOM STYLES END
+           ========================================== */
     </style>
 </head>
 <body>
 
-<div class="container">
-    <!-- Header with Bhatpara location -->
-    <div class="header">
-        <h1>CityPulse</h1>
-        <div style="font-size: 13px; font-weight: 600; color: var(--text-sub);">Bhatpara</div>
+<!-- ==========================================
+   [HTML] MAIN CONTENT CONTAINER START
+   ========================================== -->
+<div class="page-container">
+    
+    <!-- [HTML] HEADER SECTION START -->
+    <div class="app-header">
+        <div class="profile-btn" onclick="window.location.href='profile.html'">👨‍💻</div>
+        <div class="brand-name">CityPulse</div>
+        <div class="sos-btn" onclick="window.location.href='emergency.html'">
+            🚨 SOS
+        </div>
     </div>
+    <!-- [HTML] HEADER SECTION END -->
 
-    <!-- Quick Actions Grid (All original options + Pay + Ride/Parcel) -->
-    <div class="quick-actions">
-        <a href="pay.html" class="action-item">
-            <div class="action-icon">💳</div>
-            <span>Pay</span>
-        </a>
-        <a href="delivery.html" class="action-item">
-            <div class="action-icon">🛵</div>
-            <span>Ride/Parcel</span>
-        </a>
-        <a href="emergency.html" class="action-item">
-            <div class="action-icon">🚨</div>
-            <span>Emergency</span>
-        </a>
-        <a href="category.html" class="action-item">
-            <div class="action-icon">📂</div>
-            <span>Services</span>
-        </a>
-        <a href="Callender.html" class="action-item">
-            <div class="action-icon">📅</div>
-            <span>Calendar</span>
-        </a>
-        <a href="complaints.html" class="action-item">
-            <div class="action-icon">📝</div>
-            <span>Complaints</span>
-        </a>
-        <a href="search.html" class="action-item">
-            <div class="action-icon">🔍</div>
-            <span>Search</span>
-        </a>
-        <a href="menu.html" class="action-item">
-            <div class="action-icon">☰</div>
-            <span>More</span>
-        </a>
+    <!-- [HTML] LOCATION & SEARCH START -->
+    <div class="search-loc-section">
+        <div class="location-banner" onclick="window.location.href='location.html'">
+            <span style="font-size: 16px;">📍</span> Deliver to Bhatpara 743126 ▾
+        </div>
+        <div class="search-bar" onclick="window.location.href='search.html'">
+            🔍 <span>Search news, products or services...</span>
+            <div class="search-icons">
+                <span>📷</span>
+                <span>🎙️</span>
+            </div>
+        </div>
     </div>
+    <!-- [HTML] LOCATION & SEARCH END -->
 
-    <!-- Mobility & Partner Switches -->
-    <div class="section-card">
-        <div class="section-title">Mobility & Delivery Access</div>
-        <a href="delivery.html" class="mode-btn">
-            <span>🛵 Book Ride / Send Parcel (Customer)</span>
-            <span>→</span>
-        </a>
-        <a href="partner.html" class="mode-btn partner">
-            <span style="color: var(--success);">👤 Driver / Partner Dashboard</span>
-            <span>→</span>
-        </a>
+    <!-- [HTML] TOP SCROLLING SHORTCUTS START -->
+    <div class="top-scroll-container">
+        <div class="scroll-item" onclick="window.location.href='pool_ride.html'">
+            <div class="s-icon">🛺</div>
+            <span>Auto Pool</span>
+        </div>
+        <div class="scroll-item" onclick="window.location.href='gig_market.html'">
+            <div class="s-icon">🛠️</div>
+            <span>Local Gigs</span>
+        </div>
+        <div class="scroll-item" onclick="window.location.href='pay.html'">
+            <div class="s-icon">💳</div>
+            <span>Pay Bills</span>
+        </div>
+        <div class="scroll-item" onclick="window.location.href='health.html'">
+            <div class="s-icon">🏥</div>
+            <span>Medical</span>
+        </div>
+        <div class="scroll-item" onclick="window.location.href='marketplace.html'">
+            <div class="s-icon">🛍️</div>
+            <span>Shopping</span>
+        </div>
+        <div class="scroll-item" onclick="window.location.href='marketplace.html'">
+            <div class="s-icon">🍅</div>
+            <span>Grocery</span>
+        </div>
+        <div class="scroll-item" onclick="window.location.href='delivery.html'">
+            <div class="s-icon">🚕</div>
+            <span>Ride</span>
+        </div>
+        <div class="scroll-item" onclick="window.location.href='explore.html'">
+            <div class="s-icon">🧳</div>
+            <span>Travel</span>
+        </div>
+        <div class="scroll-item" onclick="window.location.href='category.html'">
+            <div class="s-icon" style="color: var(--primary);">➕</div>
+            <span>View All</span>
+        </div>
     </div>
+    <!-- [HTML] TOP SCROLLING SHORTCUTS END -->
 
-    <!-- Promotional Banner -->
-    <div class="banner-card">
-        <h2>Fast City Transit & Delivery</h2>
-        <p>Book local bike taxis, auto rides, or send packages securely across the town instantly.</p>
+    <!-- [HTML] NEWS BANNER START -->
+    <div class="section-title">Local News & Media</div>
+    <div class="banner-scroll">
+        <div class="news-card" onclick="window.location.href='news.html'">
+            <span class="news-tag">Breaking</span>
+            <div class="news-title">Traffic diversion at Ghosh Para crossing today.</div>
+            <div class="news-source">Bhatpara News Network • 1h ago</div>
+        </div>
+        <div class="news-card" style="background: linear-gradient(to right, #4b1248, #f0c27b);" onclick="window.location.href='news.html'">
+            <span class="news-tag" style="background: #eab308;">Update</span>
+            <div class="news-title">Water supply timings changed for summer season.</div>
+            <div class="news-source">Municipality Desk • 3h ago</div>
+        </div>
     </div>
+    <!-- [HTML] NEWS BANNER END -->
+
+    <!-- [HTML] OFFERS BANNER START -->
+    <div class="banner-scroll" style="padding-top: 0;">
+        <div class="offer-card" onclick="window.location.href='marketplace.html'">
+            <div class="offer-title">Min. 50% Off</div>
+            <div class="offer-sub">On Local Fashion & Garments</div>
+        </div>
+    </div>
+    <!-- [HTML] OFFERS BANNER END -->
+
+    <!-- [HTML] VERTICAL CATEGORY FEED START -->
+    <div class="vertical-feed">
+        <div class="feed-section">
+            <div class="feed-title">Civic Services & Bills</div>
+            <div class="feed-grid">
+                <div class="feed-item" onclick="window.location.href='pay.html'">
+                    <div class="feed-img" style="font-size:40px; background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.3);">⚡</div>
+                    <div class="feed-item-title">Pay Electricity</div>
+                </div>
+                <div class="feed-item" onclick="window.location.href='complaints.html'">
+                    <div class="feed-img" style="font-size:40px; background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.3);">📢</div>
+                    <div class="feed-item-title">File Complaint</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [HTML] VERTICAL CATEGORY FEED END -->
+
 </div>
+<!-- [HTML] MAIN CONTENT CONTAINER END -->
 
-<!-- Bottom Navigation Bar -->
+<!-- ==========================================
+   [HTML] BOTTOM NAVIGATION START
+   ========================================== -->
 <div class="bottom-nav">
-    <a href="index.html" class="nav-item active"><div class="nav-icon">🏠</div><span>Home</span></a>
-    <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><span>Profile</span></a>
-    <a href="search.html" class="nav-item"><div class="nav-icon">🔍</div><span>Search</span></a>
-    <a href="category.html" class="nav-item"><div class="nav-icon">📂</div><span>Category</span></a>
-    <a href="notification.html" class="nav-item"><div class="nav-icon">🔔</div><span>Alerts</span></a>
-    <a href="menu.html" class="nav-item"><div class="nav-icon">☰</div><span>Menu</span></a>
+    <a href="index.html" class="nav-item active">
+        <div class="nav-icon">🏠</div><span>Home</span>
+    </a>
+    <a href="search.html" class="nav-item">
+        <div class="nav-icon">🔍</div><span>Search</span>
+    </a>
+    <a href="pay.html" class="nav-item nav-pay-btn">
+        <div class="nav-icon">🛡️</div><span>Pay</span>
+    </a>
+    <a href="category.html" class="nav-item">
+        <div class="nav-icon">📂</div><span>Category</span>
+    </a>
+    <a href="notifications.html" class="nav-item">
+        <div class="nav-icon">🔔</div><span>Alerts</span>
+    </a>
 </div>
+<!-- [HTML] BOTTOM NAVIGATION END -->
+
+<!-- ==========================================
+   [JS] SCRIPT LOGIC START
+   ========================================== -->
+<script>
+    // Global Dark Mode Sync[span_4](start_span)[span_4](end_span)
+    if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
+</script>
+<!-- [JS] SCRIPT LOGIC END -->
 
 </body>
 </html>
+

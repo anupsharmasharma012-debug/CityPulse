@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ==========================================
+       [HTML] FILE HEADER & METADATA START
+       ========================================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityPulse - Share-Auto & Pool Ride</title>
+    <!-- [CSS] LINKED TO MASTER STYLESHEET -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ==========================================
+           [CSS] PAGE-SPECIFIC CUSTOM STYLES START
+           ========================================== */
+        :root { --success: #10b981; --warning: #f59e0b; }
+        body.dark-theme { --success: #34d399; }
+        
+        /* Header Layout Styles */
+        .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; }
+        .header h1 { font-size: 18px; font-weight: bold; }
+
+        /* Booking / Pool Card Styles */
+        .pool-box { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border); padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        
+        .input-group { display: flex; align-items: center; gap: 10px; background: var(--bg-color); padding: 12px; border-radius: 8px; border: 1px solid var(--border); }
+        .input-icon { font-size: 16px; }
+        .input-field { border: none; background: transparent; outline: none; font-size: 13px; color: var(--text-main); width: 100%; font-weight: 600; }
+
+        .submit-btn { background: var(--primary); color: white; padding: 14px; border-radius: 8px; border: none; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 4px; width: 100%; }
+
+        .section-title { font-size: 12px; font-weight: bold; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 6px; }
+
+        /* Active Pools List */
+        .pool-list { display: flex; flex-direction: column; gap: 10px; }
+        .pool-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .pool-info { display: flex; flex-direction: column; gap: 2px; }
+        .pool-route { font-size: 13px; font-weight: 700; color: var(--text-main); }
+        .pool-meta { font-size: 11px; color: var(--text-sub); }
+        .join-btn { background: rgba(0, 122, 153, 0.1); color: var(--primary); border: none; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; }
+        /* ==========================================
+           [CSS] PAGE-SPECIFIC CUSTOM STYLES END
+           ========================================== */
+    </style>
+</head>
+<body>
+
+<!-- ==========================================
+   [HTML] MAIN CONTENT CONTAINER START
+   ========================================== -->
+<div class="page-container">
+    
+    <!-- [HTML] HEADER START -->
+    <div class="header">
+        <div class="header-left">
+            <button class="back-btn" onclick="history.back()">←</button>
+            <h1>Share-Auto & Pool Finder</h1>
+        </div>
+    </div>
+    <!-- [HTML] HEADER END -->
+
+    <!-- [HTML] POOL SEARCH BOX START -->
+    <div class="pool-box">
+        <div style="font-size: 13px; font-weight: 800; color: var(--primary);">🛺 Find or Create Auto Pool</div>
+        <div style="font-size: 11px; color: var(--text-sub);">Save money & avoid long queues at Bhatpara station stand.</div>
+        
+        <div class="input-group">
+            <span class="input-icon">🟢</span>
+            <input type="text" class="input-field" value="Bhatpara Railway Station Stand" readonly>
+        </div>
+        <div class="input-group">
+            <span class="input-icon">📍</span>
+            <input type="text" class="input-field" placeholder="Enter destination (e.g. Kankinara / Shyamnagar)">
+        </div>
+
+        <button class="submit-btn" onclick="alert('Searching for commuters heading to same route...')">Find Pool Partners (2/4 Seats)</button>
+    </div>
+    <!-- [HTML] POOL SEARCH BOX END -->
+
+    <!-- [HTML] ACTIVE POOLS NEARBY START -->
+    <div class="section-title">Active Pools Departing Soon</div>
+    <div class="pool-list">
+        
+        <div class="pool-card">
+            <div class="pool-info">
+                <span class="pool-route">Bhatpara Station ➔ Kankinara</span>
+                <span class="pool-meta">2 seats filled • Leaving in 5 mins • ₹15/person</span>
+            </div>
+            <button class="join-btn" onclick="alert('Joined Pool #104! Stand at platform gate.')">Join Pool</button>
+        </div>
+
+        <div class="pool-card">
+            <div class="pool-info">
+                <span class="pool-route">Bhatpara More ➔ Shyamnagar</span>
+                <span class="pool-meta">3 seats filled • Leaving instantly • ₹20/person</span>
+            </div>
+            <button class="join-btn" onclick="alert('Joined Pool #108!')">Join Pool</button>
+        </div>
+
+    </div>
+    <!-- [HTML] ACTIVE POOLS NEARBY END -->
+
+</div>
+<!-- [HTML] MAIN CONTENT CONTAINER END -->
+
+<!-- ==========================================
+   [HTML] BOTTOM NAVIGATION START
+   ========================================== -->
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item"><div class="nav-icon">🏠</div><span>Home</span></a>
+    <a href="search.html" class="nav-item"><div class="nav-icon">🔍</div><span>Search</span></a>
+    <a href="pay.html" class="nav-item"><div class="nav-icon">🛡️</div><span>Pay</span></a>
+    <a href="category.html" class="nav-item active"><div class="nav-icon">📂</div><span>Category</span></a>
+    <a href="notifications.html" class="nav-item"><div class="nav-icon">🔔</div><span>Alerts</span></a>
+</div>
+<!-- [HTML] BOTTOM NAVIGATION END -->
+
+<!-- ==========================================
+   [JS] SCRIPT LOGIC START
+   ========================================== -->
+<script>
+    // Global Dark Mode Sync
+    if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
+</script>
+<!-- [JS] SCRIPT LOGIC END -->
+
+</body>
+</html>

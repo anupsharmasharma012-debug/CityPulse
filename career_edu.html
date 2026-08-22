@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ==========================================
+       [HTML] FILE HEADER & METADATA START
+       ========================================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityPulse - Career, Edu & Govt Schemes</title>
+    <!-- [CSS] LINKED TO MASTER STYLESHEET -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ==========================================
+           [CSS] PAGE-SPECIFIC CUSTOM STYLES START
+           ========================================== */
+        :root { --success: #10b981; --warning: #f59e0b; }
+        body.dark-theme { --success: #10b981; }
+        
+        /* Header Layout Styles */
+        .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; }
+        .header h1 { font-size: 18px; font-weight: bold; }
+
+        /* Filter Tabs Styles */
+        .filter-tabs { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 4px; }
+        .filter-tabs::-webkit-scrollbar { display: none; }
+        .tab-chip { white-space: nowrap; padding: 8px 14px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; font-size: 11px; font-weight: 700; color: var(--text-sub); cursor: pointer; display: flex; align-items: center; gap: 4px; transition: 0.2s; }
+        .tab-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+        .section-title { font-size: 12px; font-weight: bold; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+
+        /* ROCKET FEATURE: AI Scheme Matcher Banner Styles */
+        .ai-scheme-banner { background: linear-gradient(135deg, #0f3443, #34e89e); padding: 16px; border-radius: 14px; color: white; display: flex; flex-direction: column; gap: 6px; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .ai-scheme-title { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
+        .ai-scheme-sub { font-size: 11px; opacity: 0.9; }
+
+        /* General List View Styles */
+        .data-list { display: flex; flex-direction: column; gap: 10px; }
+        .list-card { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border); cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .list-left { display: flex; align-items: center; gap: 12px; }
+        .list-icon { font-size: 22px; }
+        .list-text { display: flex; flex-direction: column; }
+        .list-title { font-size: 13px; font-weight: 700; color: var(--text-main); }
+        .list-sub { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+        .list-arrow { color: var(--primary); font-weight: bold; font-size: 16px; }
+        /* ==========================================
+           [CSS] PAGE-SPECIFIC CUSTOM STYLES END
+           ========================================== */
+    </style>
+</head>
+<body>
+
+<!-- ==========================================
+   [HTML] MAIN CONTENT CONTAINER START
+   ========================================== -->
+<div class="page-container">
+    
+    <!-- [HTML] HEADER SECTION START -->
+    <div class="header">
+        <div class="header-left">
+            <button class="back-btn" onclick="history.back()">←</button>
+            <h1>Career, Edu & Govt Schemes</h1>
+        </div>
+    </div>
+    <!-- [HTML] HEADER SECTION END -->
+
+    <!-- [HTML] FILTER TABS START -->
+    <div class="filter-tabs">
+        <div class="tab-chip active">🏛️ Govt Schemes & AI</div>
+        <div class="tab-chip">💼 Jobs & Skills</div>
+        <div class="tab-chip">📚 Education & Board</div>
+    </div>
+    <!-- [HTML] FILTER TABS END -->
+
+    <!-- [HTML] ROCKET FEATURE: AI GOVT SCHEME MATCHER START -->
+    <div class="ai-scheme-banner" onclick="triggerAISchemeMatcher()">
+        <div class="ai-scheme-title">✨ AI Govt Scheme & Eligibility Matcher</div>
+        <div class="ai-scheme-sub">Find West Bengal & Central schemes (Swasthya Sathi, Lakshmir Bhandar, Mudra Loan) tailored for your profile in 1 click.</div>
+    </div>
+    <!-- [HTML] ROCKET FEATURE: AI GOVT SCHEME MATCHER END -->
+
+    <!-- [HTML] SCHEMES & DIGITAL IDENTITY LIST START -->
+    <div class="section-title">Schemes & Digital Identity</div>
+    <div class="data-list">
+        
+        <div class="list-card" onclick="alert('Opening State & Central Govt Schemes Portal...')">
+            <div class="list-left">
+                <div class="list-icon">📜</div>
+                <div class="list-text">
+                    <span class="list-title">All Govt Schemes</span>
+                    <span class="list-sub">State & Central Application Links</span>
+                </div>
+            </div>
+            <div class="list-arrow">→</div>
+        </div>
+
+        <div class="list-card" onclick="alert('Opening Land Records & Property Registration...')">
+            <div class="list-left">
+                <div class="list-icon">🏡</div>
+                <div class="list-text">
+                    <span class="list-title">Land Records & Property</span>
+                    <span class="list-sub">Check Stamp Duty & Registration</span>
+                </div>
+            </div>
+            <div class="list-arrow">→</div>
+        </div>
+
+    </div>
+    <!-- [HTML] SCHEMES & DIGITAL IDENTITY LIST END -->
+
+    <!-- [HTML] LEARNING & EXAMS LIST START -->
+    <div class="section-title">Learning & Competitive Exams</div>
+    <div class="data-list">
+        
+        <div class="list-card" onclick="alert('Opening Competitive Exam Portal...')">
+            <div class="list-left">
+                <div class="list-icon">✍️</div>
+                <div class="list-text">
+                    <span class="list-title">Competitive Exams</span>
+                    <span class="list-sub">JEE, NEET, WB Board & Mock Tests</span>
+                </div>
+            </div>
+            <div class="list-arrow">→</div>
+        </div>
+
+    </div>
+    <!-- [HTML] LEARNING & EXAMS LIST END -->
+
+</div>
+<!-- [HTML] MAIN CONTENT CONTAINER END -->
+
+<!-- ==========================================
+   [HTML] BOTTOM NAVIGATION START
+   ========================================== -->
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item">
+        <div class="nav-icon">🏠</div><span>Home</span>
+    </a>
+    <a href="search.html" class="nav-item">
+        <div class="nav-icon">🔍</div><span>Search</span>
+    </a>
+    <a href="pay.html" class="nav-item">
+        <div class="nav-icon">🛡️</div><span>Pay</span>
+    </a>
+    <a href="category.html" class="nav-item active">
+        <div class="nav-icon">📂</div><span>Category</span>
+    </a>
+    <a href="notifications.html" class="nav-item">
+        <div class="nav-icon">🔔</div><span>Alerts</span>
+    </a>
+</div>
+<!-- [HTML] BOTTOM NAVIGATION END -->
+
+<!-- ==========================================
+   [JS] SCRIPT LOGIC START
+   ========================================== -->
+<script>
+    // Global Dark Mode Sync
+    if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
+    
+    // AI Scheme Matcher Interactive Trigger
+    function triggerAISchemeMatcher() {
+        const age = prompt("🤖 AI Scheme Matcher: Enter your age:");
+        const income = prompt("Enter your estimated annual family income (in ₹):");
+        if(age && income) {
+            alert("✅ Match Found! Based on your profile, you are eligible for Swasthya Sathi, Lakshmir Bhandar, and State Subsidy Schemes. Tap to auto-fill application.");
+        }
+    }
+
+    // Filter Tab Switching Logic
+    document.querySelectorAll('.tab-chip').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.tab-chip').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+</script>
+<!-- [JS] SCRIPT LOGIC END -->
+
+</body>
+</html>
+

@@ -1,26 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- ==========================================
+       [HTML] FILE HEADER & METADATA START
+       ========================================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search</title>
+    <title>CityPulse - Smart Search & Saathi Assistant</title>
+    <!-- [CSS] LINKED TO MASTER STYLESHEET -->
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* ==========================================
+           [CSS] PAGE-SPECIFIC CUSTOM STYLES START
+           ========================================== */
+        :root { --danger: #ef4444; }
+        body.dark-theme { --danger: #f87171; }
+        
+        .search-header { display: flex; align-items: center; gap: 10px; }
+        .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; padding-right: 4px; }
+        
+        .search-input-box { flex: 1; position: relative; display: flex; align-items: center; }
+        .search-input { width: 100%; padding: 12px 40px 12px 14px; border-radius: 12px; border: 2px solid var(--primary); background: var(--card-bg); color: var(--text-main); font-size: 14px; outline: none; box-shadow: 0 4px 6px rgba(0, 122, 153, 0.1); }
+        .mic-btn { position: absolute; right: 12px; font-size: 18px; color: var(--primary); cursor: pointer; background: none; border: none; }
+
+        /* ROCKET FEATURE: CityPulse Saathi Banner */
+        .saathi-banner { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); border-radius: 14px; padding: 14px; color: white; display: flex; align-items: center; gap: 12px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .saathi-icon { font-size: 30px; background: rgba(255,255,255,0.1); padding: 8px; border-radius: 10px; }
+        .saathi-text { display: flex; flex-direction: column; gap: 2px; }
+        .saathi-title { font-size: 14px; font-weight: 800; color: #34e89e; }
+        .saathi-sub { font-size: 11px; opacity: 0.9; }
+
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .section-title { font-size: 13px; font-weight: 800; color: var(--text-main); }
+        .clear-btn { font-size: 11px; font-weight: 700; color: var(--danger); cursor: pointer; }
+
+        .recent-list { display: flex; flex-direction: column; gap: 12px; }
+        .recent-item { display: flex; align-items: center; gap: 12px; cursor: pointer; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+        .recent-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .recent-icon { font-size: 16px; color: var(--text-sub); }
+        .recent-text { font-size: 13px; color: var(--text-main); flex: 1; }
+
+        .trending-box { display: flex; flex-wrap: wrap; gap: 10px; }
+        .trend-chip { padding: 8px 14px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        /* ==========================================
+           [CSS] PAGE-SPECIFIC CUSTOM STYLES END
+           ========================================== */
+    </style>
 </head>
 <body>
-<div class="page-container">
-    <h2>Search Services</h2>
-    <input type="text" placeholder="Type to search..." style="width: 100%; padding: 15px; border-radius: 10px; border: 1px solid #ccc; margin-top: 15px;">
-</div>
 
-<!-- Bottom Nav (SEARCH ACTIVE) -->
+<!-- ==========================================
+   [HTML] MAIN CONTENT CONTAINER START
+   ========================================== -->
+<div class="page-container">
+    
+    <!-- [HTML] SEARCH HEADER START -->
+    <div class="search-header">
+        <button class="back-btn" onclick="history.back()">←</button>
+        <div class="search-input-box">
+            <input type="text" class="search-input" placeholder="Search services, news, places..." autofocus>
+            <button class="mic-btn" onclick="triggerVoiceAssistant()">🎙️</button>
+        </div>
+    </div>
+    <!-- [HTML] SEARCH HEADER END -->
+
+    <!-- [HTML] SAATHI ASSISTANT BANNER START -->
+    <div class="saathi-banner" onclick="triggerVoiceAssistant()">
+        <div class="saathi-icon">🤖</div>
+        <div class="saathi-text">
+            <span class="saathi-title">CityPulse Saathi (AI Voice Assistant)</span>
+            <span class="saathi-sub">Tap & speak in Bengali, Hindi or English: "Electricity kab kategi?"</span>
+        </div>
+    </div>
+    <!-- [HTML] SAATHI ASSISTANT BANNER END -->
+
+    <!-- [HTML] RECENT SEARCHES START -->
+    <div>
+        <div class="section-header">
+            <div class="section-title">Recent Searches</div>
+            <div class="clear-btn" onclick="alert('Search history cleared!')">CLEAR ALL</div>
+        </div>
+        <div class="recent-list">
+            <div class="recent-item" onclick="document.querySelector('.search-input').value = 'Bhatpara Municipality Tax';">
+                <span class="recent-icon">🕒</span>
+                <span class="recent-text">Bhatpara Municipality Tax</span>
+            </div>
+            <div class="recent-item" onclick="document.querySelector('.search-input').value = 'Electrician near me';">
+                <span class="recent-icon">🕒</span>
+                <span class="recent-text">Electrician near me</span>
+            </div>
+        </div>
+    </div>
+    <!-- [HTML] RECENT SEARCHES END -->
+
+    <!-- [HTML] TRENDING SEARCHES START -->
+    <div>
+        <div class="section-header">
+            <div class="section-title">Trending in Bhatpara</div>
+        </div>
+        <div class="trending-box">
+            <div class="trend-chip" onclick="window.location.href='news.html'"><span class="trend-icon">🔥</span> Traffic Alert</div>
+            <div class="trend-chip" onclick="window.location.href='marketplace.html'"><span class="trend-icon">📈</span> Live Mandi Rates</div>
+            <div class="trend-chip" onclick="window.location.href='career_edu.html'"><span class="trend-icon">🎓</span> WB Board Results</div>
+        </div>
+    </div>
+    <!-- [HTML] TRENDING SEARCHES END -->
+
+</div>
+<!-- [HTML] MAIN CONTENT CONTAINER END -->
+
+<!-- ==========================================
+   [HTML] BOTTOM NAVIGATION START
+   ========================================== -->
 <div class="bottom-nav">
     <a href="index.html" class="nav-item"><div class="nav-icon">🏠</div><span>Home</span></a>
     <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><span>Profile</span></a>
     <a href="search.html" class="nav-item active"><div class="nav-icon">🔍</div><span>Search</span></a>
     <a href="category.html" class="nav-item"><div class="nav-icon">📂</div><span>Category</span></a>
     <a href="notifications.html" class="nav-item"><div class="nav-icon">🔔</div><span>Alerts</span></a>
-    <a href="menu.html" class="nav-item"><div class="nav-icon">☰</div><span>Menu</span></a>
 </div>
-<script>if(localStorage.getItem("citypulse_theme")==="dark") document.body.classList.add("dark-theme");</script>
+<!-- [HTML] BOTTOM NAVIGATION END -->
+
+<!-- ==========================================
+   [JS] SCRIPT LOGIC START
+   ========================================== -->
+<script>
+    // Global Dark Mode Sync
+    if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
+
+    // Voice Assistant Prompt Handler
+    function triggerVoiceAssistant() {
+        const query = prompt("🎙️ CityPulse Saathi is listening... Type your voice command (e.g., 'Sasti sabzi kahan milegi?'):");
+        if(query) {
+            alert("🤖 Saathi AI Processing: Searching local database for '" + query + "'...");
+        }
+    }
+</script>
+<!-- [JS] SCRIPT LOGIC END -->
+
 </body>
 </html>
+
