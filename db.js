@@ -3,8 +3,8 @@
    ========================================================= */
 
 // 1. Supabase Initialization (Make sure supabase-js script is loaded in your HTML head)
-const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE'; // Apni project URL yahan dalein
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE'; // Apni Anon Key yahan dalein
+const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE'; 'https://qfefkyrwxdhdxyajutst.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE'; 'sb_publishable_mOjSpSn12VMJMf-0WWcDFg_h0u-YL5c';
 
 // Initialize Supabase Client (Agar global supabase object available hai)
 const _supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
