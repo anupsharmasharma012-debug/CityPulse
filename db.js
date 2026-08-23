@@ -4,7 +4,7 @@
 
 // 1. Supabase Initialization (Make sure supabase-js script is loaded in your HTML head)
 const SUPABASE_URL = 'https://qfefkyrwxdhdxyajutst.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_mOjSpSn12VMJMf-0WWcDFg_h0u-YL5c';
+const SUPABASE_ANON_KEY = 'sb_publishable_mOjspSn12VMjMf-OWWcDFg_hOu-YL5c';
 
 // Initialize Supabase Client (Agar global supabase object available hai)
 const _supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
