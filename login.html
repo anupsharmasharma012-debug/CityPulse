@@ -16,9 +16,8 @@
         :root { --success: #10b981; }
         body.dark-theme { --success: #34d399; }
         
-        /* Header Layout Styles (Top-left back button completely cleared, short language icon on top right) */
-        .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
-        .header h1 { font-size: 18px; font-weight: bold; }
+        /* Header Layout Styles (Top-left completely cleared, language icon on top right) */
+        .header { display: flex; align-items: center; justify-content: flex-end; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
         .lang-icon-btn { font-size: 18px; cursor: pointer; background: var(--card-bg); border: 1px solid var(--border); padding: 6px 10px; border-radius: 8px; }
 
         /* Upper Body Smart Logo & Branding Styles */
@@ -68,9 +67,8 @@
    ========================================== -->
 <div class="page-container" style="padding-bottom: 20px;">
     
-    <!-- [HTML] HEADER START (Top-left back button cleared, short language icon on top right) -->
+    <!-- [HTML] HEADER START (Top-left cleared, language icon on top right) -->
     <div class="header">
-        <h1>Sign In / Register</h1>
         <div class="lang-icon-btn" onclick="window.location.href='language.html'">🌐</div>
     </div>
     <!-- [HTML] HEADER END -->
@@ -119,7 +117,7 @@
             </div>
         </div>
 
-        <!-- 4th: Sign In / Sign Up Button -->
+        <!-- 4th: Sign In Button (Placed strictly below biometric and above checkbox) -->
         <button class="submit-btn" id="loginBtn" disabled onclick="handleSuccessfulAuth()">4. Sign In to CityPulse</button>
 
         <!-- 5th: Checkbox and Privacy & Policy -->
@@ -164,7 +162,7 @@
             </div>
         </div>
 
-        <!-- 4th: Register / Sign Up Button -->
+        <!-- 4th: Register Button -->
         <button class="submit-btn" id="signupBtn" disabled style="background: var(--success);" onclick="handleSuccessfulAuth()">4. Register Account</button>
 
         <!-- 5th: Checkbox and Privacy & Policy -->
