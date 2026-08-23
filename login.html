@@ -16,11 +16,10 @@
         :root { --success: #10b981; }
         body.dark-theme { --success: #34d399; }
         
-        /* Header Layout Styles */
+        /* Header Layout Styles (No back button, short language icon on top right) */
         .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-        .header-left { display: flex; align-items: center; gap: 12px; }
-        .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; }
         .header h1 { font-size: 18px; font-weight: bold; }
+        .lang-icon-btn { font-size: 18px; cursor: pointer; background: var(--card-bg); border: 1px solid var(--border); padding: 6px 10px; border-radius: 8px; }
 
         /* Auth Tabs (Login vs Sign Up) */
         .auth-tabs { display: flex; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; margin-top: 4px; }
@@ -37,29 +36,20 @@
         .submit-btn { background: var(--primary); color: white; padding: 14px; border-radius: 8px; border: none; font-size: 14px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
         .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* Social Login Buttons */
-        .social-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; font-weight: 700; color: var(--text-main); cursor: pointer; }
-        
-        .divider { display: flex; align-items: center; text-align: center; color: var(--text-sub); font-size: 11px; margin: 4px 0; }
-        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border); }
-        .divider::before { margin-right: 10px; }
-        .divider::after { margin-left: 10px; }
+        /* Social Google Login Button */
+        .google-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; font-weight: 700; color: var(--text-main); cursor: pointer; }
 
-        /* Strict Checkbox & Terms Row Layout (Checkbox beside text) */
+        /* Strict Checkbox & Terms Row Layout */
         .terms-container { display: flex; align-items: center; gap: 10px; background: var(--card-bg); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); }
         .terms-container input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0; }
         .terms-container label { font-size: 11px; color: var(--text-main); cursor: pointer; font-weight: 600; line-height: 1.3; }
 
-        /* Biometric / Fingerprint Section (Positioned before index/action) */
+        /* Biometric / Fingerprint Section */
         .bio-box { background: rgba(0, 122, 153, 0.05); border: 1px dashed var(--primary); border-radius: 12px; padding: 12px; text-align: center; display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .bio-icon { font-size: 24px; }
         .bio-info { text-align: left; flex: 1; }
         .bio-title { font-size: 12px; font-weight: 800; color: var(--primary); }
         .bio-sub { font-size: 10px; color: var(--text-sub); }
-
-        /* Language Selector Banner */
-        .lang-banner { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); border: 1px solid var(--border); padding: 12px 16px; border-radius: 12px; cursor: pointer; }
-        .lang-banner-left { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; color: var(--text-main); }
         /* ==========================================
            [CSS] PAGE-SPECIFIC CUSTOM STYLES END
            ========================================== */
@@ -70,26 +60,14 @@
 <!-- ==========================================
    [HTML] MAIN CONTENT CONTAINER START
    ========================================== -->
-<div class="page-container">
+<div class="page-container" style="padding-bottom: 20px;">
     
-    <!-- [HTML] HEADER START -->
+    <!-- [HTML] HEADER START (No back button, short language icon on top right) -->
     <div class="header">
-        <div class="header-left">
-            <button class="back-btn" onclick="history.back()">←</button>
-            <h1>Sign In / Register</h1>
-        </div>
-        <div style="font-size: 18px; cursor: pointer;" onclick="window.location.href='language.html'">🌐</div>
+        <h1>Sign In / Register</h1>
+        <div class="lang-icon-btn" onclick="window.location.href='language.html'">🌐</div>
     </div>
     <!-- [HTML] HEADER END -->
-
-    <!-- [HTML] LANGUAGE QUICK SELECTOR BANNER START -->
-    <div class="lang-banner" onclick="window.location.href='language.html'">
-        <div class="lang-banner-left">
-            <span>🌐</span> Select Language / ভাষা / भाषा
-        </div>
-        <div style="color: var(--primary); font-weight: bold;">Change →</div>
-    </div>
-    <!-- [HTML] LANGUAGE QUICK SELECTOR BANNER END -->
 
     <!-- [HTML] AUTH TABS START -->
     <div class="auth-tabs">
@@ -102,40 +80,40 @@
     <div class="auth-card" id="areaLogin">
         <div style="font-size: 14px; font-weight: 800; color: var(--text-main);">Welcome Back to CityPulse</div>
         
-        <!-- Mobile / Email Login Options -->
-        <div class="input-group">
-            <span class="input-icon">📱</span>
-            <input type="text" class="input-field" placeholder="Enter mobile number or Email ID">
-        </div>
-        
-        <div class="input-group">
-            <span class="input-icon">🔑</span>
-            <input type="password" class="input-field" placeholder="Enter Password or OTP">
+        <!-- 1st: Google Sign In -->
+        <div class="google-btn" onclick="alert('Redirecting to Google Sign-In...')">
+            <span>🌐</span> Sign in with Google
         </div>
 
-        <!-- Biometric Login Option (Placed strictly before final action) -->
+        <!-- 2nd: Email Sign In -->
+        <div class="input-group">
+            <span class="input-icon">📧</span>
+            <input type="email" class="input-field" placeholder="Enter Email Address">
+        </div>
+
+        <!-- 3rd: Phone Number Sign In -->
+        <div class="input-group">
+            <span class="input-icon">📱</span>
+            <input type="tel" class="input-field" placeholder="Enter Mobile Number / OTP">
+        </div>
+
+        <!-- Biometric Login Option -->
         <div class="bio-box" onclick="triggerBiometricLogin()">
             <div class="bio-icon">👆</div>
             <div class="bio-info">
                 <div class="bio-title">Quick Biometric Login</div>
-                <div class="bio-sub">Tap to authenticate via Fingerprint / Face ID</div>
+                <div class="bio-sub">Authenticate via Fingerprint / Face ID</div>
             </div>
         </div>
 
-        <!-- Privacy Policy & Mandatory Checkbox (Strict Validation) -->
+        <!-- 5th: Checkbox and Privacy & Policy (Must be checked to enable sign in) -->
         <div class="terms-container">
             <input type="checkbox" id="privacyCheckLogin" onchange="validateForm()">
             <label for="privacyCheckLogin">I agree to the Privacy Policy & Terms of Service under local compliance guidelines.</label>
         </div>
 
-        <!-- Final Action Button (Redirects to index.html on success) -->
+        <!-- 4th: Sign In / Sign Up Button -->
         <button class="submit-btn" id="loginBtn" disabled onclick="handleSuccessfulAuth()">Sign In to CityPulse</button>
-
-        <div class="divider">or continue with</div>
-
-        <div class="social-btn" onclick="alert('Redirecting to Google Sign-In...')">
-            <span>🌐</span> Sign in with Google
-        </div>
     </div>
     <!-- [HTML] LOGIN FORM CONTAINER END -->
 
@@ -143,19 +121,21 @@
     <div class="auth-card" id="areaSignup" style="display: none;">
         <div style="font-size: 14px; font-weight: 800; color: var(--text-main);">Join Bhatpara's Super App</div>
         
-        <div class="input-group">
-            <span class="input-icon">👤</span>
-            <input type="text" class="input-field" placeholder="Full Name (e.g. Anup Sharma)">
+        <!-- 1st: Google Sign Up -->
+        <div class="google-btn" onclick="alert('Redirecting to Google Sign-Up...')">
+            <span>🌐</span> Continue with Google
         </div>
 
-        <div class="input-group">
-            <span class="input-icon">📱</span>
-            <input type="tel" class="input-field" placeholder="Mobile Number">
-        </div>
-
+        <!-- 2nd: Email Input -->
         <div class="input-group">
             <span class="input-icon">📧</span>
             <input type="email" class="input-field" placeholder="Email Address">
+        </div>
+
+        <!-- 3rd: Phone Number Input -->
+        <div class="input-group">
+            <span class="input-icon">📱</span>
+            <input type="tel" class="input-field" placeholder="Mobile Number">
         </div>
 
         <div class="input-group">
@@ -163,48 +143,28 @@
             <input type="password" class="input-field" placeholder="Create Password">
         </div>
 
-        <!-- Biometric Setup Option (Placed before registration action) -->
-        <div class="bio-box" onclick="alert('Biometric Fingerprint registered for future logins!')">
+        <!-- Biometric Setup Option -->
+        <div class="bio-box" onclick="alert('Biometric Fingerprint registered!')">
             <div class="bio-icon">👆</div>
             <div class="bio-info">
                 <div class="bio-title">Enable Biometric Verification</div>
-                <div class="bio-sub">Link fingerprint for instant secure access</div>
+                <div class="bio-sub">Link fingerprint for instant access</div>
             </div>
         </div>
 
-        <!-- Privacy Policy & Mandatory Checkbox -->
+        <!-- 5th: Checkbox and Privacy & Policy -->
         <div class="terms-container">
             <input type="checkbox" id="privacyCheckSignup" onchange="validateForm()">
             <label for="privacyCheckSignup">I accept the Privacy Policy and local data protection guidelines.</label>
         </div>
 
-        <!-- Final Registration Button -->
-        <button class="submit-btn" id="signupBtn" disabled style="background: var(--success);" onclick="handleSuccessfulAuth()">Register & Continue</button>
+        <!-- 4th: Register / Sign Up Button -->
+        <button class="submit-btn" id="signupBtn" disabled style="background: var(--success);" onclick="handleSuccessfulAuth()">Register Account</button>
     </div>
     <!-- [HTML] SIGNUP FORM CONTAINER END -->
 
 </div>
 <!-- [HTML] MAIN CONTENT CONTAINER END -->
-
-<!-- [HTML] MODERN 5-TAB BOTTOM NAVIGATION START -->
-<div class="bottom-nav">
-    <a href="index.html" class="nav-item">
-        <div class="nav-icon">🏠</div><span>Home</span>
-    </a>
-    <a href="search.html" class="nav-item">
-        <div class="nav-icon">🔍</div><span>Search</span>
-    </a>
-    <a href="pay.html" class="nav-item">
-        <div class="nav-icon">🛡️</div><span>Pay</span>
-    </a>
-    <a href="category.html" class="nav-item">
-        <div class="nav-icon">📂</div><span>Category</span>
-    </a>
-    <a href="notifications.html" class="nav-item">
-        <div class="nav-icon">🔔</div><span>Alerts</span>
-    </a>
-</div>
-<!-- [HTML] BOTTOM NAVIGATION END -->
 
 <!-- [JS] SCRIPT LOGIC START -->
 <script>
