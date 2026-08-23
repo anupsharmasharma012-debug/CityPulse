@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CityPulse - Dashboard</title>
-    
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -20,23 +18,20 @@
         #saveMsg { margin-top: 15px; font-weight: 500; text-align: center; font-size: 14px; }
     </style>
 
-    <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-    <!-- Yeh Header hai jo upar dikhega -->
     <div class="header">
         <h2>CityPulse Dashboard 🏙️</h2>
         <p style="color: #64748b; margin: 0;">Admin Control Panel</p>
     </div>
 
-    <!-- Data Add Karne ka Form yahan hai -->
     <div class="form-container">
         <h3>Nayi Travel Entry Add Karein 🏔️</h3>
         
         <label>Title:</label>
-        <input type="text" id="placeTitle" placeholder="Jaise: Spiti Valley Tour">
+        <input type="text" id="placeTitle" placeholder="Jaise: Spiti valley tour">
 
         <label>Location:</label>
         <input type="text" id="placeLocation" placeholder="Jaise: Kalpa, Kaza, Dhankar">
@@ -46,23 +41,13 @@
         <p id="saveMsg"></p>
     </div>
 
-    <!-- Database Bridge aur Logic yahan se shuru hai -->
-    <script src="db.js"></script>
     <script>
-        // 1. Check karna ki user login hai ya nahi
-        async function checkLogin() {
-            if (typeof checkUserSession === 'undefined') return;
-            const session = await checkUserSession();
-            if (!session) {
-                // Agar login nahi hai, wapas login page par bhej do
-                window.location.replace("login.html");
-            }
-        }
+        // Seedha connection yahin par set kar diya hai aapki asli key ke saath
+        const SUPABASE_URL = 'https://qfefkyrwxdhdxyajutst.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmZWZreXJ3eGRoZHh5YWp1dHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMjY0ODcsImV4cCI6MjEwMjgwMjQ4N30.lmnKyvigM5JeVf1y_BR0tjqAp4PiXioZNcCE5VVYsKg';
         
-        // Page load hote hi login check chalega
-        checkLogin();
+        const localSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // 2. Data save karne ka function
         async function saveData() {
             const titleVal = document.getElementById('placeTitle').value;
             const locVal = document.getElementById('placeLocation').value;
@@ -77,20 +62,26 @@
             msg.style.color = "#2563eb"; // Blue
             msg.innerText = "Data Supabase ja raha hai...";
 
-            // Aapki db.js ka function use kar rahe hain
-            const payload = { title: titleVal, location: locVal };
-            const response = await insertTableData('travel_places', payload);
+            try {
+                // Direct insert command supabase ke liye
+                const { data, error } = await localSupabase
+                    .from('travel_places')
+                    .insert([
+                        { title: titleVal, location: locVal }
+                    ]);
 
-            if (response.success) {
+                if (error) {
+                    throw error;
+                }
+
                 msg.style.color = "#16a34a"; // Green
                 msg.innerText = "Data successfully save ho gaya! 🎉";
-                
-                // Form ko clear kar do agli entry ke liye
                 document.getElementById('placeTitle').value = ""; 
                 document.getElementById('placeLocation').value = "";
-            } else {
+                
+            } catch (err) {
                 msg.style.color = "#dc2626"; // Red
-                msg.innerText = "Error: " + response.error;
+                msg.innerText = "Error: " + err.message;
             }
         }
     </script>
