@@ -76,24 +76,33 @@
     </div>
     <!-- [HTML] UPPER BODY SMART LOGO & BRANDING END -->
 
-    <!-- [HTML] LOGIN FORM CONTAINER START -->
+       <!-- [HTML] LOGIN FORM CONTAINER START -->
     <div class="auth-card">
         
         <!-- 1st: Google Sign In -->
         <div class="google-btn" onclick="alert('Redirecting to Google Sign-In...')">
-            <span>🌐</span> 1. Sign in with Google
+            <span>🌐</span> Sign in with Google
         </div>
 
         <!-- 2nd: Email Sign In -->
         <div class="input-group">
             <span class="input-icon">📧</span>
-            <input type="email" class="input-field" placeholder="2. Enter Email Address">
+            <input type="email" class="input-field" placeholder="Enter Email Address">
         </div>
 
         <!-- 3rd: Phone Number Sign In -->
         <div class="input-group">
             <span class="input-icon">📱</span>
-            <input type="tel" class="input-field" placeholder="3. Enter Mobile Number / OTP">
+            <input type="tel" class="input-field" placeholder="Enter Mobile Number / OTP">
+        </div>
+
+        <!-- 4th: Sign In Button -->
+        <button class="submit-btn" id="loginBtn" disabled onclick="handleSuccessfulAuth()">Sign In to CityPulse</button>
+
+        <!-- 5th: Checkbox and Privacy & Policy -->
+        <div class="terms-container">
+            <input type="checkbox" id="privacyCheck" onchange="validateForm()">
+            <label for="privacyCheck">I agree to the Privacy Policy & Terms of Service under local compliance guidelines.</label>
         </div>
 
         <!-- Biometric Login Option -->
@@ -105,16 +114,9 @@
             </div>
         </div>
 
-        <!-- 4th: Sign In Button -->
-        <button class="submit-btn" id="loginBtn" disabled onclick="handleSuccessfulAuth()">4. Sign In to CityPulse</button>
-
-        <!-- 5th: Checkbox and Privacy & Policy -->
-        <div class="terms-container">
-            <input type="checkbox" id="privacyCheck" onchange="validateForm()">
-            <label for="privacyCheck">5. I agree to the Privacy Policy & Terms of Service under local compliance guidelines.</label>
-        </div>
     </div>
     <!-- [HTML] LOGIN FORM CONTAINER END -->
+
 
 </div>
 <!-- [HTML] MAIN CONTENT CONTAINER END -->
