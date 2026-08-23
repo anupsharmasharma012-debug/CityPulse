@@ -23,7 +23,7 @@
             min-height: 100vh;
         }
         
-        /* App Shell (Mobile First / Responsive Container) */
+        /* App Shell (Mobile First Container) */
         .app-shell {
             width: 100%;
             max-width: 480px;
@@ -58,7 +58,7 @@
         }
         .top-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
         }
         .icon-btn {
@@ -67,10 +67,18 @@
             padding: 8px 12px;
             border-radius: 8px;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
             color: #475569;
             cursor: pointer;
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .icon-btn.primary {
+            background: #eff6ff;
+            color: #2563eb;
+            border-color: #bfdbfe;
         }
 
         /* 2. BODY CONTENT AREA */
@@ -234,6 +242,8 @@
                 <span>🏙️ CityPulse</span>
             </div>
             <div class="top-actions">
+                <!-- Naya Add Button Yahan Hai -->
+                <a href="add.html" class="icon-btn primary">➕ Add</a>
                 <a href="profile.html" class="icon-btn">👤 Profile</a>
             </div>
         </header>
@@ -285,7 +295,7 @@
             <div class="feed-container">
                 <div class="feed-card">
                     <h3>Welcome Back!</h3>
-                    <p>Your backend bridge is active and connected to Supabase.</p>
+                    <p>Your backend bridge is active and connected to Supabase. Click the Add button above to insert new data!</p>
                 </div>
             </div>
 
