@@ -1,91 +1,193 @@
-/* ==========================================
-   MASTER STYLESHEET - CityPulse Super App
-   ========================================== */
+/* =========================================================
+   MASTER STYLESHEET - CityPulse Super App (Premium Edition)
+   ========================================================= */
 
-:root { 
-    --bg-color: #f0f4f8; 
-    --card-bg: #ffffff; 
-    --text-main: #1e293b; 
-    --text-sub: #64748b; 
-    --primary: #007a99; 
-    --border: #e2e8f0; 
-    --danger: #ef4444; 
+/* --- 1. GLOBAL VARIABLES & COLOR PALETTES --- */
+:root {
+    /* Light Theme Palette */
+    --bg-color: #f4f7fa;          /* Soft grayish blue background */
+    --card-bg: #ffffff;           /* Pure white for cards */
+    --text-main: #0f172a;         /* Deep slate for main text */
+    --text-sub: #64748b;          /* Muted slate for secondary text */
+    --primary: #007a99;           /* Core Brand Color (Deep Cyan/Teal) */
+    --primary-light: #e0f2fe;     /* Light highlight */
+    --border: #e2e8f0;            /* Soft border color */
+    --danger: #ef4444;
     --success: #10b981;
+    
+    /* Layout Variables */
+    --nav-height: 72px;
+    --app-max-width: 420px;
+    
+    /* Premium Shadows */
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
+    --shadow-deep: 0 8px 30px rgba(0, 122, 153, 0.15);
 }
 
-body.dark-theme { 
-    --bg-color: #0f172a; 
-    --card-bg: #1e293b; 
-    --text-main: #f8fafc; 
-    --text-sub: #94a3b8; 
-    --primary: #38bdf8; 
-    --border: #334155; 
-    --danger: #f87171; 
+body.dark-theme {
+    /* Premium Dark Theme Palette (Midnight OS Vibe) */
+    --bg-color: #0b1120;          /* Very deep space blue */
+    --card-bg: #1e293b;           /* Elevated slate for cards */
+    --text-main: #f8fafc;         /* Crisp white text */
+    --text-sub: #94a3b8;          /* Muted steel for secondary text */
+    --primary: #34e89e;           /* Neon Mint/Cyan for futuristic pop */
+    --primary-light: rgba(52, 232, 158, 0.1); 
+    --border: #334155;            /* Dark slate borders */
+    
+    /* Dark Theme Shadows */
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
+    --shadow-deep: 0 8px 30px rgba(52, 232, 158, 0.1);
 }
 
-* { 
-    box-sizing: border-box; 
-    margin: 0; 
-    padding: 0; 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+/* --- 2. RESET & BASE TYPOGRAPHY --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    /* Modern Clean Font Stack */
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
-body { 
-    background-color: var(--bg-color); 
-    color: var(--text-main); 
-    display: flex; 
-    justify-content: center; 
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    
+    /* Upgraded Font Size & Readability */
+    font-size: 16px; 
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-.page-container { 
-    width: 100%; 
-    max-width: 420px; 
-    min-height: 100vh; 
-    padding: 16px; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 16px; 
-    padding-bottom: 85px; 
+/* Ensure inputs and buttons don't shrink on mobile */
+input, button, select, textarea {
+    font-family: inherit;
+    font-size: 16px; 
 }
 
-/* --- MASTER MODERN BOTTOM NAVIGATION BAR --- */
-.bottom-nav { 
-    position: fixed; 
-    bottom: 0; 
-    left: 50%; 
-    transform: translateX(-50%); 
-    width: 100%; 
-    max-width: 420px; 
-    height: 62px; 
-    background: rgba(15, 52, 67, 0.95); 
-    backdrop-filter: blur(10px);
-    display: grid; 
-    grid-template-columns: repeat(5, 1fr); 
-    align-items: center; 
-    border-top: 1px solid rgba(255, 255, 255, 0.1); 
-    z-index: 9999; 
-    box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+/* --- 3. MOBILE CONTAINER (APP FRAME) --- */
+.page-container {
+    width: 100%;
+    max-width: var(--app-max-width);
+    min-height: 100vh;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-bottom: 90px; /* Space for bottom nav */
+    
+    /* Gives a subtle frame look when viewed on Desktop */
+    background-color: var(--bg-color);
+    box-shadow: 0 0 40px rgba(0,0,0,0.05);
+    position: relative;
+    overflow-x: hidden;
 }
 
-.nav-item { 
-    text-align: center; 
-    color: #94a3b8; 
-    font-size: 9px; 
-    font-weight: 700; 
-    cursor: pointer; 
-    text-decoration: none; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    gap: 3px; 
-    transition: 0.2s ease-in-out;
+/* --- 4. PREMIUM GLASSMORPHISM BOTTOM NAVIGATION --- */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: var(--app-max-width);
+    height: var(--nav-height);
+    background: rgba(255, 255, 255, 0.85); /* Transparent White */
+    backdrop-filter: blur(12px);           /* The Frosted Glass Effect */
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.03);
 }
 
-.nav-item:hover, .nav-item.active { 
-    color: #00e5ff; 
-    transform: translateY(-2px); 
+/* Dark mode adjustment for Glassmorphism */
+body.dark-theme .bottom-nav {
+    background: rgba(30, 41, 59, 0.85);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
 }
 
-.nav-item .nav-icon { 
-    font-size: 18px; 
+.nav-item {
+    text-decoration: none;
+    color: var(--text-sub);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.nav-icon {
+    font-size: 22px;
+    transition: transform 0.2s ease;
+}
+
+.nav-item:hover {
+    color: var(--primary);
+}
+
+.nav-item:hover .nav-icon {
+    transform: translateY(-3px); /* Bouncy hover effect */
+}
+
+/* --- 5. UNIVERSAL UI COMPONENTS --- */
+
+/* App Cards */
+.app-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 18px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.app-card:active {
+    transform: scale(0.98);
+}
+
+/* Buttons */
+.btn-primary {
+    background: var(--primary);
+    color: #ffffff;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: var(--shadow-deep);
+    transition: all 0.2s ease;
+}
+.btn-primary:active {
+    transform: scale(0.96);
+    box-shadow: var(--shadow-soft);
+}
+
+/* Form Inputs */
+.input-premium {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: var(--bg-color);
+    color: var(--text-main);
+    font-size: 16px;
+    font-weight: 500;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.input-premium:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* --- 6. UTILITIES --- */
+.text-gradient {
+    background: linear-gradient(135deg, var(--primary), #34e89e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
