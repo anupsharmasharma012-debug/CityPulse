@@ -1,231 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- ==========================================
-       [HTML] FILE HEADER & METADATA START
-       ========================================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityPulse - Secure Authentication</title>
-    <!-- [CSS] LINKED TO MASTER STYLESHEET -->
-    <link rel="stylesheet" href="style.css">
+    <title>CityPulse - Login</title>
+    
+    <!-- Google Fonts & Custom Styling -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* ==========================================
-           [CSS] PAGE-SPECIFIC CUSTOM STYLES START
-           ========================================== */
-        :root { --success: #10b981; }
-        body.dark-theme { --success: #34d399; }
-        
-        /* Ultra-Smooth Quantum Splash Screen */
-        #splashScreen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: #090d16;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 99999; color: white; transition: opacity 0.6s ease, visibility 0.6s ease;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
         }
-        .splash-content {
-            display: flex; flex-direction: column; align-items: center; gap: 14px;
-            animation: quantumZoom 1.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
         }
-        .splash-logo {
-            width: 75px; height: 75px; background: linear-gradient(135deg, #007a99, #34e89e);
-            border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 38px;
-            box-shadow: 0 0 40px rgba(52, 232, 158, 0.4); border: 2px solid rgba(255, 255, 255, 0.3);
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            background: #ffffff;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            text-align: center;
         }
-        .splash-title { font-size: 30px; font-weight: 900; letter-spacing: 1.5px; color: #ffffff; }
-        .splash-sub { font-size: 11px; opacity: 0.8; letter-spacing: 1.5px; text-transform: uppercase; color: #34e89e; text-align: center; font-weight: 700; }
-
-        @keyframes quantumZoom {
-            0% { transform: scale(0.01); opacity: 0; filter: blur(10px); }
-            50% { transform: scale(1.08); opacity: 1; filter: blur(0px); }
-            100% { transform: scale(1); opacity: 1; }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #0f172a;
         }
-
-        /* Header Layout Styles */
-        .header { display: flex; align-items: center; justify-content: flex-end; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
-        .lang-icon-btn { font-size: 18px; cursor: pointer; background: var(--card-bg); border: 1px solid var(--border); padding: 8px 12px; border-radius: 10px; display: flex; align-items: center; gap: 6px; font-weight: 700; color: var(--text-main); }
-
-        /* Uncommon Branding Box */
-        .brand-header-box { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 16px 0 6px 0; }
-        .smart-logo { width: 68px; height: 68px; background: linear-gradient(135deg, #007a99, #1e293b, #34e89e); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 6px 16px rgba(0, 122, 153, 0.3); border: 2px solid rgba(255,255,255,0.15); }
-        .brand-title { font-size: 24px; font-weight: 900; color: var(--primary); letter-spacing: 0.8px; }
-        .brand-sub { font-size: 11px; font-weight: 700; color: var(--text-sub); letter-spacing: 0.5px; text-transform: uppercase; }
-
-        /* Auth Container Card */
-        .auth-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); margin-top: 8px; }
-
-        .input-group { display: flex; align-items: center; gap: 12px; background: var(--bg-color); padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border); }
-        .input-icon { font-size: 18px; }
-        .input-field { border: none; background: transparent; outline: none; font-size: 14px; color: var(--text-main); width: 100%; font-weight: 600; }
-        .input-field::placeholder { font-size: 14px; color: var(--text-sub); opacity: 0.8; }
-
-        /* Action Buttons */
-        .submit-btn { background: var(--primary); color: white; padding: 16px; border-radius: 10px; border: none; font-size: 15px; font-weight: 800; cursor: pointer; width: 100%; transition: 0.2s; letter-spacing: 0.3px; box-shadow: 0 4px 10px rgba(0, 122, 153, 0.2); }
-        .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
-        
-        .signup-btn { background: transparent; color: var(--primary); border: 2px solid var(--primary); padding: 14px; border-radius: 10px; font-size: 15px; font-weight: 800; cursor: pointer; width: 100%; transition: 0.2s; margin-top: -6px; }
-        .signup-btn:disabled { opacity: 0.4; border-color: var(--text-sub); color: var(--text-sub); cursor: not-allowed; }
-
-        /* Modern Social Google Login Button */
-        .google-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 14px 16px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .google-btn:hover { background: rgba(0, 122, 153, 0.04); }
-
-        /* Strict Checkbox & Terms Row Layout */
-        .terms-container { display: flex; align-items: flex-start; gap: 12px; background: var(--bg-color); padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border); }
-        .terms-container input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0; margin-top: 1px; }
-        .terms-container label { font-size: 12px; color: var(--text-main); cursor: pointer; font-weight: 600; line-height: 1.4; }
-
-        /* Biometric / Fingerprint Section */
-        .bio-box { background: rgba(0, 122, 153, 0.06); border: 1.5px dashed var(--primary); border-radius: 12px; padding: 14px 16px; text-align: center; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; }
-        .bio-box:hover { background: rgba(0, 122, 153, 0.1); }
-        .bio-icon { font-size: 28px; }
-        .bio-info { text-align: left; flex: 1; }
-        .bio-title { font-size: 13px; font-weight: 800; color: var(--primary); }
-        .bio-sub { font-size: 11px; font-weight: 600; color: var(--text-sub); }
-        /* ==========================================
-           [CSS] PAGE-SPECIFIC CUSTOM STYLES END
-           ========================================== */
+        p {
+            color: #64748b;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+        .btn-google {
+            width: 100%;
+            background: #ffffff;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background 0.2s;
+        }
+        .btn-google:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+        }
     </style>
+
+    <!-- 1. Supabase JS Library CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- 2. Our Backend Bridge File -->
+    <script src="db.js"></script>
 </head>
 <body>
 
-<!-- [HTML] QUANTUM SPLASH SCREEN START -->
-<div id="splashScreen">
-    <div class="splash-content">
-        <div class="splash-logo">⚡</div>
-        <div class="splash-title">CityPulse</div>
-        <div class="splash-sub">One Tap. Infinite Local Power</div>
-    </div>
-</div>
-<!-- [HTML] QUANTUM SPLASH SCREEN END -->
-
-<!-- [HTML] MAIN CONTENT CONTAINER START -->
-<div class="page-container" style="padding-bottom: 25px;">
-    
-    <!-- [HTML] HEADER START -->
-    <div class="header">
-        <div class="lang-icon-btn" onclick="window.location.href='language.html'">
-            <span>🌐</span> <span>भाषा / Lang</span>
-        </div>
-    </div>
-    <!-- [HTML] HEADER END -->
-
-    <!-- [HTML] UPPER BODY UNCOMMON BRANDING START -->
-    <div class="brand-header-box">
-        <div class="smart-logo">⚡</div>
-        <div class="brand-title">CityPulse</div>
-        <div class="brand-sub">Hyper-Local Core • Ultra-Global Vibe</div>
-    </div>
-    <!-- [HTML] UPPER BODY UNCOMMON BRANDING END -->
-
-    <!-- [HTML] LOGIN FORM CONTAINER START -->
-    <div class="auth-card">
+    <div class="login-card">
+        <h1>Welcome to CityPulse</h1>
+        <p>Sign in to access your city dashboard</p>
         
-        <!-- 1st: Google Sign In -->
-        <div class="google-btn" onclick="handleGoogleAuth()">
-            <span>🌐</span> Continue with Google Account
-        </div>
-
-        <!-- 2nd: Email Input -->
-        <div class="input-group">
-            <span class="input-icon">📧</span>
-            <input type="email" id="emailInput" class="input-field" placeholder="Enter registered email address">
-        </div>
-
-        <!-- 3rd: Phone Number Input -->
-        <div class="input-group">
-            <span class="input-icon">📱</span>
-            <input type="tel" id="phoneInput" class="input-field" placeholder="Enter mobile number for OTP verification">
-        </div>
-
-        <!-- 4th: Action Buttons (Sign In & Sign Up) -->
-        <button class="submit-btn" id="loginBtn" disabled onclick="handleAuthAction('login')">🚀 Secure Sign In to CityPulse</button>
-        <button class="signup-btn" id="signupBtn" disabled onclick="handleAuthAction('signup')">✨ Create New Account</button>
-
-        <!-- 5th: Privacy Policy Checkbox -->
-        <div class="terms-container">
-            <input type="checkbox" id="privacyCheck" onchange="validateForm()">
-            <label for="privacyCheck">I agree to the <b>Privacy Policy</b> & <b>Terms of Service</b> under municipal digital guidelines.</label>
-        </div>
-
-        <!-- Biometric Unlock Box -->
-        <div class="bio-box" onclick="triggerBiometricLogin()">
-            <div class="bio-icon">👆</div>
-            <div class="bio-info">
-                <div class="bio-title">Instant Biometric Unlock</div>
-                <div class="bio-sub">Tap to verify using Fingerprint or Face ID</div>
-            </div>
-        </div>
-
+        <button class="btn-google" id="googleLoginBtn">
+            <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.46-9.88l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+            Continue with Google
+        </button>
     </div>
-    <!-- [HTML] LOGIN FORM CONTAINER END -->
 
-</div>
-<!-- [HTML] MAIN CONTENT CONTAINER END -->
+    <script>
+        // Page load hote hi check karo agar pehle se logged in hai toh seedha index par bhej do
+        window.addEventListener('DOMContentLoaded', async () => {
+            const user = await checkUserSession();
+            if (user) {
+                window.location.href = 'index.html';
+            }
+        });
 
-<!-- [JS] SCRIPT LOGIC START -->
-<script>
-    // Global Dark Mode Sync
-    if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
+        // Google Login Trigger
+        document.getElementById('googleLoginBtn').addEventListener('click', async () => {
+            if (!_supabase) {
+                alert("Supabase not initialized!");
+                return;
+            }
 
-    // Splash Screen Auto-Hide after 2.5 seconds (2500ms) for better visibility
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            const splash = document.getElementById('splashScreen');
-            splash.style.opacity = '0';
-            splash.style.visibility = 'hidden';
-        }, 2500);
-    });
+            const { error } = await _supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: window.location.origin + '/index.html'
+                }
+            });
 
-    // Strict validation: Both buttons enable ONLY when Privacy Policy checkbox is checked
-    function validateForm() {
-        const checked = document.getElementById('privacyCheck').checked;
-        document.getElementById('loginBtn').disabled = !checked;
-        document.getElementById('signupBtn').disabled = !checked;
-    }
-
-    // Functional Google Sign-In Trigger
-    function handleGoogleAuth() {
-        const checked = document.getElementById('privacyCheck').checked;
-        if (!checked) {
-            alert("⚠️ Please accept the Privacy Policy checkbox first.");
-            return;
-        }
-        alert("🌐 Google Authentication successful! Redirecting to App...");
-        window.location.href = 'index.html';
-    }
-
-    // Biometric Login Verification
-    function triggerBiometricLogin() {
-        const checked = document.getElementById('privacyCheck').checked;
-        if (!checked) {
-            alert("⚠️ Please accept the Privacy Policy checkbox first before using biometric unlock.");
-            return;
-        }
-        alert("👆 Biometric Verified Successfully! Access Granted...");
-        window.location.href = 'index.html';
-    }
-
-    // Functional Form Submission for Login & Signup
-    function handleAuthAction(actionType) {
-        const email = document.getElementById('emailInput').value.trim();
-        const phone = document.getElementById('phoneInput').value.trim();
-        
-        if(!email && !phone) {
-            alert("⚠️ Please enter either your Email or Mobile Number to proceed.");
-            return;
-        }
-
-        if(actionType === 'login') {
-            alert("✅ Login Successful! Entering CityPulse Core...");
-        } else {
-            alert("✨ New Account Created Successfully! Welcome to CityPulse.");
-        }
-        
-        window.location.href = 'index.html';
-    }
-</script>
-<!-- [JS] SCRIPT LOGIC END -->
+            if (error) {
+                alert("Login Error: " + error.message);
+            }
+        });
+    </script>
 
 </body>
 </html>
