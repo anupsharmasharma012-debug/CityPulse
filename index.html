@@ -5,332 +5,94 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CityPulse - Dashboard</title>
     
-    <!-- Google Fonts & Styling -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-        }
-        body {
-            background-color: #f1f5f9;
-            color: #1e293b;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-        }
-        
-        /* App Shell (Mobile First Container) */
-        .app-shell {
-            width: 100%;
-            max-width: 480px;
-            background: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-            position: relative;
-            padding-bottom: 70px; /* Space for bottom bar */
-        }
-
-        /* 1. TOP BAR */
-        .top-bar {
-            background: #ffffff;
-            padding: 16px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #f1f5f9;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .brand-logo {
-            font-size: 18px;
-            font-weight: 700;
-            color: #0f172a;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .top-actions {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-        .icon-btn {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #475569;
-            cursor: pointer;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .icon-btn.primary {
-            background: #eff6ff;
-            color: #2563eb;
-            border-color: #bfdbfe;
-        }
-
-        /* 2. BODY CONTENT AREA */
-        .body-content {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-        }
-        
-        /* User Session Banner */
-        .session-banner {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            padding: 12px 16px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            font-size: 13px;
-            color: #1e40af;
-        }
-
-        /* Search Bar */
-        .search-container {
-            margin-bottom: 24px;
-        }
-        .search-input {
-            width: 100%;
-            padding: 12px 16px 12px 40px;
-            border: 1px solid #cbd5e1;
-            border-radius: 12px;
-            font-size: 14px;
-            background: #f8fafc;
-            outline: none;
-            transition: all 0.2s;
-        }
-        .search-input:focus {
-            border-color: #2563eb;
-            background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-        .search-wrapper {
-            position: relative;
-        }
-        .search-icon {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #94a3b8;
-        }
-
-        /* Sections & Grids */
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        .section-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: #0f172a;
-        }
-        .section-link {
-            font-size: 12px;
-            color: #2563eb;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 24px;
-        }
-        .cat-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 12px 6px;
-            text-align: center;
-            text-decoration: none;
-            color: #334155;
-            transition: transform 0.1s;
-        }
-        .cat-card:hover {
-            background: #f1f5f9;
-            transform: translateY(-2px);
-        }
-        .cat-icon {
-            font-size: 20px;
-            margin-bottom: 4px;
-        }
-        .cat-label {
-            font-size: 11px;
-            font-weight: 500;
-        }
-
-        /* Dynamic Feed / Cards */
-        .feed-card {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-        }
-        .feed-card h3 {
-            font-size: 14px;
-            color: #0f172a;
-            margin-bottom: 4px;
-        }
-        .feed-card p {
-            font-size: 13px;
-            color: #64748b;
-        }
-
-        /* 3. BOTTOM BAR */
-        .bottom-bar {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 65px;
-            background: #ffffff;
-            border-top: 1px solid #e2e8f0;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 100;
-        }
-        .nav-item {
-            text-decoration: none;
-            color: #64748b;
-            font-size: 11px;
-            font-weight: 500;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-        }
-        .nav-item.active {
-            color: #2563eb;
-        }
-        .nav-icon {
-            font-size: 18px;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; padding: 20px; }
+        .header { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; text-align: center; }
+        .form-container { background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 500px; margin: 0 auto; }
+        .form-container h3 { margin-top: 0; margin-bottom: 20px; color: #0f172a; }
+        label { font-size: 14px; font-weight: 500; color: #475569; display: block; margin-bottom: 6px; }
+        input { width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
+        button { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; }
+        button:hover { background: #1d4ed8; }
+        #saveMsg { margin-top: 15px; font-weight: 500; text-align: center; font-size: 14px; }
     </style>
 
-    <!-- Supabase SDK & Bridge -->
+    <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="db.js"></script>
 </head>
 <body>
 
-    <div class="app-shell">
-        
-        <!-- TOP BAR -->
-        <header class="top-bar">
-            <div class="brand-logo">
-                <span>🏙️ CityPulse</span>
-            </div>
-            <div class="top-actions">
-                <!-- Naya Add Button Yahan Hai -->
-                <a href="add.html" class="icon-btn primary">➕ Add</a>
-                <a href="profile.html" class="icon-btn">👤 Profile</a>
-            </div>
-        </header>
-
-        <!-- BODY CONTENT -->
-        <main class="body-content">
-            
-            <!-- User Session Box -->
-            <div class="session-banner" id="userEmailDisplay">
-                Checking user session...
-            </div>
-
-            <!-- Search Bar -->
-            <div class="search-container">
-                <div class="search-wrapper">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" class="search-input" placeholder="Search places, categories, updates...">
-                </div>
-            </div>
-
-            <!-- Categories Section -->
-            <div class="section-header">
-                <span class="section-title">Explore Categories</span>
-                <a href="explore.html?type=categories" class="section-link">View All</a>
-            </div>
-            <div class="category-grid">
-                <a href="explore.html?type=shops" class="cat-card">
-                    <div class="cat-icon">🏬</div>
-                    <div class="cat-label">Shops</div>
-                </a>
-                <a href="explore.html?type=services" class="cat-card">
-                    <div class="cat-icon">🛠️</div>
-                    <div class="cat-label">Services</div>
-                </a>
-                <a href="explore.html?type=food" class="cat-card">
-                    <div class="cat-icon">🍔</div>
-                    <div class="cat-label">Food</div>
-                </a>
-                <a href="explore.html?type=events" class="cat-card">
-                    <div class="cat-icon">🎉</div>
-                    <div class="cat-label">Events</div>
-                </a>
-            </div>
-
-            <!-- Recent Updates / Feeds -->
-            <div class="section-header">
-                <span class="section-title">City Updates</span>
-            </div>
-            <div class="feed-container">
-                <div class="feed-card">
-                    <h3>Welcome Back!</h3>
-                    <p>Your backend bridge is active and connected to Supabase. Click the Add button above to insert new data!</p>
-                </div>
-            </div>
-
-        </main>
-
-        <!-- BOTTOM BAR -->
-        <nav class="bottom-bar">
-            <a href="index.html" class="nav-item active">
-                <span class="nav-icon">🏠</span>
-                <span>Home</span>
-            </a>
-            <a href="explore.html?type=shops" class="nav-item">
-                <span class="nav-icon">🧭</span>
-                <span>Explore</span>
-            </a>
-            <a href="profile.html" class="nav-item">
-                <span class="nav-icon">⚙️</span>
-                <span>Settings</span>
-            </a>
-        </nav>
-
+    <!-- Yeh Header hai jo upar dikhega -->
+    <div class="header">
+        <h2>CityPulse Dashboard 🏙️</h2>
+        <p style="color: #64748b; margin: 0;">Admin Control Panel</p>
     </div>
 
-    <!-- Script Logic -->
-    <script>
-        window.addEventListener('DOMContentLoaded', async () => {
-            const user = await checkUserSession();
-            
-            if (!user) {
-                window.location.href = 'login.html';
-            } else {
-                document.getElementById('userEmailDisplay').innerText = `Connected as: ${user.email}`;
-            }
-        });
-    </script>
+    <!-- Data Add Karne ka Form yahan hai -->
+    <div class="form-container">
+        <h3>Nayi Travel Entry Add Karein 🏔️</h3>
+        
+        <label>Title:</label>
+        <input type="text" id="placeTitle" placeholder="Jaise: Spiti Valley Tour">
 
+        <label>Location:</label>
+        <input type="text" id="placeLocation" placeholder="Jaise: Kalpa, Kaza, Dhankar">
+
+        <button onclick="saveData()">Save Data</button>
+        
+        <p id="saveMsg"></p>
+    </div>
+
+    <!-- Database Bridge aur Logic yahan se shuru hai -->
+    <script src="db.js"></script>
+    <script>
+        // 1. Check karna ki user login hai ya nahi
+        async function checkLogin() {
+            if (typeof checkUserSession === 'undefined') return;
+            const session = await checkUserSession();
+            if (!session) {
+                // Agar login nahi hai, wapas login page par bhej do
+                window.location.replace("login.html");
+            }
+        }
+        
+        // Page load hote hi login check chalega
+        checkLogin();
+
+        // 2. Data save karne ka function
+        async function saveData() {
+            const titleVal = document.getElementById('placeTitle').value;
+            const locVal = document.getElementById('placeLocation').value;
+            const msg = document.getElementById('saveMsg');
+
+            if (!titleVal || !locVal) {
+                msg.style.color = "#dc2626"; // Red
+                msg.innerText = "Bhai, dono fields bharna zaroori hai!";
+                return;
+            }
+
+            msg.style.color = "#2563eb"; // Blue
+            msg.innerText = "Data Supabase ja raha hai...";
+
+            // Aapki db.js ka function use kar rahe hain
+            const payload = { title: titleVal, location: locVal };
+            const response = await insertTableData('travel_places', payload);
+
+            if (response.success) {
+                msg.style.color = "#16a34a"; // Green
+                msg.innerText = "Data successfully save ho gaya! 🎉";
+                
+                // Form ko clear kar do agli entry ke liye
+                document.getElementById('placeTitle').value = ""; 
+                document.getElementById('placeLocation').value = "";
+            } else {
+                msg.style.color = "#dc2626"; // Red
+                msg.innerText = "Error: " + response.error;
+            }
+        }
+    </script>
 </body>
 </html>
