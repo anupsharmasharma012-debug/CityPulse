@@ -1,55 +1,96 @@
-/* =========================================================
-   DATABASE & BACKEND BRIDGE (Supabase Integration)
-   ========================================================= */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityPulse - Secure Login</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: #f8fafc; display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; }
+        .login-card { background: #ffffff; padding: 30px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); width: 100%; max-width: 400px; text-align: center; }
+        .login-card h2 { color: #0f172a; margin-bottom: 8px; font-size: 24px; }
+        .login-card p { color: #64748b; font-size: 14px; margin-bottom: 24px; }
+        .form-group { margin-bottom: 16px; text-align: left; }
+        .form-group label { display: block; font-size: 13px; font-weight: 500; color: #475569; margin-bottom: 6px; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; transition: 0.2s; }
+        .form-group input:focus { border-color: #2563eb; }
+        .btn-login { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; margin-top: 8px; }
+        .btn-login:hover { background: #1d4ed8; }
+        #statusMessage { margin-top: 16px; font-size: 13px; font-weight: 500; }
+    </style>
 
-// 1. Supabase Initialization (Make sure supabase-js script is loaded in your HTML head)
-const SUPABASE_URL = 'https://qfefkyrwxdhdxyajutst.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_mOjspSn12VMjMf-OWWcDFg_hOu-YL5c';
+    <!-- Supabase SDK & Database Bridge -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="db.js"></script>
+</head>
+<body>
 
-// Initialize Supabase Client (Agar global supabase object available hai)
-const _supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+    <div class="login-card">
+        <h2>CityPulse 🏙️</h2>
+        <p>Login with Email to continue</p>
+        
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="emailInput" placeholder="admin@citypulse.com" required>
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="passwordInput" placeholder="Enter password" required>
+        </div>
+        
+        <button class="btn-login" onclick="processLogin()">Secure Login</button>
+        <div id="statusMessage"></div>
+    </div>
 
-/**
- * Check if a user is currently logged in
- * @returns {Promise<Object|null>} User object or null
- */
-async function checkUserSession() {
-    if (!_supabase) return null;
-    const { data: { session }, error } = await _supabase.auth.getSession();
-    if (error) {
-        console.error("Session Error:", error.message);
-        return null;
-    }
-    return session ? session.user : null;
-}
+    <!-- Login Logic -->
+    <script>
+        async function processLogin() {
+            // Yeh popup humein batayega ki error file mein hai ya key mein
+            if (typeof _supabase === 'undefined' || !_supabase) {
+                alert("ERROR: db.js file theek se load nahi hui hai.");
+                return;
+            } else {
+                alert("Supabase load ho gaya hai! Connection check ho raha hai...");
+            }
 
-/**
- * Generic function to fetch data from any Supabase table
- * @param {string} tableName - Name of the table in Supabase
- * @returns {Promise<Array>} Data rows
- */
-async function fetchTableData(tableName) {
-    if (!_supabase) return [];
-    const { data, error } = await _supabase.from(tableName).select('*');
-    if (error) {
-        console.error(`Error fetching ${tableName}:`, error.message);
-        return [];
-    }
-    return data;
-}
+            const email = document.getElementById('emailInput').value;
+            const password = document.getElementById('passwordInput').value;
+            const msg = document.getElementById('statusMessage');
+            
+            if (!email || !password) {
+                msg.style.color = '#dc2626';
+                msg.innerText = "Please enter email and password.";
+                return;
+            }
 
-/**
- * Generic function to insert data into any Supabase table
- * @param {string} tableName - Name of the table
- * @param {Object} payload - Data object to insert
- */
-async function insertTableData(tableName, payload) {
-    if (!_supabase) return { success: false, error: "Supabase not initialized" };
-    const { data, error } = await _supabase.from(tableName).insert([payload]);
-    if (error) {
-        console.error(`Error inserting into ${tableName}:`, error.message);
-        return { success: false, error: error.message };
-    }
-    return { success: true, data };
-}
+            msg.style.color = '#2563eb';
+            msg.innerText = "Connecting to database...";
 
+            const { data, error } = await _supabase.auth.signUp({ email, password });
+
+            if (error) {
+                if (error.message.includes("already registered") || error.message.includes("User already exists")) {
+                    const { data: signInData, error: signInError } = await _supabase.auth.signInWithPassword({ email, password });
+                    
+                    if (signInError) {
+                        msg.style.color = '#dc2626';
+                        msg.innerText = signInError.message;
+                    } else {
+                        window.location.replace("index.html");
+                    }
+                } else {
+                    msg.style.color = '#dc2626';
+                    msg.innerText = error.message;
+                }
+            } else {
+                window.location.replace("index.html");
+            }
+        }
+    </script>
+</body>
+</html>
+               
