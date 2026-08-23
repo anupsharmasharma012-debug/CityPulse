@@ -16,7 +16,7 @@
         :root { --success: #10b981; }
         body.dark-theme { --success: #34d399; }
         
-        /* Header Layout Styles (Top-left completely cleared, language icon on top right) */
+        /* Header Layout Styles (Top-left cleared, language icon on top right) */
         .header { display: flex; align-items: center; justify-content: flex-end; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
         .lang-icon-btn { font-size: 18px; cursor: pointer; background: var(--card-bg); border: 1px solid var(--border); padding: 6px 10px; border-radius: 8px; }
 
@@ -26,13 +26,8 @@
         .brand-title { font-size: 20px; font-weight: 900; color: var(--primary); letter-spacing: 0.5px; }
         .brand-sub { font-size: 11px; color: var(--text-sub); }
 
-        /* Auth Tabs (Login vs Sign Up) */
-        .auth-tabs { display: flex; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; margin-top: 4px; }
-        .auth-tab { flex: 1; text-align: center; padding: 10px; font-size: 12px; font-weight: bold; cursor: pointer; color: var(--text-sub); }
-        .auth-tab.active { background: var(--primary); color: white; }
-
         /* Auth Container Card */
-        .auth-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .auth-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); margin-top: 10px; }
 
         .input-group { display: flex; align-items: center; gap: 10px; background: var(--bg-color); padding: 12px; border-radius: 8px; border: 1px solid var(--border); }
         .input-icon { font-size: 16px; }
@@ -67,7 +62,7 @@
    ========================================== -->
 <div class="page-container" style="padding-bottom: 20px;">
     
-    <!-- [HTML] HEADER START (Top-left cleared, language icon on top right) -->
+    <!-- [HTML] HEADER START -->
     <div class="header">
         <div class="lang-icon-btn" onclick="window.location.href='language.html'">🌐</div>
     </div>
@@ -81,15 +76,8 @@
     </div>
     <!-- [HTML] UPPER BODY SMART LOGO & BRANDING END -->
 
-    <!-- [HTML] AUTH TABS START -->
-    <div class="auth-tabs">
-        <div class="auth-tab active" id="tabLogin" onclick="switchAuthMode('login')">Sign In</div>
-        <div class="auth-tab" id="tabSignup" onclick="switchAuthMode('signup')">Create Account</div>
-    </div>
-    <!-- [HTML] AUTH TABS END -->
-
     <!-- [HTML] LOGIN FORM CONTAINER START -->
-    <div class="auth-card" id="areaLogin">
+    <div class="auth-card">
         
         <!-- 1st: Google Sign In -->
         <div class="google-btn" onclick="alert('Redirecting to Google Sign-In...')">
@@ -117,61 +105,16 @@
             </div>
         </div>
 
-        <!-- 4th: Sign In Button (Placed strictly below biometric and above checkbox) -->
+        <!-- 4th: Sign In Button -->
         <button class="submit-btn" id="loginBtn" disabled onclick="handleSuccessfulAuth()">4. Sign In to CityPulse</button>
 
         <!-- 5th: Checkbox and Privacy & Policy -->
         <div class="terms-container">
-            <input type="checkbox" id="privacyCheckLogin" onchange="validateForm()">
-            <label for="privacyCheckLogin">5. I agree to the Privacy Policy & Terms of Service under local compliance guidelines.</label>
+            <input type="checkbox" id="privacyCheck" onchange="validateForm()">
+            <label for="privacyCheck">5. I agree to the Privacy Policy & Terms of Service under local compliance guidelines.</label>
         </div>
     </div>
     <!-- [HTML] LOGIN FORM CONTAINER END -->
-
-    <!-- [HTML] SIGNUP FORM CONTAINER START -->
-    <div class="auth-card" id="areaSignup" style="display: none;">
-        
-        <!-- 1st: Google Sign Up -->
-        <div class="google-btn" onclick="alert('Redirecting to Google Sign-Up...')">
-            <span>🌐</span> 1. Continue with Google
-        </div>
-
-        <!-- 2nd: Email Input -->
-        <div class="input-group">
-            <span class="input-icon">📧</span>
-            <input type="email" class="input-field" placeholder="2. Enter Email Address">
-        </div>
-
-        <!-- 3rd: Phone Number Input -->
-        <div class="input-group">
-            <span class="input-icon">📱</span>
-            <input type="tel" class="input-field" placeholder="3. Enter Mobile Number">
-        </div>
-
-        <div class="input-group">
-            <span class="input-icon">🔒</span>
-            <input type="password" class="input-field" placeholder="Create Password">
-        </div>
-
-        <!-- Biometric Setup Option -->
-        <div class="bio-box" onclick="alert('Biometric Fingerprint registered!')">
-            <div class="bio-icon">👆</div>
-            <div class="bio-info">
-                <div class="bio-title">Enable Biometric Verification</div>
-                <div class="bio-sub">Link fingerprint for instant access</div>
-            </div>
-        </div>
-
-        <!-- 4th: Register Button -->
-        <button class="submit-btn" id="signupBtn" disabled style="background: var(--success);" onclick="handleSuccessfulAuth()">4. Register Account</button>
-
-        <!-- 5th: Checkbox and Privacy & Policy -->
-        <div class="terms-container">
-            <input type="checkbox" id="privacyCheckSignup" onchange="validateForm()">
-            <label for="privacyCheckSignup">5. I accept the Privacy Policy and local data protection guidelines.</label>
-        </div>
-    </div>
-    <!-- [HTML] SIGNUP FORM CONTAINER END -->
 
 </div>
 <!-- [HTML] MAIN CONTENT CONTAINER END -->
@@ -181,38 +124,15 @@
     // Global Dark Mode Sync
     if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
 
-    // Switch between Login and Sign Up modes
-    function switchAuthMode(mode) {
-        document.getElementById('tabLogin').classList.remove('active');
-        document.getElementById('tabSignup').classList.remove('active');
-        document.getElementById('areaLogin').style.display = 'none';
-        document.getElementById('areaSignup').style.display = 'none';
-
-        if(mode === 'login') {
-            document.getElementById('tabLogin').classList.add('active');
-            document.getElementById('areaLogin').style.display = 'flex';
-        } else {
-            document.getElementById('tabSignup').classList.add('active');
-            document.getElementById('areaSignup').style.display = 'flex';
-        }
-        validateForm();
-    }
-
     // Strict validation: Button enables only when Privacy Policy checkbox is checked
     function validateForm() {
-        const isLoginActive = document.getElementById('areaLogin').style.display !== 'none';
-        if (isLoginActive) {
-            const checked = document.getElementById('privacyCheckLogin').checked;
-            document.getElementById('loginBtn').disabled = !checked;
-        } else {
-            const checked = document.getElementById('privacyCheckSignup').checked;
-            document.getElementById('signupBtn').disabled = !checked;
-        }
+        const checked = document.getElementById('privacyCheck').checked;
+        document.getElementById('loginBtn').disabled = !checked;
     }
 
     // Biometric Login Simulation
     function triggerBiometricLogin() {
-        const isChecked = document.getElementById('privacyCheckLogin').checked;
+        const isChecked = document.getElementById('privacyCheck').checked;
         if (!isChecked) {
             alert("⚠️ Please check and agree to the Privacy Policy first.");
             return;
