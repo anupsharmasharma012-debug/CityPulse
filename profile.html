@@ -3,184 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityPulse - My Profile</title>
-    <!-- [CSS] LINKED TO MASTER STYLESHEET -->
-    <link rel="stylesheet" href="style.css">
+    <title>CityPulse - Profile</title>
+    
+    <!-- Google Fonts & Custom Styling -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* ==========================================
-           [CSS] PAGE-SPECIFIC CUSTOM STYLES START
-           ========================================== */
-        :root { --success: #10b981; }
-        body.dark-theme { --success: #10b981; }
-        
-        /* Header Layout Styles */
-        .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-        .header-left { display: flex; align-items: center; gap: 12px; }
-        .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; }
-        .header h1 { font-size: 18px; font-weight: bold; }
-
-        /* Profile Card Styles */
-        .profile-card { background: var(--card-bg); border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 16px; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        .profile-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--bg-color); display: flex; align-items: center; justify-content: center; font-size: 30px; border: 2px solid var(--primary); }
-        .profile-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-        .profile-name { font-size: 18px; font-weight: 800; color: var(--text-main); }
-        .profile-phone { font-size: 12px; color: var(--text-sub); }
-        .edit-btn { background: rgba(0, 122, 153, 0.1); color: var(--primary); border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
-
-        /* Activity Dashboard Styles (3 Cols) */
-        .activity-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .activity-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 10px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .activity-icon { font-size: 20px; }
-        .activity-count { font-size: 14px; font-weight: 800; color: var(--text-main); }
-        .activity-label { font-size: 10px; color: var(--text-sub); font-weight: 600; }
-
-        .section-title { font-size: 12px; font-weight: bold; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: -6px; margin-top: 4px; }
-
-        /* Settings List Styles */
-        .settings-list { display: flex; flex-direction: column; gap: 10px; }
-        .list-card { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border); cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .list-left { display: flex; align-items: center; gap: 12px; }
-        .list-icon { font-size: 20px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: rgba(0, 122, 153, 0.05); border-radius: 10px; }
-        .list-title { font-size: 13px; font-weight: 600; color: var(--text-main); }
-        .list-arrow { color: var(--text-sub); font-weight: bold; font-size: 16px; }
-
-        /* Toggle Switch Styles */
-        .toggle-switch { position: relative; width: 40px; height: 22px; background: var(--border); border-radius: 20px; cursor: pointer; transition: 0.3s; }
-        .toggle-switch.active { background: var(--success); }
-        .toggle-circle { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; background: white; border-radius: 50%; transition: 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .toggle-switch.active .toggle-circle { transform: translateX(18px); }
-
-        /* Logout Button Styles */
-        .logout-btn { width: 100%; padding: 14px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; text-align: center; color: var(--danger); font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        /* ==========================================
-           [CSS] PAGE-SPECIFIC CUSTOM STYLES END
-           ========================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+        p {
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+        .profile-card {
+            background: #f1f5f9;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .profile-card p {
+            margin-bottom: 8px;
+            color: #334155;
+        }
+        .btn {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+        }
+        .btn-secondary {
+            background: #64748b;
+        }
+        .btn-secondary:hover {
+            background: #475569;
+        }
     </style>
+
+    <!-- 1. Supabase JS Library CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- 2. Our Backend Bridge File -->
+    <script src="db.js"></script>
 </head>
 <body>
 
-<!-- [HTML] MAIN CONTENT CONTAINER START -->
-<div class="page-container">
-    
-    <!-- [HTML] HEADER SECTION START -->
-    <div class="header">
-        <div class="header-left">
-            <button class="back-btn" onclick="history.back()">←</button>
-            <h1>My Profile</h1>
-        </div>
-    </div>
-    <!-- [HTML] HEADER SECTION END -->
-
-    <!-- [HTML] PROFILE IDENTITY CARD START -->
-    <div class="profile-card">
-        <div class="profile-avatar">👨‍💻</div>
-        <div class="profile-info">
-            <span class="profile-name">Anup Sharma</span>
-            <span class="profile-phone">+91 ••••• ••890</span>
-        </div>
-        <button class="edit-btn" onclick="alert('Opening Edit Profile Form...')">Edit</button>
-    </div>
-    <!-- [HTML] PROFILE IDENTITY CARD END -->
-
-    <!-- [HTML] ACTIVITY DASHBOARD START -->
-    <div class="section-title">My Activity</div>
-    <div class="activity-grid">
-        <div class="activity-item" onclick="window.location.href='complaints.html'">
-            <div class="activity-icon">📢</div>
-            <div class="activity-count">2</div>
-            <div class="activity-label">Complaints</div>
-        </div>
-        <div class="activity-item" onclick="alert('Opening Saved Items...')">
-            <div class="activity-icon">🔖</div>
-            <div class="activity-count">14</div>
-            <div class="activity-label">Saved</div>
-        </div>
-        <div class="activity-item" onclick="alert('Opening Recent Bookings...')">
-            <div class="activity-icon">📦</div>
-            <div class="activity-count">5</div>
-            <div class="activity-label">Bookings</div>
-        </div>
-    </div>
-    <!-- [HTML] ACTIVITY DASHBOARD END -->
-
-    <!-- [HTML] GENERAL SETTINGS LIST START -->
-    <div class="section-title">Account & Settings</div>
-    <div class="settings-list">
+    <div class="container">
+        <h1>User Profile</h1>
+        <p>Manage your account details and settings.</p>
         
-        <div class="list-card" onclick="alert('Opening Transaction History & Receipts...')">
-            <div class="list-left">
-                <div class="list-icon">🧾</div>
-                <div class="list-title">Payment Receipts</div>
-            </div>
-            <div class="list-arrow">→</div>
+        <div class="profile-card" id="profileInfoBox">
+            Loading profile information...
         </div>
 
-        <div class="list-card" onclick="window.location.href='location.html'">
-            <div class="list-left">
-                <div class="list-icon">📍</div>
-                <div class="list-title">Saved Addresses</div>
-            </div>
-            <div class="list-arrow">→</div>
-        </div>
-
-        <div class="list-card" onclick="alert('Opening Emergency Contacts Setup...')">
-            <div class="list-left">
-                <div class="list-icon">🚨</div>
-                <div class="list-title">Emergency SOS Contacts</div>
-            </div>
-            <div class="list-arrow">→</div>
-        </div>
-
-        <!-- Biometric App Lock Toggle -->
-        <div class="list-card">
-            <div class="list-left">
-                <div class="list-icon">🔒</div>
-                <div class="list-title">App Lock & Biometric</div>
-            </div>
-            <div class="toggle-switch active" onclick="this.classList.toggle('active')">
-                <div class="toggle-circle"></div>
-            </div>
-        </div>
-
+        <a href="index.html" class="btn btn-secondary">Back to Home</a>
     </div>
-    <!-- [HTML] GENERAL SETTINGS LIST END -->
 
-    <!-- [HTML] LOGOUT BUTTON START -->
-    <div class="logout-btn" onclick="window.location.href='login.html'">
-        🚪 Secure Logout
-    </div>
-    <!-- [HTML] LOGOUT BUTTON END -->
-
-</div>
-<!-- [HTML] MAIN CONTENT CONTAINER END -->
-
-<!-- [HTML] MODERN 5-TAB BOTTOM NAVIGATION START -->
-<div class="bottom-nav">
-    <a href="index.html" class="nav-item">
-        <div class="nav-icon">🏠</div><span>Home</span>
-    </a>
-    <a href="profile.html" class="nav-item active">
-        <div class="nav-icon">👤</div><span>Profile</span>
-    </a>
-    <a href="search.html" class="nav-item">
-        <div class="nav-icon">🔍</div><span>Search</span>
-    </a>
-    <a href="category.html" class="nav-item">
-        <div class="nav-icon">📂</div><span>Category</span>
-    </a>
-    <a href="notifications.html" class="nav-item">
-        <div class="nav-icon">🔔</div><span>Alerts</span>
-    </a>
-</div>
-<!-- [HTML] MODERN 5-TAB BOTTOM NAVIGATION END -->
-
-<!-- [JS] SCRIPT LOGIC START -->
-<script>
-    // Global Dark Mode Sync
-    if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
-</script>
-<!-- [JS] SCRIPT LOGIC END -->
+    <script>
+        // Page load hote hi profile data load karo
+        window.addEventListener('DOMContentLoaded', async () => {
+            const user = await checkUserSession();
+            
+            if (!user) {
+                // Agar user login nahi hai, login page par bhej do
+                window.location.href = 'login.html';
+            } else {
+                // Profile details display karo
+                document.getElementById('profileInfoBox').innerHTML = `
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>User ID:</strong> ${user.id}</p>
+                    <p><strong>Last Sign In:</strong> ${new Date(user.last_sign_in_at).toLocaleString()}</p>
+                `;
+            }
+        });
+    </script>
 
 </body>
 </html>
-
