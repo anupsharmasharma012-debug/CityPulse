@@ -4,10 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CityPulse - Secure Login</title>
-    
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         body { background-color: #f8fafc; display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; }
@@ -22,10 +19,8 @@
         .btn-login:hover { background: #1d4ed8; }
         #statusMessage { margin-top: 16px; font-size: 13px; font-weight: 500; }
     </style>
-
-    <!-- Supabase SDK & Database Bridge -->
+    <!-- Sirf Supabase ka script, db.js hata diya gaya hai cache issue rokne ke liye -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="db.js"></script>
 </head>
 <body>
 
@@ -46,48 +41,60 @@
         <div id="statusMessage"></div>
     </div>
 
-    <!-- Login Logic -->
     <script>
+        // Database connection seedha yahin par hai
+        const SUPABASE_URL = 'https://qfefkyrwxdhdxyajutst.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_mOjspSn12VMjMf-OWWcDFg_hOu-YL5c';
+        
+        let localSupabase;
+        try {
+            localSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch (e) {
+            alert("System error: Supabase load nahi hua.");
+        }
+
         async function processLogin() {
             const email = document.getElementById('emailInput').value;
             const password = document.getElementById('passwordInput').value;
             const msg = document.getElementById('statusMessage');
             
-            // Check if fields are empty
-            if (!email || !password) {
+            if (!email || !password || !email.includes('@')) {
                 msg.style.color = '#dc2626';
-                msg.innerText = "Please enter email and password.";
+                msg.innerText = "Please enter a valid email and password.";
                 return;
             }
 
             msg.style.color = '#2563eb';
             msg.innerText = "Connecting to database...";
 
-            // Direct Email/Password Authentication via Supabase
-            const { data, error } = await _supabase.auth.signUp({ email, password });
+            try {
+                // SignUp try karenge
+                const { data, error } = await localSupabase.auth.signUp({ email, password });
 
-            if (error) {
-                // If user is already registered, sign them in directly
-                if (error.message.includes("already registered") || error.message.includes("User already exists")) {
-                    const { data: signInData, error: signInError } = await _supabase.auth.signInWithPassword({ email, password });
-                    
-                    if (signInError) {
-                        msg.style.color = '#dc2626';
-                        msg.innerText = signInError.message;
+                if (error) {
+                    if (error.message.includes("already registered") || error.message.includes("User already exists")) {
+                        // Agar account hai, toh login karenge
+                        const { data: signInData, error: signInError } = await localSupabase.auth.signInWithPassword({ email, password });
+                        
+                        if (signInError) {
+                            msg.style.color = '#dc2626';
+                            msg.innerText = "Error: " + signInError.message;
+                        } else {
+                            window.location.replace("index.html");
+                        }
                     } else {
-                        // Success! Force direct redirection to dashboard
-                        window.location.replace("index.html");
+                        msg.style.color = '#dc2626';
+                        msg.innerText = "Error: " + error.message;
                     }
                 } else {
-                    msg.style.color = '#dc2626';
-                    msg.innerText = error.message;
+                    window.location.replace("index.html");
                 }
-            } else {
-                // Signup Success!
-                window.location.replace("index.html");
+            } catch (err) {
+                // Agar code crash hota hai toh yahan error dikhega, atakega nahi
+                msg.style.color = '#dc2626';
+                msg.innerText = "Crash Error: " + err.message;
             }
         }
     </script>
 </body>
 </html>
-
