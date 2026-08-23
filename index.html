@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityPulse - Dashboard</title>
+    <title>CityPulse - Super App Dashboard</title>
     
-    <!-- Google Fonts & Custom Styling -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -18,133 +18,250 @@
         body {
             background-color: #f8fafc;
             color: #1e293b;
-            padding: 20px;
+            padding: 16px;
         }
-        .container {
-            max-width: 600px;
+        .app-container {
+            max-width: 480px;
             margin: 0 auto;
             background: #ffffff;
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            min-height: 100vh;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
-        .header-flex {
+        /* Header */
+        .app-header {
+            padding: 20px 20px 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
         }
-        h1 {
-            font-size: 22px;
+        .app-header h1 {
+            font-size: 20px;
+            font-weight: 700;
             color: #0f172a;
         }
-        .user-email {
+        .profile-link {
+            text-decoration: none;
+            background: #f1f5f9;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #2563eb;
+        }
+        .user-greeting {
+            padding: 0 20px;
             font-size: 13px;
             color: #64748b;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
-        /* Search Bar Style */
+        /* Search Section */
+        .search-section {
+            padding: 0 20px 16px 20px;
+        }
         .search-box {
             position: relative;
-            margin-bottom: 24px;
         }
         .search-box input {
             width: 100%;
-            padding: 12px 16px;
-            padding-left: 40px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
+            padding: 12px 16px 12px 42px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
             font-size: 14px;
-            outline: none;
             background: #f8fafc;
+            outline: none;
+            transition: all 0.2s;
         }
         .search-box input:focus {
             border-color: #2563eb;
             background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
-        /* Navigation / Quick Links */
-        .nav-grid {
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 16px;
+        }
+        /* Main Content Scrollable Area */
+        .app-content {
+            flex: 1;
+            padding: 0 20px 20px 20px;
+            overflow-y: auto;
+        }
+        /* Section Titles */
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .section-title a {
+            font-size: 12px;
+            color: #2563eb;
+            text-decoration: none;
+        }
+        /* Categories Grid */
+        .categories-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(4, 1fr);
             gap: 12px;
             margin-bottom: 24px;
         }
-        .nav-card {
-            background: #f1f5f9;
-            padding: 16px;
+        .cat-item {
+            background: #f8fafc;
+            border: 1px solid #f1f5f9;
+            padding: 12px 8px;
             border-radius: 12px;
-            text-decoration: none;
-            color: #1e293b;
-            font-weight: 500;
-            border: 1px solid #e2e8f0;
             text-align: center;
+            text-decoration: none;
+            color: #334155;
+            transition: transform 0.2s;
+        }
+        .cat-item:hover {
+            transform: translateY(-2px);
+            background: #f1f5f9;
+        }
+        .cat-icon {
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+        .cat-name {
+            font-size: 11px;
+            font-weight: 500;
+        }
+        /* Feed Cards */
+        .feed-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .feed-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 14px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .feed-card h4 {
+            font-size: 14px;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+        .feed-card p {
+            font-size: 12px;
+            color: #64748b;
+        }
+        /* Logout Button Area */
+        .footer-action {
+            padding: 16px 20px;
+            background: #f8fafc;
+            border-top: 1px solid #f1f5f9;
+        }
+        .btn-logout {
+            width: 100%;
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
             transition: background 0.2s;
         }
-        .nav-card:hover {
-            background: #e2e8f0;
-            border-color: #cbd5e1;
-        }
-        .btn {
-            display: inline-block;
-            background: #dc2626;
-            color: white;
-            padding: 10px 16px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 500;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            text-align: center;
-        }
-        .btn:hover {
-            background: #b91c1c;
+        .btn-logout:hover {
+            background: #fecaca;
         }
     </style>
 
-    <!-- 1. Supabase JS Library CDN -->
+    <!-- Supabase SDK & Bridge -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- 2. Our Backend Bridge File -->
     <script src="db.js"></script>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header-flex">
-            <h1>CityPulse</h1>
-            <a href="profile.html" style="font-size: 14px; color: #2563eb; text-decoration: none; font-weight: 500;">Profile</a>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="app-header">
+            <h1>CityPulse 🌆</h1>
+            <a href="profile.html" class="profile-link">Profile</a>
         </div>
-        
-        <div class="user-email" id="userEmailDisplay">Loading user session...</div>
+        <div class="user-greeting" id="userEmailDisplay">Loading session...</div>
 
         <!-- Search Bar -->
-        <div class="search-box">
-            <input type="text" placeholder="Search services, shops, categories..." id="searchInput">
+        <div class="search-section">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Search markets, services, updates...">
+            </div>
         </div>
 
-        <!-- Quick Navigation Links to Explore Dynamic Tables -->
-        <div class="nav-grid">
-            <a href="explore.html?type=categories" class="nav-card">📂 Categories</a>
-            <a href="explore.html?type=shops" class="nav-card">🏬 Shops & Markets</a>
+        <!-- Scrollable Content -->
+        <div class="app-content">
+            <!-- Categories Section -->
+            <div class="section-title">
+                <span>Categories</span>
+                <a href="explore.html?type=categories">View All</a>
+            </div>
+            <div class="categories-grid">
+                <a href="explore.html?type=shops" class="cat-item">
+                    <div class="cat-icon">🏬</div>
+                    <div class="cat-name">Shops</div>
+                </a>
+                <a href="explore.html?type=services" class="cat-item">
+                    <div class="cat-icon">🛠️</div>
+                    <div class="cat-name">Services</div>
+                </a>
+                <a href="explore.html?type=food" class="cat-item">
+                    <div class="cat-icon">🍔</div>
+                    <div class="cat-name">Food</div>
+                </a>
+                <a href="explore.html?type=events" class="cat-item">
+                    <div class="cat-icon">🎉</div>
+                    <div class="cat-name">Events</div>
+                </a>
+            </div>
+
+            <!-- Live Feeds Section -->
+            <div class="section-title">
+                <span>Recent City Updates</span>
+            </div>
+            <div class="feed-list" id="feedContainer">
+                <div class="feed-card">
+                    <h4>Welcome to CityPulse</h4>
+                    <p>Your dynamic city ecosystem is now connected to Supabase backend.</p>
+                </div>
+            </div>
         </div>
 
-        <!-- Logout Button -->
-        <button class="btn" id="logoutBtn">Logout</button>
+        <!-- Footer Logout -->
+        <div class="footer-action">
+            <button class="btn-logout" id="logoutBtn">Logout</button>
+        </div>
     </div>
 
+    <!-- Script Logic -->
     <script>
-        // Page load hote hi session verify karo aur email dikhao
         window.addEventListener('DOMContentLoaded', async () => {
             const user = await checkUserSession();
             
             if (!user) {
                 window.location.href = 'login.html';
             } else {
-                document.getElementById('userEmailDisplay').innerText = `Logged in as: ${user.email}`;
+                document.getElementById('userEmailDisplay').innerText = `Hello, ${user.email}`;
             }
         });
 
-        // Logout functionality
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             if (_supabase) {
                 await _supabase.auth.signOut();
@@ -155,4 +272,3 @@
 
 </body>
 </html>
-
