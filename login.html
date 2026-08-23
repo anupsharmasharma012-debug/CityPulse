@@ -6,7 +6,7 @@
        ========================================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityPulse - The Micro-City OS</title>
+    <title>CityPulse - Secure Authentication</title>
     <!-- [CSS] LINKED TO MASTER STYLESHEET -->
     <link rel="stylesheet" href="style.css">
     <style>
@@ -21,11 +21,11 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background: #090d16;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 99999; color: white; transition: opacity 0.5s ease, visibility 0.5s ease;
+            z-index: 99999; color: white; transition: opacity 0.6s ease, visibility 0.6s ease;
         }
         .splash-content {
             display: flex; flex-direction: column; align-items: center; gap: 14px;
-            animation: quantumZoom 1.4s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+            animation: quantumZoom 1.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
         }
         .splash-logo {
             width: 75px; height: 75px; background: linear-gradient(135deg, #007a99, #34e89e);
@@ -33,11 +33,11 @@
             box-shadow: 0 0 40px rgba(52, 232, 158, 0.4); border: 2px solid rgba(255, 255, 255, 0.3);
         }
         .splash-title { font-size: 30px; font-weight: 900; letter-spacing: 1.5px; color: #ffffff; }
-        .splash-sub { font-size: 11px; opacity: 0.7; letter-spacing: 1.5px; text-transform: uppercase; color: #34e89e; text-align: center; }
+        .splash-sub { font-size: 11px; opacity: 0.8; letter-spacing: 1.5px; text-transform: uppercase; color: #34e89e; text-align: center; font-weight: 700; }
 
         @keyframes quantumZoom {
             0% { transform: scale(0.01); opacity: 0; filter: blur(10px); }
-            60% { transform: scale(1.08); opacity: 1; filter: blur(0px); }
+            50% { transform: scale(1.08); opacity: 1; filter: blur(0px); }
             100% { transform: scale(1); opacity: 1; }
         }
 
@@ -59,16 +59,23 @@
         .input-field { border: none; background: transparent; outline: none; font-size: 14px; color: var(--text-main); width: 100%; font-weight: 600; }
         .input-field::placeholder { font-size: 14px; color: var(--text-sub); opacity: 0.8; }
 
+        /* Action Buttons */
         .submit-btn { background: var(--primary); color: white; padding: 16px; border-radius: 10px; border: none; font-size: 15px; font-weight: 800; cursor: pointer; width: 100%; transition: 0.2s; letter-spacing: 0.3px; box-shadow: 0 4px 10px rgba(0, 122, 153, 0.2); }
         .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+        
+        .signup-btn { background: transparent; color: var(--primary); border: 2px solid var(--primary); padding: 14px; border-radius: 10px; font-size: 15px; font-weight: 800; cursor: pointer; width: 100%; transition: 0.2s; margin-top: -6px; }
+        .signup-btn:disabled { opacity: 0.4; border-color: var(--text-sub); color: var(--text-sub); cursor: not-allowed; }
 
+        /* Modern Social Google Login Button */
         .google-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 14px 16px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .google-btn:hover { background: rgba(0, 122, 153, 0.04); }
 
+        /* Strict Checkbox & Terms Row Layout */
         .terms-container { display: flex; align-items: flex-start; gap: 12px; background: var(--bg-color); padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border); }
         .terms-container input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0; margin-top: 1px; }
         .terms-container label { font-size: 12px; color: var(--text-main); cursor: pointer; font-weight: 600; line-height: 1.4; }
 
+        /* Biometric / Fingerprint Section */
         .bio-box { background: rgba(0, 122, 153, 0.06); border: 1.5px dashed var(--primary); border-radius: 12px; padding: 14px 16px; text-align: center; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; }
         .bio-box:hover { background: rgba(0, 122, 153, 0.1); }
         .bio-icon { font-size: 28px; }
@@ -131,8 +138,9 @@
             <input type="tel" id="phoneInput" class="input-field" placeholder="Enter mobile number for OTP verification">
         </div>
 
-        <!-- 4th: Secure Sign In Button -->
-        <button class="submit-btn" id="loginBtn" disabled onclick="handleSuccessfulAuth()">🚀 Initialize CityPulse OS</button>
+        <!-- 4th: Action Buttons (Sign In & Sign Up) -->
+        <button class="submit-btn" id="loginBtn" disabled onclick="handleAuthAction('login')">🚀 Secure Sign In to CityPulse</button>
+        <button class="signup-btn" id="signupBtn" disabled onclick="handleAuthAction('signup')">✨ Create New Account</button>
 
         <!-- 5th: Privacy Policy Checkbox -->
         <div class="terms-container">
@@ -160,19 +168,20 @@
     // Global Dark Mode Sync
     if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
 
-    // Splash Screen Auto-Hide after 1.5 seconds with quantum zoom fade
+    // Splash Screen Auto-Hide after 2.5 seconds (2500ms) for better visibility
     window.addEventListener('load', () => {
         setTimeout(() => {
             const splash = document.getElementById('splashScreen');
             splash.style.opacity = '0';
             splash.style.visibility = 'hidden';
-        }, 1400);
+        }, 2500);
     });
 
-    // Strict validation: Button enables only when Privacy Policy checkbox is checked
+    // Strict validation: Both buttons enable ONLY when Privacy Policy checkbox is checked
     function validateForm() {
         const checked = document.getElementById('privacyCheck').checked;
         document.getElementById('loginBtn').disabled = !checked;
+        document.getElementById('signupBtn').disabled = !checked;
     }
 
     // Functional Google Sign-In Trigger
@@ -182,7 +191,7 @@
             alert("⚠️ Please accept the Privacy Policy checkbox first.");
             return;
         }
-        alert("🌐 Google Authentication successful! Initializing...");
+        alert("🌐 Google Authentication successful! Redirecting to App...");
         window.location.href = 'index.html';
     }
 
@@ -190,15 +199,15 @@
     function triggerBiometricLogin() {
         const checked = document.getElementById('privacyCheck').checked;
         if (!checked) {
-            alert("⚠️ Please accept the Privacy Policy checkbox first before using biometric login.");
+            alert("⚠️ Please accept the Privacy Policy checkbox first before using biometric unlock.");
             return;
         }
         alert("👆 Biometric Verified Successfully! Access Granted...");
         window.location.href = 'index.html';
     }
 
-    // Functional Form Submission & Redirect
-    function handleSuccessfulAuth() {
+    // Functional Form Submission for Login & Signup
+    function handleAuthAction(actionType) {
         const email = document.getElementById('emailInput').value.trim();
         const phone = document.getElementById('phoneInput').value.trim();
         
@@ -207,7 +216,12 @@
             return;
         }
 
-        alert("✅ System Initialized! Entering CityPulse Core...");
+        if(actionType === 'login') {
+            alert("✅ Login Successful! Entering CityPulse Core...");
+        } else {
+            alert("✨ New Account Created Successfully! Welcome to CityPulse.");
+        }
+        
         window.location.href = 'index.html';
     }
 </script>
