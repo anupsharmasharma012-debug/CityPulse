@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityPulse - Home</title>
+    <title>CityPulse - Dashboard</title>
     
     <!-- Google Fonts & Custom Styling -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -28,25 +28,65 @@
             border-radius: 16px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
         h1 {
-            font-size: 24px;
-            margin-bottom: 8px;
+            font-size: 22px;
             color: #0f172a;
         }
-        p {
+        .user-email {
+            font-size: 13px;
             color: #64748b;
             margin-bottom: 20px;
         }
-        .user-info {
-            background: #f1f5f9;
+        /* Search Bar Style */
+        .search-box {
+            position: relative;
+            margin-bottom: 24px;
+        }
+        .search-box input {
+            width: 100%;
             padding: 12px 16px;
+            padding-left: 40px;
+            border: 1px solid #cbd5e1;
             border-radius: 8px;
-            margin-bottom: 20px;
             font-size: 14px;
+            outline: none;
+            background: #f8fafc;
+        }
+        .search-box input:focus {
+            border-color: #2563eb;
+            background: #ffffff;
+        }
+        /* Navigation / Quick Links */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .nav-card {
+            background: #f1f5f9;
+            padding: 16px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #1e293b;
+            font-weight: 500;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            transition: background 0.2s;
+        }
+        .nav-card:hover {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
         }
         .btn {
             display: inline-block;
-            background: #2563eb;
+            background: #dc2626;
             color: white;
             padding: 10px 16px;
             border-radius: 8px;
@@ -54,14 +94,10 @@
             font-weight: 500;
             border: none;
             cursor: pointer;
+            width: 100%;
+            text-align: center;
         }
         .btn:hover {
-            background: #1d4ed8;
-        }
-        .btn-danger {
-            background: #dc2626;
-        }
-        .btn-danger:hover {
             background: #b91c1c;
         }
     </style>
@@ -74,27 +110,37 @@
 <body>
 
     <div class="container">
-        <h1>CityPulse Dashboard</h1>
-        <p>Welcome to your central city hub.</p>
+        <div class="header-flex">
+            <h1>CityPulse</h1>
+            <a href="profile.html" style="font-size: 14px; color: #2563eb; text-decoration: none; font-weight: 500;">Profile</a>
+        </div>
         
-        <div class="user-info" id="userInfoBox">
-            Checking session and loading user details...
+        <div class="user-email" id="userEmailDisplay">Loading user session...</div>
+
+        <!-- Search Bar -->
+        <div class="search-box">
+            <input type="text" placeholder="Search services, shops, categories..." id="searchInput">
         </div>
 
-        <button class="btn btn-danger" id="logoutBtn">Logout</button>
+        <!-- Quick Navigation Links to Explore Dynamic Tables -->
+        <div class="nav-grid">
+            <a href="explore.html?type=categories" class="nav-card">📂 Categories</a>
+            <a href="explore.html?type=shops" class="nav-card">🏬 Shops & Markets</a>
+        </div>
+
+        <!-- Logout Button -->
+        <button class="btn" id="logoutBtn">Logout</button>
     </div>
 
     <script>
-        // Page load hote hi session verify karo
+        // Page load hote hi session verify karo aur email dikhao
         window.addEventListener('DOMContentLoaded', async () => {
             const user = await checkUserSession();
             
             if (!user) {
-                // Agar user login nahi hai, seedha login page par bhej do
                 window.location.href = 'login.html';
             } else {
-                // Agar logged in hai, toh screen par email dikha do
-                document.getElementById('userInfoBox').innerText = `Logged in as: ${user.email}`;
+                document.getElementById('userEmailDisplay').innerText = `Logged in as: ${user.email}`;
             }
         });
 
@@ -109,3 +155,4 @@
 
 </body>
 </html>
+
