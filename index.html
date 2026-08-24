@@ -13,9 +13,14 @@
         .header p { color: #64748b; margin: 0; font-size: 14px; }
         
         /* Category Filter Tabs */
-        .tabs-container { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; justify-content: center; }
+        .tabs-container { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; justify-content: center; }
         .tab-btn { background: #e2e8f0; border: none; padding: 10px 18px; border-radius: 20px; font-size: 13px; font-weight: 600; color: #475569; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
         .tab-btn.active, .tab-btn:hover { background: #2563eb; color: white; }
+
+        /* Back Button Bar */
+        .navigation-bar { display: none; margin-bottom: 15px; text-align: center; }
+        .back-btn { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .back-btn:hover { background: #dc2626; }
 
         .max-width-container { max-width: 700px; margin: 0 auto; }
 
@@ -23,7 +28,6 @@
         .news-card { background: #fff; border: 1px solid #e2e8f0; border-left: 4px solid #2563eb; padding: 18px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .news-badge { display: inline-block; background: #dbeafe; color: #1e40af; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 6px; margin-bottom: 8px; }
         .news-title { font-size: 17px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
-        .news-desc { font-size: 14px; color: #475569; line-height: 1.5; margin-bottom: 10px; }
         
         .video-container { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; background: #000; border-radius: 8px; overflow: hidden; margin-top: 10px; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
@@ -34,6 +38,7 @@
         .ad-text { font-size: 13px; font-weight: 600; color: #78350f; margin-top: 6px; }
 
         .news-meta { font-size: 12px; color: #94a3b8; margin-top: 10px; }
+        .no-data { text-align: center; color: #64748b; font-size: 14px; background: #fff; padding: 30px; border-radius: 12px; border: 1px solid #e2e8f0; }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -54,9 +59,14 @@
             <button class="tab-btn" onclick="filterCategory('Entertainment')">🎬 Entertainment (Family)</button>
         </div>
 
+        <!-- Back Button (Appears only when a filter is active) -->
+        <div class="navigation-bar" id="navBar">
+            <button class="back-btn" onclick="resetFilter()">⬅️ Back to All Channels</button>
+        </div>
+
         <!-- Live Public Feed Container -->
         <div id="publicFeed">
-            <p style="text-align: center; color: #64748b; font-size: 14px;">Feeds load ho rahi hain...</p>
+            <div class="no-data">Feeds load ho rahi hain...</div>
         </div>
     </div>
 
@@ -79,7 +89,7 @@
                 if (error) throw error;
 
                 if (!data || data.length === 0) {
-                    publicFeedContainer.innerHTML = '<p style="text-align: center; color: #64748b; font-size: 14px;">Abhi koi live feed available nahi hai.</p>';
+                    publicFeedContainer.innerHTML = '<div class="no-data">Abhi koi live feed available nahi hai. Admin panel se add karein!</div>';
                     return;
                 }
 
@@ -87,7 +97,7 @@
                 renderFeed(allPosts);
 
             } catch (err) {
-                publicFeedContainer.innerHTML = `<p style="text-align: center; color: #dc2626; font-size: 14px;">Error loading: ${err.message}</p>`;
+                publicFeedContainer.innerHTML = `<div class="no-data" style="color: #dc2626;">Error loading: ${err.message}</div>`;
             }
         }
 
@@ -95,13 +105,19 @@
             const publicFeedContainer = document.getElementById('publicFeed');
             let publicHtml = '';
 
-            // Sample Local Ad Banner (Marketing Start)
+            // Sample Local Ad Banner
             publicHtml += `
                 <div class="ad-card">
                     <span class="ad-badge">Sponsored / Ad</span>
                     <div class="ad-text">📢 Apne local business ka ad yahan lagwayein! Contact CityPulse Media.</div>
                 </div>
             `;
+
+            if (posts.length === 0) {
+                publicHtml += `<div class="no-data">Is category mein abhi koi channel ya post nahi hai.</div>`;
+                publicFeedContainer.innerHTML = publicHtml;
+                return;
+            }
 
             posts.forEach(item => {
                 const categoryText = item.category || 'News';
@@ -110,7 +126,7 @@
                 if (contentBody.includes('<iframe')) {
                     contentBody = `<div class="video-container">${contentBody}</div>`;
                 } else {
-                    contentBody = `<div class="news-desc">${contentBody}</div>`;
+                    contentBody = `<div class="news-desc" style="color: #475569; line-height: 1.5; margin-bottom: 10px;">${contentBody}</div>`;
                 }
 
                 publicHtml += `
@@ -126,34 +142,35 @@
             publicFeedContainer.innerHTML = publicHtml;
         }
 
-        // Filter Function for Family Categories
         function filterCategory(selectedType) {
             // Update active tab styling
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            
+            // Show Back Button since user filtered
+            document.getElementById('navBar').style.display = 'block';
 
             if (selectedType === 'All') {
-                renderFeed(allPosts);
+                resetFilter();
                 return;
             }
 
-            // Filter posts based on text match
             const filtered = allPosts.filter(item => {
                 const cat = (item.category || '').toLowerCase();
                 return cat.includes(selectedType.toLowerCase());
             });
 
-            const publicFeedContainer = document.getElementById('publicFeed');
-            if (filtered.length === 0) {
-                publicFeedContainer.innerHTML = `<p style="text-align: center; color: #64748b; font-size: 14px;">Is category mein abhi koi content nahi hai.</p>`;
-                return;
-            }
-
             renderFeed(filtered);
+        }
+
+        function resetFilter() {
+            document.getElementById('navBar').style.display = 'none';
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            // Set 'All' tab as active by default
+            document.querySelector('.tab-btn').classList.add('active');
+            renderFeed(allPosts);
         }
 
         fetchPublicFeed();
     </script>
 </body>
 </html>
-
