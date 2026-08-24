@@ -13,15 +13,19 @@
         .card { background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .card h3 { margin-top: 0; margin-bottom: 20px; color: #0f172a; }
         label { font-size: 14px; font-weight: 500; color: #475569; display: block; margin-bottom: 6px; }
-        input { width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
+        input, select { width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 14px; background: #fff; }
         button { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; }
         button:hover { background: #1d4ed8; }
         #saveMsg { margin-top: 15px; font-weight: 500; text-align: center; font-size: 14px; }
         
-        /* List design ke liye */
-        .place-item { background: #f1f5f9; padding: 12px 16px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #2563eb; }
+        .place-item { background: #f1f5f9; padding: 12px 16px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #2563eb; position: relative; }
         .place-title { font-weight: 600; color: #1e293b; font-size: 15px; }
         .place-loc { font-size: 13px; color: #64748b; margin-top: 4px; }
+        .badge { display: inline-block; background: #e0e7ff; color: #3730a3; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-bottom: 6px; }
+        
+        /* Delete Button Styling */
+        .delete-btn { position: absolute; right: 12px; top: 12px; background: #fee2e2; color: #dc2626; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; width: auto; font-weight: 600; }
+        .delete-btn:hover { background: #fecaca; }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -30,27 +34,35 @@
 
     <div class="header">
         <h2>CityPulse Dashboard 🏙️</h2>
-        <p style="color: #64748b; margin: 0;">Admin Control Panel</p>
+        <p style="color: #64748b; margin: 0;">Dynamic Content Control</p>
     </div>
 
     <div class="container">
-        <!-- Form Section -->
+        <!-- Form Section with Category -->
         <div class="card">
-            <h3>Nayi Travel Entry Add Karein 🏔️</h3>
+            <h3>Nayi Entry Add Karein 🏔️</h3>
             
-            <label>Title:</label>
-            <input type="text" id="placeTitle" placeholder="Jaise: Spiti valley tour">
+            <label>Select Category / Section:</label>
+            <select id="placeCategory">
+                <option value="Spiti Circuit">Spiti Circuit Tour</option>
+                <option value="Rajasthan Trip">Rajasthan Trip (Jaipur/Sikar)</option>
+                <option value="Weekend Getaway">Weekend Getaway</option>
+                <option value="General Exploration">General Exploration</option>
+            </select>
 
-            <label>Location:</label>
-            <input type="text" id="placeLocation" placeholder="Jaise: Kalpa, Kaza, Dhankar">
+            <label>Title (Jaise: Kalpa Stop):</label>
+            <input type="text" id="placeTitle" placeholder="Title daalein">
+
+            <label>Location (Jaise: Main Market, Monastery):</label>
+            <input type="text" id="placeLocation" placeholder="Location daalein">
 
             <button onclick="saveData()">Save Data</button>
             <p id="saveMsg"></p>
         </div>
 
-        <!-- Display List Section (Read Operation) -->
+        <!-- Display List Section with Delete Feature -->
         <div class="card">
-            <h3>Saved Travel Entries 📋</h3>
+            <h3>Saved Entries (All Sections) 📋</h3>
             <div id="placesList">
                 <p style="color: #64748b; font-size: 14px;">Data load ho raha hai...</p>
             </div>
@@ -63,25 +75,25 @@
         
         const localSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // 1. Data Save Karne ka Function
         async function saveData() {
+            const catVal = document.getElementById('placeCategory').value;
             const titleVal = document.getElementById('placeTitle').value;
             const locVal = document.getElementById('placeLocation').value;
             const msg = document.getElementById('saveMsg');
 
             if (!titleVal || !locVal) {
                 msg.style.color = "#dc2626";
-                msg.innerText = "Bhai, dono fields bharna zaroori hai!";
+                msg.innerText = "Bhai, title aur location bharna zaroori hai!";
                 return;
             }
 
             msg.style.color = "#2563eb";
-            msg.innerText = "Data Supabase ja raha hai...";
+            msg.innerText = "Data save ho raha hai...";
 
             try {
                 const { error } = await localSupabase
                     .from('travel_places')
-                    .insert([{ title: titleVal, location: locVal }]);
+                    .insert([{ category: catVal, title: titleVal, location: locVal }]);
 
                 if (error) throw error;
 
@@ -90,16 +102,13 @@
                 document.getElementById('placeTitle').value = ""; 
                 document.getElementById('placeLocation').value = "";
                 
-                // Jaise hi data save ho, list ko dobara fetch karke screen update kar do
                 fetchPlaces();
-                
             } catch (err) {
                 msg.style.color = "#dc2626";
                 msg.innerText = "Error: " + err.message;
             }
         }
 
-        // 2. Database se Data Read karke Screen par dikhane ka Function
         async function fetchPlaces() {
             const listContainer = document.getElementById('placesList');
             
@@ -107,7 +116,7 @@
                 const { data, error } = await localSupabase
                     .from('travel_places')
                     .select('*')
-                    .order('created_at', { ascending: false }); // Naya data sabse upar dikhega
+                    .order('created_at', { ascending: false });
 
                 if (error) throw error;
 
@@ -116,11 +125,14 @@
                     return;
                 }
 
-                // Database ki har ek entry ko HTML cards mein convert kar rahe hain
                 let htmlContent = '';
                 data.forEach(item => {
+                    // Agar purane data mein category na ho toh 'General' dikhayenge
+                    const catName = item.category || 'General Exploration';
                     htmlContent += `
                         <div class="place-item">
+                            <span class="badge">${catName}</span>
+                            <button class="delete-btn" onclick="deletePlace('${item.id}')">Delete</button>
                             <div class="place-title">📌 ${item.title}</div>
                             <div class="place-loc">📍 ${item.location}</div>
                         </div>
@@ -134,7 +146,25 @@
             }
         }
 
-        // Page khulte hi sabse pehle saved entries fetch hongi
+        // 3. Data Delete Karne ka Function (CRUD ka 'Delete')
+        async function deletePlace(id) {
+            if (!confirm("Kya aap sach mein is entry ko delete karna chahte hain?")) return;
+
+            try {
+                const { error } = await localSupabase
+                    .from('travel_places')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                // Delete hote hi list ko refresh kar do
+                fetchPlaces();
+            } catch (err) {
+                alert("Delete karne mein error aaya: " + err.message);
+            }
+        }
+
         fetchPlaces();
     </script>
 </body>
