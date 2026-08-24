@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityPulse - Family Media & News Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; padding: 20px; color: #1e293b; }
+        .header { background: #ffffff; padding: 24px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.04); margin-bottom: 20px; text-align: center; }
+        .header h1 { margin: 0 0 6px 0; color: #0f172a; font-size: 26px; }
+        .header p { color: #64748b; margin: 0; font-size: 14px; }
+        
+        /* Category Filter Tabs */
+        .tabs-container { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; justify-content: center; }
+        .tab-btn { background: #e2e8f0; border: none; padding: 10px 18px; border-radius: 20px; font-size: 13px; font-weight: 600; color: #475569; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+        .tab-btn.active, .tab-btn:hover { background: #2563eb; color: white; }
+
+        .max-width-container { max-width: 700px; margin: 0 auto; }
+
+        /* Public Feed Cards */
+        .news-card { background: #fff; border: 1px solid #e2e8f0; border-left: 4px solid #2563eb; padding: 18px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .news-badge { display: inline-block; background: #dbeafe; color: #1e40af; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 6px; margin-bottom: 8px; }
+        .news-title { font-size: 17px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+        .news-desc { font-size: 14px; color: #475569; line-height: 1.5; margin-bottom: 10px; }
+        
+        .video-container { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; background: #000; border-radius: 8px; overflow: hidden; margin-top: 10px; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+        
+        /* Advertisement Card Styling */
+        .ad-card { background: linear-gradient(135deg, #fef3c7, #fde68a); border: 1px solid #f59e0b; padding: 14px 18px; border-radius: 12px; margin-bottom: 16px; text-align: center; }
+        .ad-badge { background: #d97706; color: white; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
+        .ad-text { font-size: 13px; font-weight: 600; color: #78350f; margin-top: 6px; }
+
+        .news-meta { font-size: 12px; color: #94a3b8; margin-top: 10px; }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <div class="header">
+        <h1>CityPulse 🏙️</h1>
+        <p>Aapka Apna Digital Family & Media Hub</p>
+    </div>
+
+    <div class="max-width-container">
+        <!-- Category Filter Tabs -->
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="filterCategory('All')">🌟 All Feeds</button>
+            <button class="tab-btn" onclick="filterCategory('News')">📰 News (Papa/Dost)</button>
+            <button class="tab-btn" onclick="filterCategory('Cartoon')">🎨 Cartoon (Beta)</button>
+            <button class="tab-btn" onclick="filterCategory('Entertainment')">🎬 Entertainment (Family)</button>
+        </div>
+
+        <!-- Live Public Feed Container -->
+        <div id="publicFeed">
+            <p style="text-align: center; color: #64748b; font-size: 14px;">Feeds load ho rahi hain...</p>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://qfefkyrwxdhdxyajutst.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmZWZreXJ3eGRoZHh5YWp1dHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMjY0ODcsImV4cCI6MjEwMjgwMjQ4N30.lmnKyvigM5JeVf1y_BR0tjqAp4PiXioZNcCE5VVYsKg';
+        
+        const localSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let allPosts = [];
+
+        async function fetchPublicFeed() {
+            const publicFeedContainer = document.getElementById('publicFeed');
+            
+            try {
+                const { data, error } = await localSupabase
+                    .from('travel_places')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    publicFeedContainer.innerHTML = '<p style="text-align: center; color: #64748b; font-size: 14px;">Abhi koi live feed available nahi hai.</p>';
+                    return;
+                }
+
+                allPosts = data;
+                renderFeed(allPosts);
+
+            } catch (err) {
+                publicFeedContainer.innerHTML = `<p style="text-align: center; color: #dc2626; font-size: 14px;">Error loading: ${err.message}</p>`;
+            }
+        }
+
+        function renderFeed(posts) {
+            const publicFeedContainer = document.getElementById('publicFeed');
+            let publicHtml = '';
+
+            // Sample Local Ad Banner (Marketing Start)
+            publicHtml += `
+                <div class="ad-card">
+                    <span class="ad-badge">Sponsored / Ad</span>
+                    <div class="ad-text">📢 Apne local business ka ad yahan lagwayein! Contact CityPulse Media.</div>
+                </div>
+            `;
+
+            posts.forEach(item => {
+                const categoryText = item.category || 'News';
+                
+                let contentBody = item.location;
+                if (contentBody.includes('<iframe')) {
+                    contentBody = `<div class="video-container">${contentBody}</div>`;
+                } else {
+                    contentBody = `<div class="news-desc">${contentBody}</div>`;
+                }
+
+                publicHtml += `
+                    <div class="news-card">
+                        <span class="news-badge">${categoryText}</span>
+                        <div class="news-title">${item.title}</div>
+                        ${contentBody}
+                        <div class="news-meta">🕒 Broadcasted via CityPulse Network</div>
+                    </div>
+                `;
+            });
+
+            publicFeedContainer.innerHTML = publicHtml;
+        }
+
+        // Filter Function for Family Categories
+        function filterCategory(selectedType) {
+            // Update active tab styling
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (selectedType === 'All') {
+                renderFeed(allPosts);
+                return;
+            }
+
+            // Filter posts based on text match
+            const filtered = allPosts.filter(item => {
+                const cat = (item.category || '').toLowerCase();
+                return cat.includes(selectedType.toLowerCase());
+            });
+
+            const publicFeedContainer = document.getElementById('publicFeed');
+            if (filtered.length === 0) {
+                publicFeedContainer.innerHTML = `<p style="text-align: center; color: #64748b; font-size: 14px;">Is category mein abhi koi content nahi hai.</p>`;
+                return;
+            }
+
+            renderFeed(filtered);
+        }
+
+        fetchPublicFeed();
+    </script>
+</body>
+</html>
+
