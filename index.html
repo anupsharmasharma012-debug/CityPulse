@@ -3,29 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityPulse - Dashboard</title>
+    <title>CityPulse - News & Citizen Voice Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; padding: 20px; }
-        .header { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; text-align: center; }
-        .container { max-width: 500px; margin: 0 auto; }
-        .card { background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .card h3 { margin-top: 0; margin-bottom: 20px; color: #0f172a; }
-        label { font-size: 14px; font-weight: 500; color: #475569; display: block; margin-bottom: 6px; }
-        input, select { width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 14px; background: #fff; }
-        button { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; }
-        button:hover { background: #1d4ed8; }
-        #saveMsg { margin-top: 15px; font-weight: 500; text-align: center; font-size: 14px; }
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; margin: 0; padding: 20px; color: #1e293b; }
+        .header { background: #ffffff; padding: 24px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.04); margin-bottom: 24px; text-align: center; }
+        .header h1 { margin: 0 0 6px 0; color: #0f172a; font-size: 24px; }
+        .header p { color: #64748b; margin: 0; font-size: 14px; }
         
-        .place-item { background: #f1f5f9; padding: 12px 16px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #2563eb; position: relative; }
-        .place-title { font-weight: 600; color: #1e293b; font-size: 15px; }
-        .place-loc { font-size: 13px; color: #64748b; margin-top: 4px; }
-        .badge { display: inline-block; background: #e0e7ff; color: #3730a3; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-bottom: 6px; }
+        .main-grid { display: grid; grid-template-columns: 1fr; gap: 24px; max-width: 800px; margin: 0 auto; }
+        @media(min-width: 768px) {
+            .main-grid { grid-template-columns: 1fr 1fr; align-items: start; }
+        }
+
+        .card { background: #ffffff; padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.04); margin-bottom: 20px; }
+        .card h3 { margin-top: 0; margin-bottom: 16px; color: #0f172a; font-size: 18px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
         
-        /* Delete Button Styling */
-        .delete-btn { position: absolute; right: 12px; top: 12px; background: #fee2e2; color: #dc2626; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; width: auto; font-weight: 600; }
+        label { font-size: 13px; font-weight: 600; color: #475569; display: block; margin-bottom: 6px; }
+        input, select, textarea { width: 100%; padding: 10px 12px; margin-bottom: 14px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 14px; background: #fff; font-family: 'Inter', sans-serif; }
+        textarea { resize: vertical; height: 80px; }
+        
+        button.primary-btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: background 0.2s; }
+        button.primary-btn:hover { background: #1d4ed8; }
+        #saveMsg { margin-top: 12px; font-weight: 500; text-align: center; font-size: 13px; }
+        
+        /* Admin List Styling */
+        .admin-item { background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #e2e8f0; position: relative; }
+        .admin-title { font-weight: 600; font-size: 14px; color: #0f172a; padding-right: 50px; }
+        .delete-btn { position: absolute; right: 10px; top: 10px; background: #fee2e2; color: #dc2626; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: 600; }
         .delete-btn:hover { background: #fecaca; }
+
+        /* Public Feed Styling (Asli Portal Jaisa Look) */
+        .public-feed-container { background: #ffffff; padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.04); grid-column: 1 / -1; }
+        .news-card { background: #fff; border: 1px solid #e2e8f0; border-left: 4px solid #2563eb; padding: 16px; border-radius: 10px; margin-bottom: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .news-badge { display: inline-block; background: #dbeafe; color: #1e40af; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-bottom: 6px; }
+        .news-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 6px; }
+        .news-desc { font-size: 14px; color: #475569; line-height: 1.5; margin-bottom: 8px; }
+        .news-meta { font-size: 12px; color: #94a3b8; }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -33,38 +48,56 @@
 <body>
 
     <div class="header">
-        <h2>CityPulse Dashboard 🏙️</h2>
-        <p style="color: #64748b; margin: 0;">Dynamic Content Control</p>
+        <h1>CityPulse 🏙️</h1>
+        <p>News & Citizen Voice Super-App Platform</p>
     </div>
 
-    <div class="container">
-        <!-- Form Section with Category -->
-        <div class="card">
-            <h3>Nayi Entry Add Karein 🏔️</h3>
-            
-            <label>Select Category / Section:</label>
-            <select id="placeCategory">
-                <option value="Spiti Circuit">Spiti Circuit Tour</option>
-                <option value="Rajasthan Trip">Rajasthan Trip (Jaipur/Sikar)</option>
-                <option value="Weekend Getaway">Weekend Getaway</option>
-                <option value="General Exploration">General Exploration</option>
-            </select>
+    <div class="main-grid">
+        <!-- LEFT COLUMN: Admin Control Panel (Form + Management) -->
+        <div>
+            <div class="card">
+                <h3>📢 Publish News / Voice</h3>
+                
+                <label>Pillar / Module:</label>
+                <select id="itemModule">
+                    <option value="News">News & Citizen Voice</option>
+                    <option value="Services">Local Services (Future)</option>
+                    <option value="Marketplace">Marketplace (Future)</option>
+                </select>
 
-            <label>Title (Jaise: Kalpa Stop):</label>
-            <input type="text" id="placeTitle" placeholder="Title daalein">
+                <label>Category (Sub-section):</label>
+                <select id="itemCategory">
+                    <option value="Breaking News">Breaking News</option>
+                    <option value="Public Issue / Samasya">Public Issue / Samasya</option>
+                    <option value="Govt Updates">Govt Updates</option>
+                    <option value="Success Stories">Success Stories</option>
+                </select>
 
-            <label>Location (Jaise: Main Market, Monastery):</label>
-            <input type="text" id="placeLocation" placeholder="Location daalein">
+                <label>Headline / Title:</label>
+                <input type="text" id="itemTitle" placeholder="Jaise: Main road par paani jama ho gaya hai">
 
-            <button onclick="saveData()">Save Data</button>
-            <p id="saveMsg"></p>
+                <label>Full Details / Description:</label>
+                <textarea id="itemLocation" placeholder="Puri jankari yahan likhein..."></textarea>
+
+                <button class="primary-btn" onclick="saveData()">Publish Post</button>
+                <p id="saveMsg"></p>
+            </div>
+
+            <div class="card">
+                <h3>⚙️ Admin Control (Manage Posts)</h3>
+                <div id="adminList">
+                    <p style="color: #64748b; font-size: 13px;">Loading posts...</p>
+                </div>
+            </div>
         </div>
 
-        <!-- Display List Section with Delete Feature -->
-        <div class="card">
-            <h3>Saved Entries (All Sections) 📋</h3>
-            <div id="placesList">
-                <p style="color: #64748b; font-size: 14px;">Data load ho raha hai...</p>
+        <!-- RIGHT COLUMN / BOTTOM: Live Public Portal View -->
+        <div class="public-feed-container">
+            <h3>🌐 Live Public Feed (Aam Janta View)</h3>
+            <p style="color: #64748b; font-size: 13px; margin-bottom: 16px;">Yahan wahi dikhega jo aap upar Admin panel se publish karenge.</p>
+            
+            <div id="publicFeed">
+                <p style="color: #64748b; font-size: 14px;">Feed load ho rahi hai...</p>
             </div>
         </div>
     </div>
@@ -76,41 +109,47 @@
         const localSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         async function saveData() {
-            const catVal = document.getElementById('placeCategory').value;
-            const titleVal = document.getElementById('placeTitle').value;
-            const locVal = document.getElementById('placeLocation').value;
+            const modVal = document.getElementById('itemModule').value;
+            const catVal = document.getElementById('itemCategory').value;
+            const titleVal = document.getElementById('itemTitle').value;
+            const locVal = document.getElementById('itemLocation').value;
             const msg = document.getElementById('saveMsg');
 
             if (!titleVal || !locVal) {
                 msg.style.color = "#dc2626";
-                msg.innerText = "Bhai, title aur location bharna zaroori hai!";
+                msg.innerText = "Bhai, title aur details bharna zaroori hai!";
                 return;
             }
 
             msg.style.color = "#2563eb";
-            msg.innerText = "Data save ho raha hai...";
+            msg.innerText = "Publish ho raha hai...";
 
             try {
                 const { error } = await localSupabase
                     .from('travel_places')
-                    .insert([{ category: catVal, title: titleVal, location: locVal }]);
+                    .insert([{ 
+                        category: `${modVal} - ${catVal}`, 
+                        title: titleVal, 
+                        location: locVal 
+                    }]);
 
                 if (error) throw error;
 
                 msg.style.color = "#16a34a";
-                msg.innerText = "Data successfully save ho gaya! 🎉";
-                document.getElementById('placeTitle').value = ""; 
-                document.getElementById('placeLocation').value = "";
+                msg.innerText = "Successfully publish ho gaya! 🎉";
+                document.getElementById('itemTitle').value = ""; 
+                document.getElementById('itemLocation').value = "";
                 
-                fetchPlaces();
+                fetchAllData();
             } catch (err) {
                 msg.style.color = "#dc2626";
                 msg.innerText = "Error: " + err.message;
             }
         }
 
-        async function fetchPlaces() {
-            const listContainer = document.getElementById('placesList');
+        async function fetchAllData() {
+            const adminListContainer = document.getElementById('adminList');
+            const publicFeedContainer = document.getElementById('publicFeed');
             
             try {
                 const { data, error } = await localSupabase
@@ -121,34 +160,47 @@
                 if (error) throw error;
 
                 if (!data || data.length === 0) {
-                    listContainer.innerHTML = '<p style="color: #64748b; font-size: 14px;">Abhi koi entry nahi hai.</p>';
+                    adminListContainer.innerHTML = '<p style="color: #64748b; font-size: 13px;">Koi post nahi hai.</p>';
+                    publicFeedContainer.innerHTML = '<p style="color: #64748b; font-size: 14px;">Abhi koi live news ya post available nahi hai.</p>';
                     return;
                 }
 
-                let htmlContent = '';
+                let adminHtml = '';
+                let publicHtml = '';
+
                 data.forEach(item => {
-                    // Agar purane data mein category na ho toh 'General' dikhayenge
-                    const catName = item.category || 'General Exploration';
-                    htmlContent += `
-                        <div class="place-item">
-                            <span class="badge">${catName}</span>
-                            <button class="delete-btn" onclick="deletePlace('${item.id}')">Delete</button>
-                            <div class="place-title">📌 ${item.title}</div>
-                            <div class="place-loc">📍 ${item.location}</div>
+                    const badgeText = item.category || 'News';
+                    
+                    // 1. Admin Control List Item
+                    adminHtml += `
+                        <div class="admin-item">
+                            <button class="delete-btn" onclick="deleteItem('${item.id}')">Delete</button>
+                            <div class="admin-title">📌 ${item.title}</div>
+                        </div>
+                    `;
+
+                    // 2. Public Portal News Card Item
+                    publicHtml += `
+                        <div class="news-card">
+                            <span class="news-badge">${badgeText}</span>
+                            <div class="news-title">${item.title}</div>
+                            <div class="news-desc">${item.location}</div>
+                            <div class="news-meta">🕒 Published via CityPulse Admin</div>
                         </div>
                     `;
                 });
 
-                listContainer.innerHTML = htmlContent;
+                adminListContainer.innerHTML = adminHtml;
+                publicFeedContainer.innerHTML = publicHtml;
 
             } catch (err) {
-                listContainer.innerHTML = `<p style="color: #dc2626; font-size: 14px;">Error loading data: ${err.message}</p>`;
+                adminListContainer.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error loading</p>`;
+                publicFeedContainer.innerHTML = `<p style="color: #dc2626; font-size: 14px;">Error loading feed: ${err.message}</p>`;
             }
         }
 
-        // 3. Data Delete Karne ka Function (CRUD ka 'Delete')
-        async function deletePlace(id) {
-            if (!confirm("Kya aap sach mein is entry ko delete karna chahte hain?")) return;
+        async function deleteItem(id) {
+            if (!confirm("Kya aap sach mein is post ko delete karna chahte hain?")) return;
 
             try {
                 const { error } = await localSupabase
@@ -158,14 +210,13 @@
 
                 if (error) throw error;
 
-                // Delete hote hi list ko refresh kar do
-                fetchPlaces();
+                fetchAllData();
             } catch (err) {
-                alert("Delete karne mein error aaya: " + err.message);
+                alert("Delete error: " + err.message);
             }
         }
 
-        fetchPlaces();
+        fetchAllData();
     </script>
 </body>
 </html>
