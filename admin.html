@@ -8,33 +8,32 @@
     
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; margin: 0; padding: 20px; color: #1e293b; }
-        .header { background: #ffffff; padding: 24px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.04); margin-bottom: 24px; text-align: center; }
+        .header { background: #ffffff; padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.04); margin-bottom: 20px; text-align: center; }
         .header h1 { margin: 0 0 6px 0; color: #0f172a; font-size: 24px; }
         .header p { color: #64748b; margin: 0; font-size: 14px; }
         
-        .max-container { max-width: 600px; margin: 0 auto; }
-        .card { background: #ffffff; padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.04); margin-bottom: 20px; }
-        .card h3 { margin-top: 0; margin-bottom: 16px; color: #0f172a; font-size: 18px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
+        .max-container { max-width: 650px; margin: 0 auto; }
+        .card { background: #ffffff; padding: 24px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.04); margin-bottom: 20px; border: 1px solid #e2e8f0; }
+        .card h3 { margin-top: 0; color: #0f172a; font-size: 18px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; }
         
-        label { font-size: 13px; font-weight: 600; color: #475569; display: block; margin-bottom: 6px; }
-        input, select, textarea { width: 100%; padding: 10px 12px; margin-bottom: 14px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 14px; background: #fff; font-family: 'Inter', sans-serif; }
-        textarea { resize: vertical; height: 80px; }
+        label { font-size: 13px; font-weight: 600; color: #475569; display: block; margin-top: 12px; margin-bottom: 6px; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; box-sizing: border-box; background: #f8fafc; }
+        textarea { resize: vertical; height: 90px; }
         
-        button.primary-btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: background 0.2s; }
-        button.primary-btn:hover { background: #1d4ed8; }
-        #saveMsg { margin-top: 12px; font-weight: 500; text-align: center; font-size: 13px; }
+        .primary-btn { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 15px; transition: background 0.2s; }
+        .primary-btn:hover { background: #1d4ed8; }
         
-        .admin-item { background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #e2e8f0; position: relative; }
-        .admin-title { font-weight: 600; font-size: 14px; color: #0f172a; padding-right: 120px; }
-        .admin-cat { font-size: 11px; color: #2563eb; font-weight: 600; margin-top: 4px; }
+        #saveMsg { font-size: 13px; font-weight: 600; margin-top: 10px; text-align: center; }
+
+        .admin-item { background: #f8fafc; padding: 14px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+        .admin-title { font-weight: 600; color: #0f172a; font-size: 15px; }
+        .admin-cat { font-size: 12px; color: #2563eb; background: #dbeafe; padding: 3px 8px; border-radius: 6px; display: inline-block; margin-top: 4px; }
         
-        .action-btns { position: absolute; right: 10px; top: 10px; display: flex; gap: 5px; }
-        .hide-btn { background: #fef3c7; color: #d97706; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: 600; }
-        .hide-btn:hover { background: #fde68a; }
-        .delete-btn { background: #fee2e2; color: #dc2626; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: 600; }
-        .delete-btn:hover { background: #fecaca; }
+        .action-btns { display: flex; gap: 8px; }
+        .hide-btn { background: #fef3c7; color: #d97706; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .delete-btn { background: #fee2e2; color: #dc2626; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
         
-        .nav-link { display: block; text-align: center; margin-top: 20px; color: #2563eb; text-decoration: none; font-weight: 600; font-size: 14px; }
+        .nav-link { display: block; text-align: center; margin-top: 25px; color: #2563eb; text-decoration: none; font-weight: 600; font-size: 14px; }
         .nav-link:hover { text-decoration: underline; }
     </style>
 
@@ -44,32 +43,34 @@
 
     <div class="header">
         <h1>CityPulse Admin Portal ⚙️</h1>
-        <p>Advanced Control: Publish, Hide, or Unhide</p>
+        <p>Manage Channels, Categories & Live Status</p>
     </div>
 
     <div class="max-container">
+        <!-- Add New Channel Card -->
         <div class="card">
-            <h3>📢 Naya Channel / News Publish Karein</h3>
+            <h3>➕ Naya Channel / Media Add Karein</h3>
             
-            <label>Ise kahan dikhana hai? (Target Category):</label>
+            <label>Target Category:</label>
             <select id="itemCategory">
-                <option value="News">📰 News </option>
-                <option value="Cartoon">🎨 Cartoon </option>
-                <option value="Entertainment">🎬 Entertainment </option>
+                <option value="News">📰 News</option>
+                <option value="Cartoon">🎨 Cartoon</option>
+                <option value="Entertainment">🎬 Entertainment</option>
             </select>
 
             <label>Channel / Title Name:</label>
-            <input type="text" id="itemTitle" placeholder="Jaise: Aaj Tak Live / Chhota Bheem">
+            <input type="text" id="itemTitle" placeholder="Jaise: Aaj Tak Live">
 
-            <label>YouTube Embed Code / Link:</label>
-            <textarea id="itemLocation" placeholder="Yahan YouTube ka iframe embed code dalein..."></textarea>
+            <label>YouTube Embed Code:</label>
+            <textarea id="itemLocation" placeholder='<iframe width="100%" height="315" src="..." frameborder="0" allowfullscreen></iframe>'></textarea>
 
-            <button class="primary-btn" onclick="saveData()">Publish to Public App</button>
+            <button class="primary-btn" onclick="saveData()">🚀 Publish to Public App</button>
             <p id="saveMsg"></p>
         </div>
 
+        <!-- Manage Existing Channels Card -->
         <div class="card">
-            <h3>🗂️ Manage Channels (Hide / Unhide / Delete)</h3>
+            <h3>📋 Existing Channels Manager (Hide / Delete)</h3>
             <div id="adminList">
                 <p style="color: #64748b; font-size: 13px;">Loading channels...</p>
             </div>
@@ -85,120 +86,100 @@
         const localSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         async function saveData() {
-            const catVal = document.getElementById('itemCategory').value;
-            const titleVal = document.getElementById('itemTitle').value;
-            const locVal = document.getElementById('itemLocation').value;
+            const category = document.getElementById('itemCategory').value;
+            const title = document.getElementById('itemTitle').value.trim();
+            const location = document.getElementById('itemLocation').value.trim();
             const msg = document.getElementById('saveMsg');
 
-            if (!titleVal || !locVal) {
-                msg.style.color = "#dc2626";
-                msg.innerText = "Bhai, title aur details bharna zaroori hai!";
+            if (!title || !location) {
+                msg.style.color = '#dc2626';
+                msg.innerText = '⚠️ Please saare fields bhariye!';
                 return;
             }
 
-            msg.style.color = "#2563eb";
-            msg.innerText = "Publish ho raha hai...";
+            msg.style.color = '#2563eb';
+            msg.innerText = 'Saving channel...';
 
-            try {
-                const { error } = await localSupabase
-                    .from('media_hub')
-                    .insert([{ 
-                        category: catVal, 
-                        title: titleVal, 
-                        location: locVal,
-                        status: 'active' 
-                    }]);
+            const { error } = await localSupabase
+                .from('media_hub')
+                .insert([{ title, category, location, status: 'active' }]);
 
-                if (error) throw error;
-
-                msg.style.color = "#16a34a";
-                msg.innerText = "Successfully publish ho gaya! 🎉";
-                document.getElementById('itemTitle').value = ""; 
-                document.getElementById('itemLocation').value = "";
-                
-                fetchAdminData();
-            } catch (err) {
-                msg.style.color = "#dc2626";
-                msg.innerText = "Error: " + err.message;
-            }
-        }
-
-        async function fetchAdminData() {
-            const adminListContainer = document.getElementById('adminList');
-            
-            try {
-                const { data, error } = await localSupabase
-                    .from('media_hub')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
-
-                if (!data || data.length === 0) {
-                    adminListContainer.innerHTML = '<p style="color: #64748b; font-size: 13px;">Koi channel nahi hai.</p>';
-                    return;
+            if (error) {
+                if (error.code === '23505') { // Duplicate key error code in PostgreSQL
+                    msg.style.color = '#dc2626';
+                    msg.innerText = '❌ Error: Is naam ka channel pehle se mojood hai! Duplicate allowed nahi hai.';
+                } else {
+                    msg.style.color = '#dc2626';
+                    msg.innerText = '❌ Error: ' + error.message;
                 }
-
-                let adminHtml = '';
-                data.forEach(item => {
-                    const currentStatus = item.status || 'active';
-                    const isHidden = currentStatus === 'hidden';
-                    
-                    const hideBtnText = isHidden ? 'Unhide 👁️' : 'Hide 🙈';
-                    const hideBtnClass = isHidden ? 'style="background: #dcfce7; color: #16a34a;"' : '';
-                    
-                    adminHtml += `
-                        <div class="admin-item" style="${isHidden ? 'opacity: 0.6;' : ''}">
-                            <div class="action-btns">
-                                <button class="hide-btn" ${hideBtnClass} onclick="toggleHide('${item.id}', '${currentStatus}')">${hideBtnText}</button>
-                                <button class="delete-btn" onclick="deleteItem('${item.id}')">Delete</button>
-                            </div>
-                            <div class="admin-title">📌 ${item.title} ${isHidden ? '(Hidden)' : ''}</div>
-                            <div class="admin-cat">Category: [ ${item.category} ]</div>
-                        </div>
-                    `;
-                });
-
-                adminListContainer.innerHTML = adminHtml;
-
-            } catch (err) {
-                adminListContainer.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error loading list</p>`;
+            } else {
+                msg.style.color = '#16a34a';
+                msg.innerText = '✅ Channel successfully publish ho gaya!';
+                document.getElementById('itemTitle').value = '';
+                document.getElementById('itemLocation').value = '';
+                loadAdminList();
             }
         }
 
-        async function toggleHide(id, currentStatus) {
-            const newStatus = (currentStatus === 'hidden') ? 'active' : 'hidden';
+        async function loadAdminList() {
+            const listDiv = document.getElementById('adminList');
+            const { data, error } = await localSupabase
+                .from('media_hub')
+                .select('*')
+                .order('created_at', { ascending: false });
 
-            try {
-                const { error } = await localSupabase
-                    .from('media_hub')
-                    .update({ status: newStatus })
-                    .eq('id', id);
-
-                if (error) throw error;
-                fetchAdminData();
-            } catch (err) {
-                alert("Status update error: " + err.message);
+            if (error) {
+                listDiv.innerHTML = `<p style="color: red;">Error loading list</p>`;
+                return;
             }
+
+            if (!data || data.length === 0) {
+                listDiv.innerHTML = `<p style="color: #64748b; font-size: 13px;">Koi channel nahi mila.</p>`;
+                return;
+            }
+
+            let html = '';
+            data.forEach(item => {
+                const isHidden = item.status === 'hidden';
+                html += `
+                    <div class="admin-item">
+                        <div>
+                            <div class="admin-title">${item.title}</div>
+                            <span class="admin-cat">${item.category}</span>
+                            <span style="font-size: 11px; color: ${isHidden ? '#d97706' : '#16a34a'}; margin-left: 6px;">[${item.status}]</span>
+                        </div>
+                        <div class="action-btns">
+                            <button class="hide-btn" onclick="toggleStatus('${item.id}', '${item.status}')">${isHidden ? 'Unhide' : 'Hide'}</button>
+                            <button class="delete-btn" onclick="deleteItem('${item.id}')">Delete</button>
+                        </div>
+                    </div>
+                `;
+            });
+            listDiv.innerHTML = html;
+        }
+
+        async function toggleStatus(id, currentStatus) {
+            const newStatus = currentStatus === 'active' ? 'hidden' : 'active';
+            const { error } = await localSupabase
+                .from('media_hub')
+                .update({ status: newStatus })
+                .eq('id', id);
+
+            if (!error) loadAdminList();
         }
 
         async function deleteItem(id) {
-            if (!confirm("Kya aap sach mein is channel ko hamesha ke liye delete karna chahte hain?")) return;
-
-            try {
+            if (confirm('Kya aap sach mein is channel ko delete karna chahte hain?')) {
                 const { error } = await localSupabase
                     .from('media_hub')
                     .delete()
                     .eq('id', id);
 
-                if (error) throw error;
-                fetchAdminData();
-            } catch (err) {
-                alert("Delete error: " + err.message);
+                if (!error) loadAdminList();
             }
         }
 
-        fetchAdminData();
+        loadAdminList();
     </script>
 </body>
 </html>
