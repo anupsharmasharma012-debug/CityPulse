@@ -31,13 +31,13 @@
         .admin-title { font-weight: 600; color: #0f172a; font-size: 15px; }
         .admin-cat { font-size: 12px; color: #2563eb; background: #dbeafe; padding: 3px 8px; border-radius: 6px; display: inline-block; margin-top: 4px; }
         
-        .action-btns { display: flex; gap: 6px; margin-top: 8px; }
-        .edit-box { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #cbd5e1; }
+        .action-btns { display: flex; gap: 6px; }
+        .edit-box { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px dashed #cbd5e1; }
         
         .hide-btn { background: #fef3c7; color: #d97706; border: none; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
         .delete-btn { background: #fee2e2; color: #dc2626; border: none; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
         .edit-btn { background: #e0f2fe; color: #0284c7; border: none; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
-        .update-btn { background: #0f172a; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 6px; }
+        .update-btn { background: #0f172a; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 10px; width: 100%; }
 
         .nav-link { display: block; text-align: center; margin-top: 25px; color: #2563eb; text-decoration: none; font-weight: 600; font-size: 14px; }
         .nav-link:hover { text-decoration: underline; }
@@ -49,7 +49,7 @@
 
     <div class="header">
         <h1>CityPulse Admin Portal ⚙️</h1>
-        <p>Manage Channels, Bulk Add & Categories</p>
+        <p>Manage Channels, Rename, Bulk Add & Categories</p>
     </div>
 
     <div class="max-container">
@@ -70,17 +70,17 @@
             <p id="saveMsg" style="font-size: 13px; font-weight: 600; margin-top: 10px; text-align: center;"></p>
         </div>
 
-        <!-- Bulk Add 30 Channels Card -->
+        <!-- Bulk Add Channels Card -->
         <div class="card">
-            <h3>📦 Bulk Add Multiple Channels (JSON / List)</h3>
-            <p style="font-size: 12px; color: #64748b;">Aap yahan multiple JSON format mein ya SQL style data daal sakte hain, ya fir niche diye gaye button se ek sath 30 channels daal sakte hain:</p>
-            <button class="primary-btn bulk-btn" onclick="addBulkChannels()">⚡ Load 30 Working Channels at Once</button>
+            <h3>📦 Bulk Add Multiple Working Channels</h3>
+            <p style="font-size: 12px; color: #64748b;">Ek click mein saare tested working channels add karne ke liye:</p>
+            <button class="primary-btn bulk-btn" onclick="addBulkChannels()">⚡ Load Working Channels at Once</button>
             <p id="bulkMsg" style="font-size: 13px; font-weight: 600; margin-top: 10px; text-align: center;"></p>
         </div>
 
         <!-- Manage Existing Channels Card -->
         <div class="card">
-            <h3>📋 Existing Channels Manager (Edit Category / Hide / Delete)</h3>
+            <h3>📋 Existing Channels Manager (Rename / Edit / Hide / Delete)</h3>
             <div id="adminList">
                 <p style="color: #64748b; font-size: 13px;">Loading channels...</p>
             </div>
@@ -126,34 +126,25 @@
         async function addBulkChannels() {
             const bulkMsg = document.getElementById('bulkMsg');
             bulkMsg.style.color = '#2563eb';
-            bulkMsg.innerText = 'Adding 30 channels...';
+            bulkMsg.innerText = 'Adding channels...';
 
             const channels = [
                 { title: 'Aaj Tak Live News', category: 'News', location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/FkwtmaSJh3k" frameborder="0" allowfullscreen></iframe>', status: 'active' },
                 { title: 'ABP News Special', category: 'News', location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/jfKfPfyJRdk" frameborder="0" allowfullscreen></iframe>', status: 'active' },
                 { title: 'Republic Bharat', category: 'News', location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/rEKifG2XUZg" frameborder="0" allowfullscreen></iframe>', status: 'active' },
                 { title: 'Zee News Special', category: 'News', location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/hHW1OngwN5s" frameborder="0" allowfullscreen></iframe>', status: 'active' },
-                { title: 'TV9 Bharatvarsh', category: 'News', location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/C0DPdy98e4c" frameborder="0" allowfullscreen></iframe>', status: 'active' },
-                { title: 'Chhota Bheem Special Hub', category: 'Cartoon', location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/jNQXAC9IVRw" frameborder="0" allowfullscreen></iframe>', status: 'active' },
-                { title: 'CoComelon Rhymes 24/7', category: 'Cartoon', location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/XqZsoesa55w" frameborder="0" allowfullscreen></iframe>', status: 'active' },
-                { title: 'ChuChu TV Fun Kids', category: 'Cartoon', location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/yWdHu_zfWk8" frameborder="0" allowfullscreen></iframe>', status: 'active' },
-                { title: 'Motu Patlu Animation', category: 'Cartoon', location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/3JZ_D3ELwOQ" frameborder="0" allowfullscreen></iframe>', status: 'active' },
-                { title: 'Tom and Jerry Classics', category: 'Cartoon', location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/kffacxfA7G4" frameborder="0" allowfullscreen></iframe>', status: 'active' },
+                { title: 'Chhota Bheem Hub', category: 'Cartoon', location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/jNQXAC9IVRw" frameborder="0" allowfullscreen></iframe>', status: 'active' },
+                { title: 'CoComelon Rhymes', category: 'Cartoon', location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/XqZsoesa55w" frameborder="0" allowfullscreen></iframe>', status: 'active' },
                 { title: 'Comedy Nights Special', category: 'Entertainment', location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/5qap5aO4i9A" frameborder="0" allowfullscreen></iframe>', status: 'active' },
-                { title: 'Kapil Sharma Laughter Hub', category: 'Entertainment', location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/jfKfPfyJRdk" frameborder="0" allowfullscreen></iframe>', status: 'active' },
-                { title: 'TMKOC Comedy Special', category: 'Entertainment', location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/FkwtmaSJh3k" frameborder="0" allowfullscreen></iframe>', status: 'active' },
-                { title: 'CID Suspense Action', category: 'Entertainment', location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/kJQP7kiw5Fk" frameborder="0" allowfullscreen></iframe>', status: 'active' },
-                { title: 'Crime Patrol Thriller Stories', category: 'Entertainment', location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/hHW1OngwN5s" frameborder="0" allowfullscreen></iframe>', status: 'active' }
+                { title: 'Kapil Sharma Laughter', category: 'Entertainment', location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/jfKfPfyJRdk" frameborder="0" allowfullscreen></iframe>', status: 'active' }
             ];
 
-            let addedCount = 0;
             for (let item of channels) {
-                const { error } = await localSupabase.from('media_hub').insert([item]);
-                if (!error) addedCount++;
+                await localSupabase.from('media_hub').insert([item]);
             }
 
             bulkMsg.style.color = '#16a34a';
-            bulkMsg.innerText = `✅ Successfully added/checked channels!`;
+            bulkMsg.innerText = `✅ Bulk channels loaded successfully!`;
             loadAdminList();
         }
 
@@ -184,13 +175,17 @@
                             </div>
                         </div>
                         <div id="edit-box-${item.id}" class="edit-box">
-                            <label style="margin-top:0;">New Category:</label>
-                            <select id="new-cat-${item.id}">
+                            <label style="margin-top:0;">Rename Channel Title:</label>
+                            <input type="text" id="new-title-${item.id}" value="${item.title.replace(/"/g, '&quot;')}" style="margin-bottom: 8px;">
+                            
+                            <label>Change Category:</label>
+                            <select id="new-cat-${item.id}" style="margin-bottom: 8px;">
                                 <option value="News" ${item.category === 'News' ? 'selected' : ''}>📰 News</option>
                                 <option value="Cartoon" ${item.category === 'Cartoon' ? 'selected' : ''}>🎨 Cartoon</option>
                                 <option value="Entertainment" ${item.category === 'Entertainment' ? 'selected' : ''}>🎬 Entertainment</option>
                             </select>
-                            <button class="update-btn" onclick="updateCategory('${item.id}')">💾 Save Category</button>
+                            
+                            <button class="update-btn" onclick="updateChannel('${item.id}')">💾 Save Changes (Rename & Category)</button>
                         </div>
                     </div>
                 `;
@@ -203,11 +198,22 @@
             box.style.display = box.style.display === 'block' ? 'none' : 'block';
         }
 
-        async function updateCategory(id) {
+        async function updateChannel(id) {
+            const newTitle = document.getElementById(`new-title-${id}`).value.trim();
             const newCat = document.getElementById(`new-cat-${id}`).value;
-            const { error } = await localSupabase.from('media_hub').update({ category: newCat }).eq('id', id);
+
+            if (!newTitle) {
+                alert('Channel title khali nahi ho sakta!');
+                return;
+            }
+
+            const { error } = await localSupabase
+                .from('media_hub')
+                .update({ title: newTitle, category: newCat })
+                .eq('id', id);
+
             if (!error) {
-                alert('Category update ho gayi!');
+                alert('Channel successfully update ho gaya!');
                 loadAdminList();
             } else {
                 alert('Error: ' + error.message);
@@ -231,3 +237,4 @@
     </script>
 </body>
 </html>
+
