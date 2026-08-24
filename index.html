@@ -9,13 +9,19 @@
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; padding: 20px; }
         .header { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; text-align: center; }
-        .form-container { background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 500px; margin: 0 auto; }
-        .form-container h3 { margin-top: 0; margin-bottom: 20px; color: #0f172a; }
+        .container { max-width: 500px; margin: 0 auto; }
+        .card { background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card h3 { margin-top: 0; margin-bottom: 20px; color: #0f172a; }
         label { font-size: 14px; font-weight: 500; color: #475569; display: block; margin-bottom: 6px; }
         input { width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
         button { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; }
         button:hover { background: #1d4ed8; }
         #saveMsg { margin-top: 15px; font-weight: 500; text-align: center; font-size: 14px; }
+        
+        /* List design ke liye */
+        .place-item { background: #f1f5f9; padding: 12px 16px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #2563eb; }
+        .place-title { font-weight: 600; color: #1e293b; font-size: 15px; }
+        .place-loc { font-size: 13px; color: #64748b; margin-top: 4px; }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -27,63 +33,109 @@
         <p style="color: #64748b; margin: 0;">Admin Control Panel</p>
     </div>
 
-    <div class="form-container">
-        <h3>Nayi Travel Entry Add Karein 🏔️</h3>
-        
-        <label>Title:</label>
-        <input type="text" id="placeTitle" placeholder="Jaise: Spiti valley tour">
+    <div class="container">
+        <!-- Form Section -->
+        <div class="card">
+            <h3>Nayi Travel Entry Add Karein 🏔️</h3>
+            
+            <label>Title:</label>
+            <input type="text" id="placeTitle" placeholder="Jaise: Spiti valley tour">
 
-        <label>Location:</label>
-        <input type="text" id="placeLocation" placeholder="Jaise: Kalpa, Kaza, Dhankar">
+            <label>Location:</label>
+            <input type="text" id="placeLocation" placeholder="Jaise: Kalpa, Kaza, Dhankar">
 
-        <button onclick="saveData()">Save Data</button>
-        
-        <p id="saveMsg"></p>
+            <button onclick="saveData()">Save Data</button>
+            <p id="saveMsg"></p>
+        </div>
+
+        <!-- Display List Section (Read Operation) -->
+        <div class="card">
+            <h3>Saved Travel Entries 📋</h3>
+            <div id="placesList">
+                <p style="color: #64748b; font-size: 14px;">Data load ho raha hai...</p>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Seedha connection yahin par set kar diya hai aapki asli key ke saath
         const SUPABASE_URL = 'https://qfefkyrwxdhdxyajutst.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmZWZreXJ3eGRoZHh5YWp1dHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMjY0ODcsImV4cCI6MjEwMjgwMjQ4N30.lmnKyvigM5JeVf1y_BR0tjqAp4PiXioZNcCE5VVYsKg';
         
         const localSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // 1. Data Save Karne ka Function
         async function saveData() {
             const titleVal = document.getElementById('placeTitle').value;
             const locVal = document.getElementById('placeLocation').value;
             const msg = document.getElementById('saveMsg');
 
             if (!titleVal || !locVal) {
-                msg.style.color = "#dc2626"; // Red
+                msg.style.color = "#dc2626";
                 msg.innerText = "Bhai, dono fields bharna zaroori hai!";
                 return;
             }
 
-            msg.style.color = "#2563eb"; // Blue
+            msg.style.color = "#2563eb";
             msg.innerText = "Data Supabase ja raha hai...";
 
             try {
-                // Direct insert command supabase ke liye
-                const { data, error } = await localSupabase
+                const { error } = await localSupabase
                     .from('travel_places')
-                    .insert([
-                        { title: titleVal, location: locVal }
-                    ]);
+                    .insert([{ title: titleVal, location: locVal }]);
 
-                if (error) {
-                    throw error;
-                }
+                if (error) throw error;
 
-                msg.style.color = "#16a34a"; // Green
+                msg.style.color = "#16a34a";
                 msg.innerText = "Data successfully save ho gaya! 🎉";
                 document.getElementById('placeTitle').value = ""; 
                 document.getElementById('placeLocation').value = "";
                 
+                // Jaise hi data save ho, list ko dobara fetch karke screen update kar do
+                fetchPlaces();
+                
             } catch (err) {
-                msg.style.color = "#dc2626"; // Red
+                msg.style.color = "#dc2626";
                 msg.innerText = "Error: " + err.message;
             }
         }
+
+        // 2. Database se Data Read karke Screen par dikhane ka Function
+        async function fetchPlaces() {
+            const listContainer = document.getElementById('placesList');
+            
+            try {
+                const { data, error } = await localSupabase
+                    .from('travel_places')
+                    .select('*')
+                    .order('created_at', { ascending: false }); // Naya data sabse upar dikhega
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    listContainer.innerHTML = '<p style="color: #64748b; font-size: 14px;">Abhi koi entry nahi hai.</p>';
+                    return;
+                }
+
+                // Database ki har ek entry ko HTML cards mein convert kar rahe hain
+                let htmlContent = '';
+                data.forEach(item => {
+                    htmlContent += `
+                        <div class="place-item">
+                            <div class="place-title">📌 ${item.title}</div>
+                            <div class="place-loc">📍 ${item.location}</div>
+                        </div>
+                    `;
+                });
+
+                listContainer.innerHTML = htmlContent;
+
+            } catch (err) {
+                listContainer.innerHTML = `<p style="color: #dc2626; font-size: 14px;">Error loading data: ${err.message}</p>`;
+            }
+        }
+
+        // Page khulte hi sabse pehle saved entries fetch hongi
+        fetchPlaces();
     </script>
 </body>
 </html>
