@@ -14,10 +14,12 @@
         
         /* Auth Bar */
         .auth-bar { background: #ffffff; padding: 12px 16px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #e2e8f0; font-size: 13px; }
-        .auth-inputs { display: none; gap: 8px; margin-top: 10px; flex-direction: column; }
-        .auth-inputs input { padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; width: 100%; box-sizing: border-box; }
+        .auth-section { display: none; margin-top: 10px; text-align: center; background: #fff; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px; }
+        
+        .google-btn { background: #ffffff; color: #374151; border: 1px solid #cbd5e1; padding: 10px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); width: 100%; justify-content: center; }
+        .google-btn:hover { background: #f8fafc; }
+
         .auth-btn { background: #2563eb; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; }
-        .auth-btn:hover { background: #1d4ed8; }
         .logout-btn { background: #fee2e2; color: #dc2626; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; }
 
         .tabs-container { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 15px; }
@@ -63,19 +65,17 @@
                 <span id="userStatusText" style="font-weight: 600; color: #475569;">Checking session...</span>
             </div>
             <div>
-                <button class="auth-btn" id="mainAuthToggleBtn" onclick="toggleAuthForm()">🔑 Login / Signup</button>
+                <button class="auth-btn" id="mainAuthToggleBtn" onclick="toggleAuthForm()">🌐 Login Options</button>
                 <button class="logout-btn" id="logoutBtn" style="display:none;" onclick="logoutUser()">Logout</button>
             </div>
         </div>
 
-        <div id="authFormSection" class="auth-inputs">
-            <input type="email" id="authEmail" placeholder="Enter your email">
-            <input type="password" id="authPassword" placeholder="Enter your password">
-            <div style="display: flex; gap: 8px;">
-                <button class="auth-btn" style="flex:1;" onclick="loginUser()">Login</button>
-                <button class="auth-btn" style="flex:1; background:#16a34a;" onclick="signupUser()">Create Account</button>
-            </div>
-            <p id="authMsg" style="font-size: 12px; margin: 4px 0 0 0; text-align: center;"></p>
+        <div id="authFormSection" class="auth-section">
+            <p style="font-size: 13px; color: #64748b; margin-top:0; margin-bottom: 12px;">Apne Google account se ek click mein login karein:</p>
+            <button class="google-btn" onclick="loginWithGoogle()">
+                <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.15C3.17 21.32 7.23 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.6H1.18C.43 8.12 0 9.99 0 12s.43 3.88 1.18 5.4l4.09-3.16z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.17 2.68 1.18 6.6l4.09 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
+                Sign in with Google
+            </button>
         </div>
 
         <div class="tabs-container">
@@ -120,7 +120,7 @@
             const logoutBtn = document.getElementById('logoutBtn');
 
             if (currentUser) {
-                statusText.innerHTML = `👤 Logged in as: <b style="color:#2563eb;">${currentUser.email}</b>`;
+                statusText.innerHTML = `👤 Logged in: <b style="color:#2563eb;">${currentUser.email}</b>`;
                 mainBtn.style.display = 'none';
                 logoutBtn.style.display = 'inline-block';
                 document.getElementById('authFormSection').style.display = 'none';
@@ -133,38 +133,18 @@
 
         function toggleAuthForm() {
             const form = document.getElementById('authFormSection');
-            form.style.display = form.style.display === 'flex' ? 'none' : 'flex';
+            form.style.display = form.style.display === 'block' ? 'none' : 'block';
         }
 
-        async function signupUser() {
-            const email = document.getElementById('authEmail').value.trim();
-            const password = document.getElementById('authPassword').value.trim();
-            const msg = document.getElementById('authMsg');
-
-            const { data, error } = await localSupabase.auth.signUp({ email, password });
+        async function loginWithGoogle() {
+            const { error } = await localSupabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: window.location.href
+                }
+            });
             if (error) {
-                msg.style.color = '#dc2626';
-                msg.innerText = error.message;
-            } else {
-                msg.style.color = '#16a34a';
-                msg.innerText = '✅ Account ban gaya! Check email or login now.';
-            }
-        }
-
-        async function loginUser() {
-            const email = document.getElementById('authEmail').value.trim();
-            const password = document.getElementById('authPassword').value.trim();
-            const msg = document.getElementById('authMsg');
-
-            const { data, error } = await localSupabase.auth.signInWithPassword({ email, password });
-            if (error) {
-                msg.style.color = '#dc2626';
-                msg.innerText = error.message;
-            } else {
-                currentUser = data.user;
-                updateAuthUI();
-                await fetchCloudWishlist();
-                renderFeed(allPosts);
+                alert('Google Login Error: ' + error.message);
             }
         }
 
@@ -190,7 +170,7 @@
 
         async function toggleWishlist(title) {
             if (!currentUser) {
-                alert('⚠️ Pehle Login ya Account banayein taaki wishlist cloud par save ho sake!');
+                alert('⚠️ Pehle Google se login karein taaki wishlist cloud par save ho sake!');
                 toggleAuthForm();
                 return;
             }
@@ -198,7 +178,6 @@
             const isAlreadySaved = cloudWishlist.includes(title);
 
             if (isAlreadySaved) {
-                // Remove from cloud
                 const { error } = await localSupabase
                     .from('wishlist')
                     .delete()
@@ -209,7 +188,6 @@
                     cloudWishlist = cloudWishlist.filter(t => t !== title);
                 }
             } else {
-                // Add to cloud
                 const { error } = await localSupabase
                     .from('wishlist')
                     .insert([{ user_id: currentUser.id, channel_title: title }]);
@@ -302,3 +280,4 @@
     </script>
 </body>
 </html>
+
