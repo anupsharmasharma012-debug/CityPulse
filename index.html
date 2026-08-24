@@ -12,13 +12,20 @@
         .header h1 { margin: 0 0 6px 0; color: #0f172a; font-size: 24px; }
         .header p { color: #64748b; margin: 0; font-size: 13px; }
         
-        .tabs-container { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 15px; justify-content: flex-start; }
+        /* Auth Bar */
+        .auth-bar { background: #ffffff; padding: 12px 16px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #e2e8f0; font-size: 13px; }
+        .auth-inputs { display: none; gap: 8px; margin-top: 10px; flex-direction: column; }
+        .auth-inputs input { padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; width: 100%; box-sizing: border-box; }
+        .auth-btn { background: #2563eb; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .auth-btn:hover { background: #1d4ed8; }
+        .logout-btn { background: #fee2e2; color: #dc2626; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+
+        .tabs-container { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 15px; }
         .tab-btn { background: #e2e8f0; border: none; padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; color: #475569; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
         .tab-btn.active, .tab-btn:hover { background: #2563eb; color: white; }
 
         .navigation-bar { display: none; margin-bottom: 15px; text-align: center; }
         .back-btn { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
-        .back-btn:hover { background: #dc2626; }
 
         .max-width-container { max-width: 700px; margin: 0 auto; }
 
@@ -49,7 +56,28 @@
         <p>Aapka Apna Digital Family & Media Hub</p>
     </div>
 
+    <!-- Auth Bar -->
     <div class="max-width-container">
+        <div class="auth-bar" id="authBarContainer">
+            <div>
+                <span id="userStatusText" style="font-weight: 600; color: #475569;">Checking session...</span>
+            </div>
+            <div>
+                <button class="auth-btn" id="mainAuthToggleBtn" onclick="toggleAuthForm()">🔑 Login / Signup</button>
+                <button class="logout-btn" id="logoutBtn" style="display:none;" onclick="logoutUser()">Logout</button>
+            </div>
+        </div>
+
+        <div id="authFormSection" class="auth-inputs">
+            <input type="email" id="authEmail" placeholder="Enter your email">
+            <input type="password" id="authPassword" placeholder="Enter your password">
+            <div style="display: flex; gap: 8px;">
+                <button class="auth-btn" style="flex:1;" onclick="loginUser()">Login</button>
+                <button class="auth-btn" style="flex:1; background:#16a34a;" onclick="signupUser()">Create Account</button>
+            </div>
+            <p id="authMsg" style="font-size: 12px; margin: 4px 0 0 0; text-align: center;"></p>
+        </div>
+
         <div class="tabs-container">
             <button class="tab-btn active" onclick="filterCategory('All')">🌟 All</button>
             <button class="tab-btn" onclick="filterCategory('News')">📰 News</button>
@@ -73,6 +101,125 @@
         
         const localSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let allPosts = [];
+        let currentUser = null;
+        let cloudWishlist = [];
+
+        async function checkUserSession() {
+            const { data: { session } } = await localSupabase.auth.getSession();
+            currentUser = session ? session.user : null;
+            updateAuthUI();
+            if (currentUser) {
+                await fetchCloudWishlist();
+            }
+            fetchPublicFeed();
+        }
+
+        function updateAuthUI() {
+            const statusText = document.getElementById('userStatusText');
+            const mainBtn = document.getElementById('mainAuthToggleBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+
+            if (currentUser) {
+                statusText.innerHTML = `👤 Logged in as: <b style="color:#2563eb;">${currentUser.email}</b>`;
+                mainBtn.style.display = 'none';
+                logoutBtn.style.display = 'inline-block';
+                document.getElementById('authFormSection').style.display = 'none';
+            } else {
+                statusText.innerHTML = `⚠️ Guest Mode (Cloud sync ke liye login karein)`;
+                mainBtn.style.display = 'inline-block';
+                logoutBtn.style.display = 'none';
+            }
+        }
+
+        function toggleAuthForm() {
+            const form = document.getElementById('authFormSection');
+            form.style.display = form.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        async function signupUser() {
+            const email = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('authPassword').value.trim();
+            const msg = document.getElementById('authMsg');
+
+            const { data, error } = await localSupabase.auth.signUp({ email, password });
+            if (error) {
+                msg.style.color = '#dc2626';
+                msg.innerText = error.message;
+            } else {
+                msg.style.color = '#16a34a';
+                msg.innerText = '✅ Account ban gaya! Check email or login now.';
+            }
+        }
+
+        async function loginUser() {
+            const email = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('authPassword').value.trim();
+            const msg = document.getElementById('authMsg');
+
+            const { data, error } = await localSupabase.auth.signInWithPassword({ email, password });
+            if (error) {
+                msg.style.color = '#dc2626';
+                msg.innerText = error.message;
+            } else {
+                currentUser = data.user;
+                updateAuthUI();
+                await fetchCloudWishlist();
+                renderFeed(allPosts);
+            }
+        }
+
+        async function logoutUser() {
+            await localSupabase.auth.signOut();
+            currentUser = null;
+            cloudWishlist = [];
+            updateAuthUI();
+            renderFeed(allPosts);
+        }
+
+        async function fetchCloudWishlist() {
+            if (!currentUser) return;
+            const { data, error } = await localSupabase
+                .from('wishlist')
+                .select('channel_title')
+                .eq('user_id', currentUser.id);
+
+            if (!error && data) {
+                cloudWishlist = data.map(item => item.channel_title);
+            }
+        }
+
+        async function toggleWishlist(title) {
+            if (!currentUser) {
+                alert('⚠️ Pehle Login ya Account banayein taaki wishlist cloud par save ho sake!');
+                toggleAuthForm();
+                return;
+            }
+
+            const isAlreadySaved = cloudWishlist.includes(title);
+
+            if (isAlreadySaved) {
+                // Remove from cloud
+                const { error } = await localSupabase
+                    .from('wishlist')
+                    .delete()
+                    .eq('user_id', currentUser.id)
+                    .eq('channel_title', title);
+
+                if (!error) {
+                    cloudWishlist = cloudWishlist.filter(t => t !== title);
+                }
+            } else {
+                // Add to cloud
+                const { error } = await localSupabase
+                    .from('wishlist')
+                    .insert([{ user_id: currentUser.id, channel_title: title }]);
+
+                if (!error) {
+                    cloudWishlist.push(title);
+                }
+            }
+            renderFeed(allPosts);
+        }
 
         async function fetchPublicFeed() {
             const publicFeedContainer = document.getElementById('publicFeed');
@@ -91,21 +238,6 @@
             }
         }
 
-        function getWishlist() {
-            return JSON.parse(localStorage.getItem('citypulse_wishlist') || '[]');
-        }
-
-        function toggleWishlist(title) {
-            let wishlist = getWishlist();
-            if (wishlist.includes(title)) {
-                wishlist = wishlist.filter(t => t !== title);
-            } else {
-                wishlist.push(title);
-            }
-            localStorage.setItem('citypulse_wishlist', JSON.stringify(wishlist));
-            renderFeed(allPosts);
-        }
-
         function renderFeed(posts) {
             const publicFeedContainer = document.getElementById('publicFeed');
             let publicHtml = `
@@ -121,11 +253,9 @@
                 return;
             }
 
-            const wishlist = getWishlist();
-
             posts.forEach(item => {
                 const categoryText = item.category || 'News';
-                const isSaved = wishlist.includes(item.title);
+                const isSaved = cloudWishlist.includes(item.title);
                 let contentBody = `<div class="video-container">${item.location}</div>`;
 
                 publicHtml += `
@@ -154,8 +284,7 @@
             }
 
             if (selectedType === 'Wishlist') {
-                const wishlist = getWishlist();
-                const filtered = allPosts.filter(item => wishlist.includes(item.title));
+                const filtered = allPosts.filter(item => cloudWishlist.includes(item.title));
                 renderFeed(filtered);
                 return;
             }
@@ -169,7 +298,7 @@
             renderFeed(allPosts);
         }
 
-        fetchPublicFeed();
+        checkUserSession();
     </script>
 </body>
 </html>
