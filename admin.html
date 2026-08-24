@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityPulse - Media & News Hub</title>
+    <title>CityPulse - Admin Control Panel</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -12,37 +12,30 @@
         .header h1 { margin: 0 0 6px 0; color: #0f172a; font-size: 24px; }
         .header p { color: #64748b; margin: 0; font-size: 14px; }
         
-        .main-grid { display: grid; grid-template-columns: 1fr; gap: 24px; max-width: 900px; margin: 0 auto; }
-        @media(min-width: 768px) {
-            .main-grid { grid-template-columns: 1fr 1fr; align-items: start; }
-        }
-
+        .max-container { max-width: 600px; margin: 0 auto; }
         .card { background: #ffffff; padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.04); margin-bottom: 20px; }
         .card h3 { margin-top: 0; margin-bottom: 16px; color: #0f172a; font-size: 18px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
         
         label { font-size: 13px; font-weight: 600; color: #475569; display: block; margin-bottom: 6px; }
         input, select, textarea { width: 100%; padding: 10px 12px; margin-bottom: 14px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 14px; background: #fff; font-family: 'Inter', sans-serif; }
-        textarea { resize: vertical; height: 70px; }
+        textarea { resize: vertical; height: 80px; }
         
         button.primary-btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: background 0.2s; }
         button.primary-btn:hover { background: #1d4ed8; }
         #saveMsg { margin-top: 12px; font-weight: 500; text-align: center; font-size: 13px; }
         
-        /* Admin List Styling */
-        .admin-item { background: #f8fafc; padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #e2e8f0; position: relative; }
-        .admin-title { font-weight: 600; font-size: 13px; color: #0f172a; padding-right: 50px; }
-        .delete-btn { position: absolute; right: 10px; top: 8px; background: #fee2e2; color: #dc2626; border: none; padding: 3px 6px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: 600; }
+        .admin-item { background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #e2e8f0; position: relative; }
+        .admin-title { font-weight: 600; font-size: 14px; color: #0f172a; padding-right: 120px; }
+        .admin-cat { font-size: 11px; color: #2563eb; font-weight: 600; margin-top: 4px; }
+        
+        .action-btns { position: absolute; right: 10px; top: 10px; display: flex; gap: 5px; }
+        .hide-btn { background: #fef3c7; color: #d97706; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: 600; }
+        .hide-btn:hover { background: #fde68a; }
+        .delete-btn { background: #fee2e2; color: #dc2626; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: 600; }
         .delete-btn:hover { background: #fecaca; }
-
-        /* Public Feed Styling */
-        .public-feed-container { background: #ffffff; padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.04); grid-column: 1 / -1; }
-        .news-card { background: #fff; border: 1px solid #e2e8f0; border-left: 4px solid #2563eb; padding: 16px; border-radius: 10px; margin-bottom: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .news-badge { display: inline-block; background: #dbeafe; color: #1e40af; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-bottom: 6px; }
-        .news-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 6px; }
-        .news-desc { font-size: 14px; color: #475569; line-height: 1.5; margin-bottom: 10px; }
-        .video-container { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; background: #000; border-radius: 8px; overflow: hidden; margin-top: 10px; }
-        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-        .news-meta { font-size: 12px; color: #94a3b8; margin-top: 8px; }
+        
+        .nav-link { display: block; text-align: center; margin-top: 20px; color: #2563eb; text-decoration: none; font-weight: 600; font-size: 14px; }
+        .nav-link:hover { text-decoration: underline; }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -50,61 +43,39 @@
 <body>
 
     <div class="header">
-        <h1>CityPulse Media Hub 📡</h1>
-        <p>National, Regional, Local Channels & Citizen Voice</p>
+        <h1>CityPulse Admin Portal ⚙️</h1>
+        <p>Advanced Control: Publish, Hide, or Unhide</p>
     </div>
 
-    <div class="main-grid">
-        <!-- LEFT: Admin Panel -->
-        <div>
-            <div class="card">
-                <h3>📢 Publish News / Live Channel</h3>
-                
-                <label>Channel Level:</label>
-                <select id="itemLevel">
-                    <option value="National">National Channel</option>
-                    <option value="Regional">Regional Channel</option>
-                    <option value="Local">Local Channel / Cable</option>
-                    <option value="Citizen Voice">Citizen Voice (Aam Janta)</option>
-                </select>
-
-                <label>Category / Genre:</label>
-                <select id="itemCategory">
-                    <option value="🔴 LIVE TV Stream">🔴 LIVE TV Stream</option>
-                    <option value="Breaking News">Breaking News</option>
-                    <option value="Crime">Crime</option>
-                    <option value="Sports">Sports</option>
-                    <option value="Share Market">Share Market</option>
-                    <option value="Entertainment">Entertainment</option>
-                </select>
-
-                <label>Title / Channel Name:</label>
-                <input type="text" id="itemTitle" placeholder="Jaise: Aaj Tak Live / Local Issue">
-
-                <label>YouTube Embed Link or Details:</label>
-                <textarea id="itemLocation" placeholder="Agar Live TV hai toh YouTube embed URL dalein, ya news details likhein..."></textarea>
-
-                <button class="primary-btn" onclick="saveData()">Publish to Network</button>
-                <p id="saveMsg"></p>
-            </div>
-
-            <div class="card">
-                <h3>⚙️ Manage Broadcasts</h3>
-                <div id="adminList">
-                    <p style="color: #64748b; font-size: 13px;">Loading...</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- RIGHT / BOTTOM: Live Public Portal Feed -->
-        <div class="public-feed-container">
-            <h3>🌐 Live Media Feed & TV Portal</h3>
-            <p style="color: #64748b; font-size: 13px; margin-bottom: 16px;">Real-time broadcast and news feed for citizens.</p>
+    <div class="max-container">
+        <div class="card">
+            <h3>📢 Naya Channel / News Publish Karein</h3>
             
-            <div id="publicFeed">
-                <p style="color: #64748b; font-size: 14px;">Feed load ho rahi hai...</p>
+            <label>Ise kahan dikhana hai? (Target Category):</label>
+            <select id="itemCategory">
+                <option value="News">📰 News (Papa / Dosto ke liye)</option>
+                <option value="Cartoon">🎨 Cartoon (Beta ke liye)</option>
+                <option value="Entertainment">🎬 Entertainment (Family ke liye)</option>
+            </select>
+
+            <label>Channel / Title Name:</label>
+            <input type="text" id="itemTitle" placeholder="Jaise: Aaj Tak Live / Chhota Bheem">
+
+            <label>YouTube Embed Code / Link:</label>
+            <textarea id="itemLocation" placeholder="Yahan YouTube ka iframe embed code dalein..."></textarea>
+
+            <button class="primary-btn" onclick="saveData()">Publish to Public App</button>
+            <p id="saveMsg"></p>
+        </div>
+
+        <div class="card">
+            <h3>🗂️ Manage Channels (Hide / Unhide / Delete)</h3>
+            <div id="adminList">
+                <p style="color: #64748b; font-size: 13px;">Loading channels...</p>
             </div>
         </div>
+
+        <a href="index.html" class="nav-link" target="_blank">🌐 View Live Public App &rarr;</a>
     </div>
 
     <script>
@@ -114,7 +85,6 @@
         const localSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         async function saveData() {
-            const levelVal = document.getElementById('itemLevel').value;
             const catVal = document.getElementById('itemCategory').value;
             const titleVal = document.getElementById('itemTitle').value;
             const locVal = document.getElementById('itemLocation').value;
@@ -122,7 +92,7 @@
 
             if (!titleVal || !locVal) {
                 msg.style.color = "#dc2626";
-                msg.innerText = "Bhai, title aur details/link bharna zaroori hai!";
+                msg.innerText = "Bhai, title aur details bharna zaroori hai!";
                 return;
             }
 
@@ -131,110 +101,104 @@
 
             try {
                 const { error } = await localSupabase
-                    .from('travel_places')
+                    .from('media_hub')
                     .insert([{ 
-                        category: `${levelVal} | ${catVal}`, 
+                        category: catVal, 
                         title: titleVal, 
-                        location: locVal 
+                        location: locVal,
+                        status: 'active' 
                     }]);
 
                 if (error) throw error;
 
                 msg.style.color = "#16a34a";
-                msg.innerText = "Successfully broadcast ho gaya! 🎉";
+                msg.innerText = "Successfully publish ho gaya! 🎉";
                 document.getElementById('itemTitle').value = ""; 
                 document.getElementById('itemLocation').value = "";
                 
-                fetchAllData();
+                fetchAdminData();
             } catch (err) {
                 msg.style.color = "#dc2626";
                 msg.innerText = "Error: " + err.message;
             }
         }
 
-        async function fetchAllData() {
+        async function fetchAdminData() {
             const adminListContainer = document.getElementById('adminList');
-            const publicFeedContainer = document.getElementById('publicFeed');
             
             try {
                 const { data, error } = await localSupabase
-                    .from('travel_places')
+                    .from('media_hub')
                     .select('*')
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
 
                 if (!data || data.length === 0) {
-                    adminListContainer.innerHTML = '<p style="color: #64748b; font-size: 13px;">No broadcasts.</p>';
-                    publicFeedContainer.innerHTML = '<p style="color: #64748b; font-size: 14px;">No active feeds available.</p>';
+                    adminListContainer.innerHTML = '<p style="color: #64748b; font-size: 13px;">Koi channel nahi hai.</p>';
                     return;
                 }
 
                 let adminHtml = '';
-                let publicHtml = '';
-
                 data.forEach(item => {
-                    const badgeText = item.category || 'News';
+                    const currentStatus = item.status || 'active';
+                    const isHidden = currentStatus === 'hidden';
+                    
+                    const hideBtnText = isHidden ? 'Unhide 👁️' : 'Hide 🙈';
+                    const hideBtnClass = isHidden ? 'style="background: #dcfce7; color: #16a34a;"' : '';
                     
                     adminHtml += `
-                        <div class="admin-item">
-                            <button class="delete-btn" onclick="deleteItem('${item.id}')">Delete</button>
-                            <div class="admin-title">📡 ${item.title}</div>
-                        </div>
-                    `;
-
-                    // Check if description contains an iframe or URL to render video player
-                    let contentBody = item.location;
-                    if (contentBody.includes('<iframe') || contentBody.includes('http')) {
-                        // Agar user ne iframe code dala hai toh direct dikhayenge, warna text
-                        if (!contentBody.includes('<iframe') && contentBody.includes('youtube.com')) {
-                            // Simple conversion or display
-                            contentBody = `<a href="${contentBody}" target="_blank" style="color: #2563eb; font-weight: 600;">📺 Watch Live Stream / Video Link</a>`;
-                        } else if (contentBody.includes('<iframe')) {
-                            contentBody = `<div class="video-container">${contentBody}</div>`;
-                        } else {
-                            contentBody = `<div class="news-desc">${contentBody}</div>`;
-                        }
-                    } else {
-                        contentBody = `<div class="news-desc">${contentBody}</div>`;
-                    }
-
-                    publicHtml += `
-                        <div class="news-card">
-                            <span class="news-badge">${badgeText}</span>
-                            <div class="news-title">${item.title}</div>
-                            ${contentBody}
-                            <div class="news-meta">🕒 Broadcasted via CityPulse Media Network</div>
+                        <div class="admin-item" style="${isHidden ? 'opacity: 0.6;' : ''}">
+                            <div class="action-btns">
+                                <button class="hide-btn" ${hideBtnClass} onclick="toggleHide('${item.id}', '${currentStatus}')">${hideBtnText}</button>
+                                <button class="delete-btn" onclick="deleteItem('${item.id}')">Delete</button>
+                            </div>
+                            <div class="admin-title">📌 ${item.title} ${isHidden ? '(Hidden)' : ''}</div>
+                            <div class="admin-cat">Category: [ ${item.category} ]</div>
                         </div>
                     `;
                 });
 
                 adminListContainer.innerHTML = adminHtml;
-                publicFeedContainer.innerHTML = publicHtml;
 
             } catch (err) {
-                adminListContainer.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error</p>`;
-                publicFeedContainer.innerHTML = `<p style="color: #dc2626; font-size: 14px;">Error: ${err.message}</p>`;
+                adminListContainer.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error loading list</p>`;
+            }
+        }
+
+        async function toggleHide(id, currentStatus) {
+            const newStatus = (currentStatus === 'hidden') ? 'active' : 'hidden';
+
+            try {
+                const { error } = await localSupabase
+                    .from('media_hub')
+                    .update({ status: newStatus })
+                    .eq('id', id);
+
+                if (error) throw error;
+                fetchAdminData();
+            } catch (err) {
+                alert("Status update error: " + err.message);
             }
         }
 
         async function deleteItem(id) {
-            if (!confirm("Delete this broadcast?")) return;
+            if (!confirm("Kya aap sach mein is channel ko hamesha ke liye delete karna chahte hain?")) return;
 
             try {
                 const { error } = await localSupabase
-                    .from('travel_places')
+                    .from('media_hub')
                     .delete()
                     .eq('id', id);
 
                 if (error) throw error;
-                fetchAllData();
+                fetchAdminData();
             } catch (err) {
-                alert("Error: " + err.message);
+                alert("Delete error: " + err.message);
             }
         }
 
-        fetchAllData();
+        fetchAdminData();
     </script>
 </body>
 </html>
