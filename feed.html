@@ -11,33 +11,27 @@
             --bg-surface: #121212;
             --text-main: #ffffff;
             --text-muted: #a3a3a3;
-            --accent-red: #e50914; /* Netflix Red */
+            --accent-red: #e50914; 
         }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); margin: 0; padding: 0; color: var(--text-main); padding-bottom: 90px; overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); margin: 0; padding: 0; color: var(--text-main); padding-bottom: 90px; transition: background 0.3s; }
         .max-width-container { max-width: 700px; margin: 0 auto; padding: 12px; }
         
-        /* Premium Header */
-        .premium-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0 20px 0; }
-        .app-logo { font-size: 20px; font-weight: 900; letter-spacing: -1px; }
-        .app-logo span { color: var(--accent-red); }
-        
-        /* Section Titles */
-        .section-title { font-size: 16px; font-weight: 800; margin: 20px 0 10px 0; padding-left: 5px; color: #fff; letter-spacing: 0.5px; }
+        .section-title { font-size: 16px; font-weight: 800; margin: 20px 0 10px 0; padding-left: 5px; color: var(--text-main); letter-spacing: 0.5px; }
 
-        /* Row 1: Live TV Channels (Circular Bubbles) */
+        /* Row 1: Live TV Circular Bubbles */
         .channel-row { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; padding-left: 5px; scrollbar-width: none; scroll-snap-type: x mandatory; }
         .channel-row::-webkit-scrollbar { display: none; }
         .channel-bubble { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 70px; scroll-snap-align: start; text-decoration: none; }
-        .channel-img-box { width: 64px; height: 64px; border-radius: 50%; background: #222; border: 2px solid #333; padding: 2px; position: relative; transition: transform 0.2s, border-color 0.2s; }
+        .channel-img-box { width: 64px; height: 64px; border-radius: 50%; background: #222; border: 2px solid #333; padding: 2px; position: relative; transition: transform 0.2s; }
         .channel-bubble:hover .channel-img-box { transform: scale(1.05); border-color: var(--accent-red); }
         .channel-img-box img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         .live-dot { position: absolute; bottom: 0; right: 5px; width: 12px; height: 12px; background: var(--accent-red); border-radius: 50%; border: 2px solid var(--bg-dark); animation: pulse 1.5s infinite; }
         .channel-name { font-size: 10px; font-weight: 600; color: var(--text-muted); text-align: center; }
 
-        /* Row 2: Big Cinematic Highlight Cards (16:9) */
+        /* Row 2: Big Cinematic Highlight Cards */
         .highlight-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 15px; padding-left: 5px; scrollbar-width: none; scroll-snap-type: x mandatory; }
         .highlight-row::-webkit-scrollbar { display: none; }
-        .highlight-card { position: relative; min-width: 280px; height: 160px; border-radius: 12px; overflow: hidden; scroll-snap-align: center; background: #111; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .highlight-card { position: relative; min-width: 280px; height: 160px; border-radius: 12px; overflow: hidden; scroll-snap-align: center; background: #111; box-shadow: 0 10px 20px rgba(0,0,0,0.5); text-decoration: none; color: white; display: block; }
         .highlight-card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: opacity 0.3s; }
         .highlight-card:hover img { opacity: 1; }
         .card-gradient { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 50%, transparent 100%); }
@@ -45,17 +39,18 @@
         .card-badge { background: var(--accent-red); color: white; font-size: 9px; font-weight: 800; padding: 3px 6px; border-radius: 4px; text-transform: uppercase; margin-bottom: 6px; display: inline-block; }
         .card-title { font-size: 14px; font-weight: 700; line-height: 1.3; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
 
-        /* Row 3: Standard News Grid / List */
+        /* Row 3: Standard News Cards */
         .standard-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 15px; padding-left: 5px; scrollbar-width: none; scroll-snap-type: x mandatory; }
         .standard-row::-webkit-scrollbar { display: none; }
-        .std-card { min-width: 160px; border-radius: 8px; overflow: hidden; background: var(--bg-surface); scroll-snap-align: start; }
+        .std-card { min-width: 160px; border-radius: 8px; overflow: hidden; background: var(--bg-surface); scroll-snap-align: start; text-decoration: none; border: 1px solid #1f2433; display: block; }
         .std-card img { width: 100%; height: 90px; object-fit: cover; }
         .std-info { padding: 10px; }
-        .std-title { font-size: 12px; font-weight: 600; color: #e5e5e5; line-height: 1.4; margin-bottom: 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .std-title { font-size: 12px; font-weight: 600; color: var(--text-main); line-height: 1.4; margin-bottom: 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .std-meta { font-size: 10px; color: var(--text-muted); }
 
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(229, 9, 20, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(229, 9, 20, 0); } 100% { box-shadow: 0 0 0 0 rgba(229, 9, 20, 0); } }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="components.js" defer></script>
 </head>
 <body>
@@ -63,120 +58,97 @@
         
         <city-header></city-header>
 
-        <div class="premium-header">
-            <div class="app-logo">CityPulse<span>.</span>TV</div>
-            <div style="font-size: 12px; font-weight: 600; color: var(--text-muted); background: #1a1a1a; padding: 6px 12px; border-radius: 20px;">Live Network</div>
+        <!-- ROW 1: LIVE CHANNELS -->
+        <div class="section-title">🔴 Live Channels Network</div>
+        <div class="channel-row" id="liveChannelsRow">
+            <p style="color: var(--text-muted); font-size: 12px;">Fetching TV signals...</p>
         </div>
 
-        <!-- ROW 1: LIVE CHANNELS (JioTV Style) -->
-        <div class="section-title">🔴 Live Channels</div>
-        <div class="channel-row">
-            <a href="#" class="channel-bubble">
-                <div class="channel-img-box">
-                    <!-- Placeholder HD Logo for Aaj Tak -->
-                    <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=150&q=80" alt="News">
-                    <div class="live-dot"></div>
-                </div>
-                <div class="channel-name">Aaj Tak</div>
-            </a>
-            <a href="#" class="channel-bubble">
-                <div class="channel-img-box">
-                    <img src="https://images.unsplash.com/photo-1585241936939-f9c34d3d7515?w=150&q=80" alt="News">
-                    <div class="live-dot"></div>
-                </div>
-                <div class="channel-name">Zee News</div>
-            </a>
-            <a href="#" class="channel-bubble">
-                <div class="channel-img-box">
-                    <img src="https://images.unsplash.com/photo-1495020689067-958852a7765e?w=150&q=80" alt="News">
-                    <div class="live-dot"></div>
-                </div>
-                <div class="channel-name">Local TV</div>
-            </a>
-            <a href="#" class="channel-bubble">
-                <div class="channel-img-box">
-                    <img src="https://images.unsplash.com/photo-1521737451536-00a86f630f3e?w=150&q=80" alt="News">
-                </div>
-                <div class="channel-name">NDTV</div>
-            </a>
-            <a href="#" class="channel-bubble">
-                <div class="channel-img-box">
-                    <img src="https://images.unsplash.com/photo-1557683316-973673baf926?w=150&q=80" alt="News">
-                </div>
-                <div class="channel-name">Sports</div>
-            </a>
-        </div>
-
-        <!-- ROW 2: TOP HEADLINES (Netflix/Hotstar Style Big Cards) -->
+        <!-- ROW 2: TOP HEADLINES -->
         <div class="section-title">⚡ Top Headlines</div>
-        <div class="highlight-row">
-            <div class="highlight-card">
-                <!-- HD Image Placeholder -->
-                <img src="https://images.unsplash.com/photo-1529243856184-fd5f1ef3b589?w=600&q=80" alt="News">
-                <div class="card-gradient"></div>
-                <div class="card-content">
-                    <div class="card-badge">Breaking</div>
-                    <h3 class="card-title">Major Policy Change Announced for Local Businesses in West Bengal</h3>
-                </div>
-            </div>
-            <div class="highlight-card">
-                <img src="https://images.unsplash.com/photo-1541872703864-f65520a7d976?w=600&q=80" alt="News">
-                <div class="card-gradient"></div>
-                <div class="card-content">
-                    <div class="card-badge" style="background: #2563eb;">Politics</div>
-                    <h3 class="card-title">Elections 2026: Live Ground Report from Bhatpara Zone</h3>
-                </div>
-            </div>
+        <div class="highlight-row" id="headlinesRow">
+            <p style="color: var(--text-muted); font-size: 12px;">Loading latest news...</p>
         </div>
 
-        <!-- ROW 3: LOCAL CRIME & REPORTS -->
-        <div class="section-title">🚨 Local Crime & Reports</div>
-        <div class="standard-row">
-            <div class="std-card">
-                <img src="https://images.unsplash.com/photo-1588689531584-c8c381c856be?w=300&q=80" alt="Crime">
-                <div class="std-info">
-                    <div class="std-title">Traffic Diversion at Barrackpore Main Road due to construction</div>
-                    <div class="std-meta">2 hours ago • Local</div>
-                </div>
-            </div>
-            <div class="std-card">
-                <img src="https://images.unsplash.com/photo-1525904838618-5a417af7fb96?w=300&q=80" alt="Alert">
-                <div class="std-info">
-                    <div class="std-title">Cyber Fraud Alert: New scam targeting local bank accounts</div>
-                    <div class="std-meta">5 hours ago • Alert</div>
-                </div>
-            </div>
-            <div class="std-card">
-                <img src="https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?w=300&q=80" alt="Alert">
-                <div class="std-info">
-                    <div class="std-title">Police conduct night patrols across North 24 Parganas</div>
-                    <div class="std-meta">8 hours ago • Crime</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ROW 4: ENTERTAINMENT & SHOWS -->
-        <div class="section-title">🍿 Entertainment & Shows</div>
-        <div class="highlight-row">
-            <div class="highlight-card" style="height: 130px; min-width: 220px;">
-                <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500&q=80" alt="Movie">
-                <div class="card-gradient"></div>
-                <div class="card-content">
-                    <div class="card-badge" style="background: #8b5cf6;">Web Series</div>
-                    <h3 class="card-title">New Releases this Weekend</h3>
-                </div>
-            </div>
-            <div class="highlight-card" style="height: 130px; min-width: 220px;">
-                <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500&q=80" alt="Music">
-                <div class="card-gradient"></div>
-                <div class="card-content">
-                    <div class="card-badge" style="background: #ec4899;">Music</div>
-                    <h3 class="card-title">Top 10 Indie Artists of 2026</h3>
-                </div>
-            </div>
+        <!-- ROW 3: STANDARD NEWS & CRIME -->
+        <div class="section-title">📰 Local Updates & Reports</div>
+        <div class="standard-row" id="standardNewsRow">
+            <p style="color: var(--text-muted); font-size: 12px;">Gathering ground reports...</p>
         </div>
 
         <bottom-nav></bottom-nav>
     </div>
+
+    <script>
+        const supabaseUrl = 'https://qfefkyrwxdhdxyajutst.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmZWZreXJ3eGRoZHh5YWp1dHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMjY0ODcsImV4cCI6MjEwMjgwMjQ4N30.lmnKyvigM5JeVf1y_BR0tjqAp4PiXioZNcCE5VVYsKg';
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        async function loadFeedData() {
+            const { data } = await supabaseClient.from('media_hub').select('*').eq('status', 'active').order('created_at', { ascending: false });
+            if(!data) return;
+
+            // Helper to parse JSON safely
+            const parseLocation = (str) => {
+                try { return JSON.parse(str); } catch(e) { return { badge: '', image: '', desc: '', link: str || '#' }; }
+            };
+
+            // 1. Live Bubbles
+            const liveItems = data.filter(i => i.category === 'Feed_LiveBubble');
+            const liveRow = document.getElementById('liveChannelsRow');
+            if(liveItems.length > 0) {
+                liveRow.innerHTML = liveItems.map(item => {
+                    const p = parseLocation(item.location);
+                    return `
+                        <a href="${p.link}" target="_blank" class="channel-bubble">
+                            <div class="channel-img-box">
+                                <img src="${p.image || 'https://images.unsplash.com/photo-1521737451536-00a86f630f3e?w=150&q=80'}" alt="Logo">
+                                ${p.badge ? `<div class="live-dot"></div>` : ''}
+                            </div>
+                            <div class="channel-name">${item.title}</div>
+                        </a>
+                    `;
+                }).join('');
+            } else { liveRow.innerHTML = ''; }
+
+            // 2. Headlines
+            const headlineItems = data.filter(i => i.category === 'Feed_Headline');
+            const headlineRow = document.getElementById('headlinesRow');
+            if(headlineItems.length > 0) {
+                headlineRow.innerHTML = headlineItems.map(item => {
+                    const p = parseLocation(item.location);
+                    return `
+                        <a href="${p.link}" target="_blank" class="highlight-card">
+                            <img src="${p.image || 'https://images.unsplash.com/photo-1529243856184-fd5f1ef3b589?w=600&q=80'}" alt="News">
+                            <div class="card-gradient"></div>
+                            <div class="card-content">
+                                ${p.badge ? `<div class="card-badge">${p.badge}</div>` : ''}
+                                <h3 class="card-title">${item.title}</h3>
+                            </div>
+                        </a>
+                    `;
+                }).join('');
+            } else { headlineRow.innerHTML = ''; }
+
+            // 3. Standard News
+            const standardItems = data.filter(i => i.category === 'News_Standard');
+            const stdRow = document.getElementById('standardNewsRow');
+            if(standardItems.length > 0) {
+                stdRow.innerHTML = standardItems.map(item => {
+                    const p = parseLocation(item.location);
+                    return `
+                        <a href="${p.link}" target="_blank" class="std-card">
+                            <img src="${p.image || 'https://images.unsplash.com/photo-1588689531584-c8c381c856be?w=300&q=80'}" alt="Thumb">
+                            <div class="std-info">
+                                <div class="std-title">${item.title}</div>
+                                <div class="std-meta">${p.badge || 'News'} • Just now</div>
+                            </div>
+                        </a>
+                    `;
+                }).join('');
+            } else { stdRow.innerHTML = ''; }
+        }
+        loadFeedData();
+    </script>
 </body>
 </html>
