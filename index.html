@@ -4,105 +4,121 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CityPulse - India's Next-Gen Super App</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #090a0f;
-            --card-bg: #131620;
-            --card-border: #1f2433;
-            --accent-red: #ef4444;
-            --accent-glow: rgba(239, 68, 68, 0.15);
-            --text-main: #f8fafc;
+            --bg-color: #07090e;
+            --card-bg: linear-gradient(145deg, #131824, #0d111a);
+            --card-border: #222b3d;
+            --accent-red: #ff2a2a;
+            --accent-glow: rgba(255, 42, 42, 0.25);
+            --text-main: #ffffff;
             --text-muted: #94a3b8;
         }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); margin: 0; padding: 12px; color: var(--text-main); padding-bottom: 80px; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); margin: 0; padding: 12px; color: var(--text-main); padding-bottom: 90px; }
         .max-width-container { max-width: 700px; margin: 0 auto; }
         
-        /* Top Header Styling */
-        .app-header { background: var(--card-bg); padding: 14px 16px; border-radius: 16px; border: 1px solid var(--card-border); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
-        
         /* Live Ticker */
-        .ticker { background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(15,23,42,0.6)); border: 1px solid rgba(239,68,68,0.3); padding: 10px 14px; border-radius: 12px; font-size: 12px; font-weight: 700; color: #fca5a5; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+        .ticker { background: linear-gradient(90deg, rgba(255,42,42,0.15), rgba(13,17,26,0.8)); border: 1px solid rgba(255,42,42,0.3); padding: 10px 14px; border-radius: 12px; font-size: 12px; font-weight: 700; color: #ff8080; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 20px rgba(255,42,42,0.1); }
         
-        /* Hero Live Player Section (Local News Hero) */
-        .hero-section { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 14px; margin-bottom: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .hero-title-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .live-badge { background: var(--accent-red); color: white; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.5px; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
-        
-        .video-container { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; border-radius: 12px; overflow: hidden; border: 1px solid var(--card-border); }
-        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; object-fit: cover; }
-
         /* Section Headings */
-        .section-title { font-weight: 800; font-size: 15px; margin-bottom: 12px; color: var(--text-main); display: flex; align-items: center; gap: 6px; }
+        .section-title { font-weight: 800; font-size: 15px; margin: 22px 0 12px 0; color: var(--text-main); display: flex; align-items: center; gap: 8px; letter-spacing: 0.3px; }
 
-        /* Horizontal Scrolling Cards */
-        .hero-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 22px; scrollbar-width: none; }
+        /* TOP SCROLLABLE HERO CAROUSEL (Local FB Channels & Live Streams) */
+        .hero-carousel { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; scroll-snap-type: x mandatory; }
+        .hero-carousel::-webkit-scrollbar { display: none; }
+        .channel-card { min-width: 290px; height: 170px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; overflow: hidden; position: relative; scroll-snap-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.6); flex-shrink: 0; display: flex; flex-direction: column; justify-content: flex-end; }
+        .channel-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.65; transition: transform 0.3s; }
+        .channel-card:hover img { transform: scale(1.05); }
+        .channel-gradient { position: absolute; inset: 0; background: linear-gradient(to top, rgba(7,9,14,0.95) 10%, rgba(7,9,14,0.2) 70%, transparent 100%); }
+        .channel-info { position: relative; padding: 14px; z-index: 2; }
+        .fb-live-badge { background: #1877f2; color: white; font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 6px; text-transform: uppercase; box-shadow: 0 2px 10px rgba(24,119,242,0.4); }
+
+        /* AUTO-SCROLLING LOCAL AD BANNER */
+        .auto-ad-box { background: linear-gradient(135deg, #1e1b4b, #0f172a); border: 1px solid #3b82f6; padding: 12px 16px; border-radius: 14px; margin: 20px 0; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 8px 25px rgba(59,130,246,0.2); position: relative; overflow: hidden; }
+        .ad-badge { background: #f59e0b; color: #000; font-size: 9px; font-weight: 900; padding: 3px 6px; border-radius: 4px; text-transform: uppercase; }
+        
+        /* Quick Horizontal Story Highlights */
+        .hero-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
         .hero-scroll::-webkit-scrollbar { display: none; }
-        .story-card { min-width: 140px; height: 110px; background: linear-gradient(145deg, #1e2330, #131620); border: 1px solid var(--card-border); border-radius: 14px; padding: 12px; color: white; display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0; text-decoration: none; transition: transform 0.2s, border-color 0.2s; }
-        .story-card:hover { transform: translateY(-3px); border-color: #3b82f6; }
+        .story-card { min-width: 130px; height: 100px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; padding: 12px; color: white; display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0; text-decoration: none; transition: all 0.2s; }
+        .story-card:hover { transform: translateY(-3px); border-color: var(--accent-red); box-shadow: 0 5px 20px var(--accent-glow); }
 
         /* Core Portals Grid */
         .grid-section { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
-        .grid-box { background: var(--card-bg); border: 1px solid var(--card-border); padding: 18px; border-radius: 16px; text-decoration: none; color: inherit; box-shadow: 0 4px 20px rgba(0,0,0,0.3); transition: all 0.2s; position: relative; overflow: hidden; }
-        .grid-box:hover { transform: translateY(-3px); border-color: #475569; background: #181d2a; }
+        .grid-box { background: var(--card-bg); border: 1px solid var(--card-border); padding: 18px; border-radius: 16px; text-decoration: none; color: inherit; box-shadow: 0 6px 20px rgba(0,0,0,0.4); transition: all 0.2s; position: relative; overflow: hidden; }
+        .grid-box:hover { transform: translateY(-3px); border-color: #475569; }
         .grid-box::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; }
-        .grid-box.news::before { background: #ef4444; }
+        .grid-box.news::before { background: #ff2a2a; }
         .grid-box.entertainment::before { background: #8b5cf6; }
         .grid-box.civic::before { background: #10b981; }
-        .grid-box.market::before { background: #f59e0b; }
     </style>
     <script src="components.js" defer></script>
 </head>
 <body>
     <div class="max-width-container">
         <!-- Cinematic Header -->
-        <div class="app-header">
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <div style="background: rgba(59,130,246,0.15); padding: 8px; border-radius: 10px; font-size: 14px;">📍</div>
-                <div>
-                    <div style="font-size: 9px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px;">LOCATION HUB</div>
-                    <div style="font-size: 12px; font-weight: 800; color: #fff;">Bhatpara, WB ▾</div>
-                </div>
-            </div>
-            <div style="text-align: center;">
-                <h1 style="margin: 0; color: #fff; font-size: 16px; font-weight: 900; letter-spacing: -0.5px;">CityPulse <span style="color: var(--accent-red);">⚡</span></h1>
-            </div>
-            <div>
-                <a href="profile.html" style="text-decoration: none; background: rgba(245,158,11,0.15); color: #fbbf24; padding: 6px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; border: 1px solid rgba(245,158,11,0.3);">
-                    ❤️ Saved
-                </a>
-            </div>
-        </div>
+        <city-header></city-header>
 
         <!-- Breaking News Ticker -->
         <div class="ticker">
-            <span style="background: var(--accent-red); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px;">LIVE</span> 
-            <marquee scrollamount="4">CityPulse Local Ground Network active! Hyper-local reporting, live streams & jan shikayat portal online.</marquee>
+            <span style="background: var(--accent-red); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight:800;">LIVE</span> 
+            <marquee scrollamount="4">CityPulse Local Ground Network active! Local Facebook Channels & Live Feeds now streaming live on Home.</marquee>
         </div>
 
-        <!-- FEATURED LOCAL NEWS HERO PLAYER (The Game Changer) -->
-        <div class="hero-section">
-            <div class="hero-title-bar">
-                <div style="display:flex; align-items:center; gap:6px;">
-                    <span style="font-size:16px;">🔴</span>
-                    <span style="font-size:14px; font-weight:800; color:#fff;">Hyper-Local Live & Top Stories</span>
+        <!-- TOP SCROLLABLE HERO CAROUSEL (Local FB Official Pages & Live Streams) -->
+        <div class="section-title">🔴 Local Channels & FB Live Streams</div>
+        <div class="hero-carousel">
+            <!-- Channel 1 -->
+            <div class="channel-card">
+                <img src="https://images.unsplash.com/photo-1585241936939-f9c34d3d7515?w=600&q=80" alt="Bhatpara Live">
+                <div class="channel-gradient"></div>
+                <div class="channel-info">
+                    <span class="fb-live-badge">🔵 FB Live / Official</span>
+                    <div style="font-size: 15px; font-weight: 800; color: #fff;">Bhatpara Khabar Official</div>
+                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Live Ground Reporting & Updates</div>
                 </div>
-                <span class="live-badge">GROUND ZERO</span>
             </div>
-            <div class="video-container" id="heroPlayerBox">
-                <!-- Default embedded high-impact local news live stream / top story -->
-                <iframe src="https://www.youtube.com/embed/live_stream?channel=UCupvZG-5ko_eiXAupbDfxWw" title="Local Live News" allowfullscreen></iframe>
+            <!-- Channel 2 -->
+            <div class="channel-card">
+                <img src="https://images.unsplash.com/photo-1541872703864-f65520a7d976?w=600&q=80" alt="Barrackpore Media">
+                <div class="channel-gradient"></div>
+                <div class="channel-info">
+                    <span class="fb-live-badge">🔵 FB Page Stream</span>
+                    <div style="font-size: 15px; font-weight: 800; color: #fff;">Barrackpore Voice 24x7</div>
+                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Local News & Public Debates</div>
+                </div>
             </div>
-            <div style="margin-top: 10px; font-size: 13px; font-weight: 700; color: #e2e8f0;">Bhatpara & Barrackpore Zone Live Coverage: Ground reporting & breaking updates.</div>
+            <!-- Channel 3 -->
+            <div class="channel-card">
+                <img src="https://images.unsplash.com/photo-1529243856184-fd5f1ef3b589?w=600&q=80" alt="North 24 Parganas">
+                <div class="channel-gradient"></div>
+                <div class="channel-info">
+                    <span class="fb-live-badge">🔵 Verified FB Channel</span>
+                    <div style="font-size: 15px; font-weight: 800; color: #fff;">North 24 Parganas Updates</div>
+                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">District Special Coverage</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AUTO-SCROLLING LOCAL AD BANNER -->
+        <div class="auto-ad-box">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="ad-badge">SPONSORED</span>
+                <div>
+                    <div style="font-weight: 800; font-size: 13px; color: #fff;">📢 Bhatpara Mega Mart: Grand Opening Sale!</div>
+                    <div style="font-size: 11px; color: #93c5fd; margin-top: 2px;">Flat 50% off on all local electronics & groceries. Visit today!</div>
+                </div>
+            </div>
+            <div style="background: #3b82f6; color: white; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; white-space: nowrap; cursor: pointer;">View</div>
         </div>
 
         <!-- Quick Horizontal Highlights -->
-        <div class="section-title">⚡ Quick Access Channels</div>
+        <div class="section-title">⚡ Quick Access Portals</div>
         <div class="hero-scroll">
-            <a href="feed.html?cat=news" class="story-card" style="border-left: 3px solid #ef4444;">
+            <a href="feed.html?cat=news" class="story-card" style="border-left: 3px solid #ff2a2a;">
                 <span style="font-size: 22px;">📰</span>
-                <div><div style="font-size: 13px; font-weight: 700;">News Network</div><span style="font-size: 10px; color: var(--text-muted);">12+ Categories</span></div>
+                <div><div style="font-size: 13px; font-weight: 700;">News Feed</div><span style="font-size: 10px; color: var(--text-muted);">12+ Categories</span></div>
             </a>
             <a href="feed.html?cat=entertainment" class="story-card" style="border-left: 3px solid #8b5cf6;">
                 <span style="font-size: 22px;">🍿</span>
@@ -134,6 +150,7 @@
             </a>
         </div>
 
+        <!-- Bottom Navigation -->
         <bottom-nav></bottom-nav>
     </div>
 </body>
