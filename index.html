@@ -3,137 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityPulse - Digital Media Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <title>CityPulse - Super App Gateway</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; padding: 15px; color: #1e293b; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; padding: 12px; color: #1e293b; padding-bottom: 70px; }
         .max-width-container { max-width: 700px; margin: 0 auto; }
         
-        /* Auth Bar */
-        .auth-bar { background: #ffffff; padding: 12px 16px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #e2e8f0; font-size: 13px; }
-        .auth-section { display: none; margin-top: 10px; text-align: center; background: #fff; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
-        .google-btn { background: #ffffff; color: #374151; border: 1px solid #cbd5e1; padding: 10px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); width: 100%; justify-content: center; }
-        .google-btn:hover { background: #f8fafc; }
-
-        .auth-btn { background: #2563eb; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; }
-        .logout-btn { background: #fee2e2; color: #dc2626; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; }
-
-        /* Gateway Cards (Navigation Hub) */
-        .hub-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 15px; }
-        .hub-card { background: #ffffff; border: 1px solid #e2e8f0; padding: 20px; border-radius: 16px; text-decoration: none; color: inherit; box-shadow: 0 4px 6px rgba(0,0,0,0.03); transition: transform 0.2s, box-shadow 0.2s; display: flex; align-items: center; gap: 16px; }
-        .hub-card:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.06); }
+        /* Breaking News Ticker */
+        .ticker { background: #fee2e2; border: 1px solid #fca5a5; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; color: #991b1b; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
         
-        .hub-icon { font-size: 32px; background: #f1f5f9; padding: 14px; border-radius: 12px; }
-        .hub-info h3 { margin: 0 0 4px 0; font-size: 18px; color: #0f172a; }
-        .hub-info p { margin: 0; font-size: 13px; color: #64748b; }
+        /* Horizontal Scrolling Hero Highlights */
+        .hero-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; scrollbar-width: none; }
+        .hero-scroll::-webkit-scrollbar { display: none; }
+        .hero-card { min-width: 150px; height: 90px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 12px; padding: 12px; color: white; display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0; box-shadow: 0 4px 6px rgba(37,99,235,0.2); text-decoration: none; }
+        .hero-card.purple { background: linear-gradient(135deg, #7c3aed, #6d28d9); box-shadow: 0 4px 6px rgba(124,58,237,0.2); }
+        .hero-card.green { background: linear-gradient(135deg, #059669, #047857); box-shadow: 0 4px 6px rgba(5,150,105,0.2); }
 
-        .news-theme { border-left: 6px solid #dc2626; }
-        .ent-theme { border-left: 6px solid #7c3aed; }
-        .cartoon-theme { border-left: 6px solid #2563eb; }
+        /* Grid Categories */
+        .grid-section { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .grid-box { background: white; border: 1px solid #e2e8f0; padding: 18px; border-radius: 14px; text-decoration: none; color: inherit; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: transform 0.2s; }
+        .grid-box:hover { transform: translateY(-2px); }
     </style>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="components.js" defer></script>
 </head>
 <body>
-
     <div class="max-width-container">
-        <!-- Reusable Header Component -->
         <city-header></city-header>
 
-        <!-- Auth Bar -->
-        <div class="auth-bar" id="authBarContainer">
-            <div>
-                <span id="userStatusText" style="font-weight: 600; color: #475569;">Checking session...</span>
-            </div>
-            <div>
-                <button class="auth-btn" id="mainAuthToggleBtn" onclick="toggleAuthForm()">🌐 Login Options</button>
-                <button class="logout-btn" id="logoutBtn" style="display:none;" onclick="logoutUser()">Logout</button>
-            </div>
+        <!-- Breaking Ticker -->
+        <div class="ticker">
+            <span>🔥 LIVE:</span> 
+            <marquee scrollamount="4">CityPulse Super App live ho chuka hai! Apne local ward ki khabrein aur entertainment ab ek click par.</marquee>
         </div>
 
-        <div id="authFormSection" class="auth-section">
-            <p style="font-size: 13px; color: #64748b; margin-top:0; margin-bottom: 12px;">Apne Google account se ek click mein login karein:</p>
-            <button class="google-btn" onclick="loginWithGoogle()">
-                <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.15C3.17 21.32 7.23 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.6H1.18C.43 8.12 0 9.99 0 12s.43 3.88 1.18 5.4l4.09-3.16z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.17 2.68 1.18 6.6l4.09 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
-                Sign in with Google
-            </button>
-        </div>
-
-        <!-- Gateway Hub Navigation Cards -->
-        <div style="font-weight: 700; font-size: 16px; color: #0f172a; margin-bottom: 5px;">📍 Select Category / Portal</div>
-        <div style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Aap kis section mein jana chahte hain? Neeche select karein:</div>
-
-        <div class="hub-grid">
-            <a href="news.html" class="hub-card news-theme">
-                <div class="hub-icon">📰</div>
-                <div class="hub-info">
-                    <h3>City News & Live Updates</h3>
-                    <p>Local reporting, breaking news, aur live news channels dekhein.</p>
-                </div>
+        <!-- Horizontal Hero Highlights -->
+        <div style="font-weight: 800; font-size: 15px; margin-bottom: 8px; color: #0f172a;">⚡ Trending & New Features</div>
+        <div class="hero-scroll">
+            <a href="news.html" class="hero-card">
+                <span style="font-size: 20px;">📰</span>
+                <div><div style="font-size: 13px; font-weight: 700;">Breaking News</div><span style="font-size: 10px; opacity: 0.8;">Live updates</span></div>
             </a>
-
-            <a href="entertainment.html" class="hub-card ent-theme">
-                <div class="hub-icon">🎬</div>
-                <div class="hub-info">
-                    <h3>Entertainment & Movies</h3>
-                    <p>Movies, music, comedy, aur viral entertainment shows.</p>
-                </div>
+            <a href="entertainment.html" class="hero-card purple">
+                <span style="font-size: 20px;">🍿</span>
+                <div><div style="font-size: 13px; font-weight: 700;">Blockbuster Movies</div><span style="font-size: 10px; opacity: 0.8;">Watch free</span></div>
+            </a>
+            <a href="entertainment.html" class="hero-card green">
+                <span style="font-size: 20px;">🎨</span>
+                <div><div style="font-size: 13px; font-weight: 700;">Kids Cartoons</div><span style="font-size: 10px; opacity: 0.8;">Safe zone</span></div>
             </a>
         </div>
+
+        <!-- Category Grid Boxes -->
+        <div style="font-weight: 800; font-size: 15px; margin-bottom: 8px; color: #0f172a;">📂 Core Portals & Services</div>
+        <div class="grid-section">
+            <a href="news.html" class="grid-box" style="border-left: 5px solid #dc2626;">
+                <div style="font-size: 24px; margin-bottom: 6px;">📰</div>
+                <div style="font-weight: 700; font-size: 15px;">News & Media</div>
+                <div style="font-size: 12px; color: #64748b; margin-top: 2px;">Live TV, Crime, Sports, Business</div>
+            </a>
+            <a href="entertainment.html" class="grid-box" style="border-left: 5px solid #7c3aed;">
+                <div style="font-size: 24px; margin-bottom: 6px;">🎬</div>
+                <div style="font-weight: 700; font-size: 15px;">Entertainment</div>
+                <div style="font-size: 12px; color: #64748b; margin-top: 2px;">Shows, Movies, Cartoons</div>
+            </a>
+        </div>
+
+        <bottom-nav></bottom-nav>
     </div>
-
-    <script>
-        const SUPABASE_URL = 'https://qfefkyrwxdhdxyajutst.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmZWZreXJ3eGRoZHh5YWp1dHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMjY0ODcsImV4cCI6MjEwMjgwMjQ4N30.lmnKyvigM5JeVf1y_BR0tjqAp4PiXioZNcCE5VVYsKg';
-        
-        const localSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        let currentUser = null;
-
-        async function checkUserSession() {
-            const { data: { session } } = await localSupabase.auth.getSession();
-            currentUser = session ? session.user : null;
-            updateAuthUI();
-        }
-
-        function updateAuthUI() {
-            const statusText = document.getElementById('userStatusText');
-            const mainBtn = document.getElementById('mainAuthToggleBtn');
-            const logoutBtn = document.getElementById('logoutBtn');
-
-            if (currentUser) {
-                statusText.innerHTML = `👤 Logged in: <b style="color:#2563eb;">${currentUser.email}</b>`;
-                mainBtn.style.display = 'none';
-                logoutBtn.style.display = 'inline-block';
-                document.getElementById('authFormSection').style.display = 'none';
-            } else {
-                statusText.innerHTML = `⚠️ Guest Mode`;
-                mainBtn.style.display = 'inline-block';
-                logoutBtn.style.display = 'none';
-            }
-        }
-
-        function toggleAuthForm() {
-            const form = document.getElementById('authFormSection');
-            form.style.display = form.style.display === 'block' ? 'none' : 'block';
-        }
-
-        async function loginWithGoogle() {
-            const { error } = await localSupabase.auth.signInWithOAuth({
-                provider: 'google',
-                options: { redirectTo: window.location.href }
-            });
-            if (error) alert('Google Login Error: ' + error.message);
-        }
-
-        async function logoutUser() {
-            await localSupabase.auth.signOut();
-            currentUser = null;
-            updateAuthUI();
-        }
-
-        checkUserSession();
-    </script>
 </body>
 </html>
