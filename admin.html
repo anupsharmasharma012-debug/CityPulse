@@ -3,68 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityPulse - Master Enterprise Admin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>CityPulse - Master Control Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; margin: 0; padding: 15px; color: #1e293b; }
+        :root {
+            --bg-dark: #07090e;
+            --card-bg: #131824;
+            --card-border: #222b3d;
+            --accent: #3b82f6;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); margin: 0; padding: 15px; color: var(--text-main); }
         .max-container { max-width: 750px; margin: 0 auto; }
-        .card { background: white; border: 1px solid #e2e8f0; padding: 20px; border-radius: 14px; margin-bottom: 18px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; margin-top: 5px; margin-bottom: 14px; box-sizing: border-box; background: #f8fafc; font-family: inherit; }
-        .btn { background: #0f172a; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; }
-        .btn:hover { background: #1e293b; }
-        .admin-item { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #e2e8f0; }
-        .badge { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; background: #dbeafe; color: #1e40af; }
+        .header-box { background: linear-gradient(135deg, #1e1b4b, #0f172a); border: 1px solid var(--accent); padding: 20px; border-radius: 16px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(59,130,246,0.2); }
+        
+        .card { background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        
+        label { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 5px; display: block; text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid var(--card-border); border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; background: #0b0e14; color: #fff; font-family: inherit; font-size: 14px; transition: border 0.2s; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+        
+        .btn { background: var(--accent); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 800; cursor: pointer; width: 100%; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.2s; }
+        .btn:hover { background: #2563eb; }
+        
+        .admin-item { display: flex; justify-content: space-between; align-items: center; background: #0b0e14; padding: 14px; border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--card-border); }
+        .badge { font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 4px; background: #1e3a8a; color: #93c5fd; text-transform: uppercase; }
+        .action-btn { padding: 6px 12px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 11px; text-transform: uppercase; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="max-container">
-        <div class="card" style="text-align: center; background: #0f172a; color: white;">
-            <h2 style="margin:0;">🎛️ CityPulse Enterprise Admin</h2>
-            <p style="margin: 5px 0 0; font-size: 12px; color: #94a3b8;">Manage Network Content, YouTube/FB Embeds & Ads</p>
+        <div class="header-box">
+            <h2 style="margin:0; font-weight: 900; font-size: 22px;">🎛️ CityPulse Master Backend</h2>
+            <p style="margin: 5px 0 0; font-size: 12px; color: #93c5fd;">Manage FB Live, JioTV Channels, Ads & Headlines</p>
         </div>
 
         <div class="card">
-            <h3 style="margin-top:0;">➕ Add New Portal Content / Ad</h3>
-            <label><b>Target Category:</b></label>
+            <h3 style="margin-top:0; border-bottom: 1px solid var(--card-border); padding-bottom: 10px;">➕ Add / Edit Content</h3>
+            
+            <input type="hidden" id="editId" value="">
+
+            <label>1. Content Placement (Kahan dikhana hai?)</label>
             <select id="itemCategory">
-                <optgroup label="📢 Advertisement">
-                    <option value="Ad_Banner">Global Ad Banner</option>
+                <optgroup label="🏠 Home Page Elements">
+                    <option value="Home_HeroFB">🔴 Top FB Live / Local Channel Carousel</option>
+                    <option value="Home_AdBanner">📢 Local Sponsored Ad Banner</option>
                 </optgroup>
-                <optgroup label="📰 News & Media Categories">
-                    <option value="News_Live">📺 Live TV News</option>
-                    <option value="News_Headlines">⚡ Top Headlines</option>
-                    <option value="News_Local">📍 Hyper-Local (Ward/District)</option>
-                    <option value="News_National">🏛️ State & National</option>
-                    <option value="News_Politics">⚖️ Politics</option>
-                    <option value="News_Crime">🚨 Crime & Traffic Alerts</option>
-                    <option value="News_Business">📈 Business & Market</option>
-                    <option value="News_Sports">🏆 Sports & Events</option>
-                    <option value="News_World">🌍 World News</option>
-                    <option value="News_Science">🔬 Science & Environment</option>
-                    <option value="News_FactCheck">✅ Fact Check & Rumors</option>
-                    <option value="News_Reels">📸 Photo & Video News / Reels</option>
-                </optgroup>
-                <optgroup label="🎬 Entertainment Categories">
-                    <option value="Ent_Movies">🍿 Movies</option>
-                    <option value="Ent_Shows">📺 Web Shows</option>
-                    <option value="Ent_Cartoon">🎨 Kids Cartoons</option>
+                <optgroup label="📺 Media Feed Elements (JioTV Style)">
+                    <option value="Feed_LiveBubble">⚪ Live TV Round Channel Logo (Top Row)</option>
+                    <option value="Feed_Headline">⚡ Big Cinematic Headline (16:9 Card)</option>
+                    <option value="News_Standard">📰 Standard News/Crime Card</option>
                 </optgroup>
             </select>
             
-            <label><b>Title / Headline:</b></label>
-            <input type="text" id="itemTitle" placeholder="e.g. Breaking News: Local Update...">
+            <label>2. Main Title / Channel Name</label>
+            <input type="text" id="itemTitle" placeholder="e.g. Bhatpara Live Official / Breaking News Title">
             
-            <label><b>Embed Code (YouTube iframe / Facebook video embed / Ad Image):</b></label>
-            <textarea id="itemLocation" rows="3" placeholder='<iframe width="100%" height="315" src="..." frameborder="0" allowfullscreen></iframe>'></textarea>
+            <label>3. Subtitle / Description (Choti Detail)</label>
+            <input type="text" id="itemDesc" placeholder="e.g. Live Ground Reporting / Flat 50% Off">
+
+            <label>4. Tag / Badge (Upar dikhne wala label)</label>
+            <input type="text" id="itemBadge" placeholder="e.g. FB LIVE / SPONSORED / CRIME">
+
+            <label>5. HD Image / Logo URL (HD Photo ka link)</label>
+            <input type="text" id="itemImage" placeholder="https://images.unsplash.com/...">
             
-            <button class="btn" onclick="publishContent()">🚀 Publish to Network</button>
-            <p id="msg" style="text-align:center; font-weight:700; font-size:13px; margin-top:10px;"></p>
+            <label>6. Video Embed Code or Action Link (Facebook/YouTube Link)</label>
+            <textarea id="itemLink" rows="2" placeholder='<iframe src="..."></iframe> OR https://facebook.com/...'></textarea>
+            
+            <button class="btn" onclick="saveContent()" id="submitBtn">🚀 Publish Live</button>
+            <p id="msg" style="text-align:center; font-weight:700; font-size:13px; margin-top:12px;"></p>
         </div>
 
         <div class="card">
-            <h3 style="margin-top:0;">📋 Live Network Manager</h3>
-            <div id="adminList">Loading items...</div>
+            <h3 style="margin-top:0; border-bottom: 1px solid var(--card-border); padding-bottom: 10px;">📋 Live Network Manager (Edit/Delete/Hide)</h3>
+            <div id="adminList">Loading database...</div>
         </div>
     </div>
 
@@ -73,25 +88,74 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmZWZreXJ3eGRoZHh5YWp1dHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMjY0ODcsImV4cCI6MjEwMjgwMjQ4N30.lmnKyvigM5JeVf1y_BR0tjqAp4PiXioZNcCE5VVYsKg';
         const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        async function publishContent() {
+        async function saveContent() {
+            const editId = document.getElementById('editId').value;
             const category = document.getElementById('itemCategory').value;
             const title = document.getElementById('itemTitle').value.trim();
-            const location = document.getElementById('itemLocation').value.trim();
+            const desc = document.getElementById('itemDesc').value.trim();
+            const badge = document.getElementById('itemBadge').value.trim();
+            const image = document.getElementById('itemImage').value.trim();
+            const link = document.getElementById('itemLink').value.trim();
             const msg = document.getElementById('msg');
             
-            if(!title || !location) return msg.innerText = '⚠️ Please saare fields bhariye!';
+            if(!title) return msg.innerHTML = '<span style="color:#ef4444;">⚠️ Title is mandatory!</span>';
 
-            const { error } = await supabaseClient.from('media_hub').insert([{ title, category, location, status: 'active' }]);
-            if(error) {
-                msg.style.color = '#dc2626';
-                msg.innerText = 'Error: ' + error.message;
+            // Smart JSON bundling without changing database structure
+            const payloadData = JSON.stringify({ desc, badge, image, link });
+
+            msg.style.color = '#3b82f6';
+            msg.innerText = 'Processing...';
+
+            let error;
+            if (editId) {
+                // Update existing
+                const res = await supabaseClient.from('media_hub').update({ title, category, location: payloadData }).eq('id', editId);
+                error = res.error;
             } else {
-                msg.style.color = '#16a34a';
-                msg.innerText = '✅ Successfully Published!';
-                document.getElementById('itemTitle').value = '';
-                document.getElementById('itemLocation').value = '';
+                // Insert new
+                const res = await supabaseClient.from('media_hub').insert([{ title, category, location: payloadData, status: 'active' }]);
+                error = res.error;
+            }
+            
+            if(error) {
+                msg.innerHTML = `<span style="color:#ef4444;">Error: ${error.message}</span>`;
+            } else {
+                msg.innerHTML = '<span style="color:#10b981;">✅ Successfully Published to Network!</span>';
+                resetForm();
                 loadAdminList();
             }
+        }
+
+        function resetForm() {
+            document.getElementById('editId').value = '';
+            document.getElementById('itemTitle').value = '';
+            document.getElementById('itemDesc').value = '';
+            document.getElementById('itemBadge').value = '';
+            document.getElementById('itemImage').value = '';
+            document.getElementById('itemLink').value = '';
+            document.getElementById('submitBtn').innerText = '🚀 Publish Live';
+            document.getElementById('submitBtn').style.background = 'var(--accent)';
+        }
+
+        function startEdit(id, title, category, locationData) {
+            document.getElementById('editId').value = id;
+            document.getElementById('itemTitle').value = title;
+            document.getElementById('itemCategory').value = category;
+            
+            try {
+                let parsed = JSON.parse(locationData);
+                document.getElementById('itemDesc').value = parsed.desc || '';
+                document.getElementById('itemBadge').value = parsed.badge || '';
+                document.getElementById('itemImage').value = parsed.image || '';
+                document.getElementById('itemLink').value = parsed.link || '';
+            } catch(e) {
+                // For old data format
+                document.getElementById('itemLink').value = locationData;
+            }
+            
+            document.getElementById('submitBtn').innerText = '💾 Update Content';
+            document.getElementById('submitBtn').style.background = '#10b981';
+            window.scrollTo(0, 0);
         }
 
         async function loadAdminList() {
@@ -104,15 +168,18 @@
             data.forEach(item => {
                 const isHidden = item.status === 'hidden';
                 html += `
-                    <div class="admin-item" style="${isHidden ? 'opacity:0.5;' : ''}">
+                    <div class="admin-item" style="${isHidden ? 'opacity:0.5; border-color:#ef4444;' : ''}">
                         <div>
-                            <div style="font-weight:700; font-size:14px; color:#0f172a;">${item.title}</div>
-                            <span class="badge">${item.category}</span>
-                            ${isHidden ? '<span class="badge" style="background:#fee2e2; color:#dc2626;">Hidden</span>' : ''}
+                            <div style="font-weight:700; font-size:14px; margin-bottom:4px;">${item.title}</div>
+                            <span class="badge">${item.category.replace('_', ' ')}</span>
+                            ${isHidden ? '<span class="badge" style="background:#450a0a; color:#fca5a5;">HIDDEN</span>' : ''}
                         </div>
-                        <div style="display:flex; gap:6px;">
-                            <button onclick="toggleStatus('${item.id}', '${item.status}')" style="padding:6px 10px; border:none; border-radius:6px; background:#fef3c7; color:#d97706; font-weight:700; cursor:pointer; font-size:12px;">${isHidden ? 'Unhide' : 'Hide'}</button>
-                            <button onclick="deleteItem('${item.id}')" style="padding:6px 10px; border:none; border-radius:6px; background:#fee2e2; color:#dc2626; font-weight:700; cursor:pointer; font-size:12px;">Del</button>
+                        <div style="display:flex; flex-direction:column; gap:6px;">
+                            <button onclick="startEdit('${item.id}', '${item.title.replace(/'/g, "\\'")}', '${item.category}', '${(item.location || '').replace(/'/g, "\\'")}')" class="action-btn" style="background:#3b82f6; color:white;">Edit</button>
+                            <div style="display:flex; gap:6px;">
+                                <button onclick="toggleStatus('${item.id}', '${item.status}')" class="action-btn" style="background:#f59e0b; color:black;">${isHidden ? 'Show' : 'Hide'}</button>
+                                <button onclick="deleteItem('${item.id}')" class="action-btn" style="background:#ef4444; color:white;">Del</button>
+                            </div>
                         </div>
                     </div>`;
             });
@@ -125,7 +192,7 @@
         }
 
         async function deleteItem(id) {
-            if(confirm('Kya aap sach mein is item ko delete karna chahte hain?')) {
+            if(confirm('🚨 WARNING: Are you sure you want to permanently delete this item?')) {
                 await supabaseClient.from('media_hub').delete().eq('id', id);
                 loadAdminList();
             }
