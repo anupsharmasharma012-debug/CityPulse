@@ -1,64 +1,158 @@
-// 1. Global Cinematic Top Header Component
-class CityHeader extends HTMLElement {
-    connectedCallback() {
-        const currentPath = window.location.pathname;
-        const isHome = currentPath.endsWith('index.html') || currentPath === '/' || currentPath.endsWith('');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityPulse - India's Next-Gen Super App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #07090e;
+            --card-bg: linear-gradient(145deg, #131824, #0d111a);
+            --card-border: #222b3d;
+            --accent-red: #ff2a2a;
+            --accent-glow: rgba(255, 42, 42, 0.25);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); margin: 0; padding: 12px; color: var(--text-main); padding-bottom: 90px; }
+        .max-width-container { max-width: 700px; margin: 0 auto; }
         
-        this.innerHTML = `
-            <div style="background: #121212; padding: 12px 16px; border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1f2433;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    ${!isHome ? `
-                        <button onclick="history.back()" style="background: #1e2330; border: 1px solid #2a324a; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #fff;" title="Go Back">
-                            ⬅️
-                        </button>
-                    ` : ''}
-                    <div style="display: flex; align-items: center; gap: 6px; cursor: pointer;" onclick="alert('Location Switcher: Bhatpara, WB')">
-                        <span style="font-size: 14px;">📍</span>
-                        <div>
-                            <div style="font-size: 8px; color: #94a3b8; font-weight: 700; letter-spacing: 0.5px;">LOCATION</div>
-                            <div style="font-size: 11px; font-weight: 800; color: #f8fafc;">Bhatpara ▾</div>
-                        </div>
-                    </div>
-                </div>
+        /* Live Ticker */
+        .ticker { background: linear-gradient(90deg, rgba(255,42,42,0.15), rgba(13,17,26,0.8)); border: 1px solid rgba(255,42,42,0.3); padding: 10px 14px; border-radius: 12px; font-size: 12px; font-weight: 700; color: #ff8080; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 20px rgba(255,42,42,0.1); }
+        
+        /* Section Headings */
+        .section-title { font-weight: 800; font-size: 15px; margin: 22px 0 12px 0; color: var(--text-main); display: flex; align-items: center; gap: 8px; letter-spacing: 0.3px; }
 
-                <div style="text-align: center;">
-                    <h1 style="margin: 0; color: #f8fafc; font-size: 15px; font-weight: 800; letter-spacing: -0.5px;">CityPulse <span style="color: #e50914;">⚡</span></h1>
-                </div>
+        /* TOP SCROLLABLE HERO CAROUSEL (Local FB Channels & Live Streams) */
+        .hero-carousel { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; scroll-snap-type: x mandatory; }
+        .hero-carousel::-webkit-scrollbar { display: none; }
+        .channel-card { min-width: 290px; height: 170px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; overflow: hidden; position: relative; scroll-snap-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.6); flex-shrink: 0; display: flex; flex-direction: column; justify-content: flex-end; }
+        .channel-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.65; transition: transform 0.3s; }
+        .channel-card:hover img { transform: scale(1.05); }
+        .channel-gradient { position: absolute; inset: 0; background: linear-gradient(to top, rgba(7,9,14,0.95) 10%, rgba(7,9,14,0.2) 70%, transparent 100%); }
+        .channel-info { position: relative; padding: 14px; z-index: 2; }
+        .fb-live-badge { background: #1877f2; color: white; font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 6px; text-transform: uppercase; box-shadow: 0 2px 10px rgba(24,119,242,0.4); }
 
+        /* AUTO-SCROLLING LOCAL AD BANNER */
+        .auto-ad-box { background: linear-gradient(135deg, #1e1b4b, #0f172a); border: 1px solid #3b82f6; padding: 12px 16px; border-radius: 14px; margin: 20px 0; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 8px 25px rgba(59,130,246,0.2); position: relative; overflow: hidden; }
+        .ad-badge { background: #f59e0b; color: #000; font-size: 9px; font-weight: 900; padding: 3px 6px; border-radius: 4px; text-transform: uppercase; }
+        
+        /* Quick Horizontal Story Highlights */
+        .hero-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
+        .hero-scroll::-webkit-scrollbar { display: none; }
+        .story-card { min-width: 130px; height: 100px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; padding: 12px; color: white; display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0; text-decoration: none; transition: all 0.2s; }
+        .story-card:hover { transform: translateY(-3px); border-color: var(--accent-red); box-shadow: 0 5px 20px var(--accent-glow); }
+
+        /* Core Portals Grid */
+        .grid-section { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+        .grid-box { background: var(--card-bg); border: 1px solid var(--card-border); padding: 18px; border-radius: 16px; text-decoration: none; color: inherit; box-shadow: 0 6px 20px rgba(0,0,0,0.4); transition: all 0.2s; position: relative; overflow: hidden; }
+        .grid-box:hover { transform: translateY(-3px); border-color: #475569; }
+        .grid-box::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; }
+        .grid-box.news::before { background: #ff2a2a; }
+        .grid-box.entertainment::before { background: #8b5cf6; }
+        .grid-box.civic::before { background: #10b981; }
+    </style>
+    <script src="components.js" defer></script>
+</head>
+<body>
+    <div class="max-width-container">
+        <!-- Cinematic Header -->
+        <city-header></city-header>
+
+        <!-- Breaking News Ticker -->
+        <div class="ticker">
+            <span style="background: var(--accent-red); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight:800;">LIVE</span> 
+            <marquee scrollamount="4">CityPulse Local Ground Network active! Local Facebook Channels & Live Feeds now streaming live on Home.</marquee>
+        </div>
+
+        <!-- TOP SCROLLABLE HERO CAROUSEL (Local FB Official Pages & Live Streams) -->
+        <div class="section-title">🔴 Local Channels & FB Live Streams</div>
+        <div class="hero-carousel">
+            <!-- Channel 1 -->
+            <div class="channel-card">
+                <img src="https://images.unsplash.com/photo-1585241936939-f9c34d3d7515?w=600&q=80" alt="Bhatpara Live">
+                <div class="channel-gradient"></div>
+                <div class="channel-info">
+                    <span class="fb-live-badge">🔵 FB Live / Official</span>
+                    <div style="font-size: 15px; font-weight: 800; color: #fff;">Bhatpara Khabar Official</div>
+                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Live Ground Reporting & Updates</div>
+                </div>
+            </div>
+            <!-- Channel 2 -->
+            <div class="channel-card">
+                <img src="https://images.unsplash.com/photo-1541872703864-f65520a7d976?w=600&q=80" alt="Barrackpore Media">
+                <div class="channel-gradient"></div>
+                <div class="channel-info">
+                    <span class="fb-live-badge">🔵 FB Page Stream</span>
+                    <div style="font-size: 15px; font-weight: 800; color: #fff;">Barrackpore Voice 24x7</div>
+                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Local News & Public Debates</div>
+                </div>
+            </div>
+            <!-- Channel 3 -->
+            <div class="channel-card">
+                <img src="https://images.unsplash.com/photo-1529243856184-fd5f1ef3b589?w=600&q=80" alt="North 24 Parganas">
+                <div class="channel-gradient"></div>
+                <div class="channel-info">
+                    <span class="fb-live-badge">🔵 Verified FB Channel</span>
+                    <div style="font-size: 15px; font-weight: 800; color: #fff;">North 24 Parganas Updates</div>
+                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">District Special Coverage</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AUTO-SCROLLING LOCAL AD BANNER -->
+        <div class="auto-ad-box">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="ad-badge">SPONSORED</span>
                 <div>
-                    <a href="profile.html" style="text-decoration: none; background: rgba(245,158,11,0.15); color: #fbbf24; padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(245,158,11,0.3);">
-                        ❤️ Saved
-                    </a>
+                    <div style="font-weight: 800; font-size: 13px; color: #fff;">📢 Bhatpara Mega Mart: Grand Opening Sale!</div>
+                    <div style="font-size: 11px; color: #93c5fd; margin-top: 2px;">Flat 50% off on all local electronics & groceries. Visit today!</div>
                 </div>
             </div>
-        `;
-    }
-}
-customElements.define('city-header', CityHeader);
+            <div style="background: #3b82f6; color: white; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; white-space: nowrap; cursor: pointer;">View</div>
+        </div>
 
-// 2. Global Cinematic Bottom Navigation Bar Component
-class BottomNav extends HTMLElement {
-    connectedCallback() {
-        this.innerHTML = `
-            <div style="position: fixed; bottom: 0; left: 0; width: 100%; background: #121212; border-top: 1px solid #1f2433; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); z-index: 1000; max-width: 700px; margin: 0 auto; right: 0;">
-                <a href="index.html" style="text-decoration: none; text-align: center; color: #94a3b8; font-size: 10px; font-weight: 600;">
-                    <div style="font-size: 18px; margin-bottom: 2px;">🏠</div>Home
-                </a>
-                <a href="category.html" style="text-decoration: none; text-align: center; color: #94a3b8; font-size: 10px; font-weight: 600;">
-                    <div style="font-size: 18px; margin-bottom: 2px;">🗂️</div>Category
-                </a>
-                <a href="search.html" style="text-decoration: none; text-align: center; color: #94a3b8; font-size: 10px; font-weight: 600;">
-                    <div style="font-size: 18px; margin-bottom: 2px;">🔍</div>Search
-                </a>
-                <a href="profile.html" style="text-decoration: none; color: #94a3b8; font-size: 10px; font-weight: 600; text-align: center;">
-                    <div style="font-size: 18px; margin-bottom: 2px;">👤</div>Profile
-                </a>
-                <a href="notification.html" style="text-decoration: none; text-align: center; color: #94a3b8; font-size: 10px; font-weight: 600;">
-                    <div style="font-size: 18px; margin-bottom: 2px;">🔔</div>Notice
-                </a>
-            </div>
-            <div style="height: 60px;"></div>
-        `;
-    }
-}
-customElements.define('bottom-nav', BottomNav);
+        <!-- Quick Horizontal Highlights -->
+        <div class="section-title">⚡ Quick Access Portals</div>
+        <div class="hero-scroll">
+            <a href="feed.html?cat=news" class="story-card" style="border-left: 3px solid #ff2a2a;">
+                <span style="font-size: 22px;">📰</span>
+                <div><div style="font-size: 13px; font-weight: 700;">News Feed</div><span style="font-size: 10px; color: var(--text-muted);">12+ Categories</span></div>
+            </a>
+            <a href="feed.html?cat=entertainment" class="story-card" style="border-left: 3px solid #8b5cf6;">
+                <span style="font-size: 22px;">🍿</span>
+                <div><div style="font-size: 13px; font-weight: 700;">OTT Media</div><span style="font-size: 10px; color: var(--text-muted);">Movies & Shows</span></div>
+            </a>
+            <a href="civic.html" class="story-card" style="border-left: 3px solid #10b981;">
+                <span style="font-size: 22px;">🏛️</span>
+                <div><div style="font-size: 13px; font-weight: 700;">Jan Shikayat</div><span style="font-size: 10px; color: var(--text-muted);">Voice & Issues</span></div>
+            </a>
+        </div>
+
+        <!-- Core Portals & Services Grid -->
+        <div class="section-title">📂 Enterprise Core Portals</div>
+        <div class="grid-section">
+            <a href="feed.html?cat=news" class="grid-box news">
+                <div style="font-size: 24px; margin-bottom: 6px;">📰</div>
+                <div style="font-weight: 800; font-size: 15px; color: #fff;">News & Media</div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">Live TV, Crime, Politics & Sports</div>
+            </a>
+            <a href="feed.html?cat=entertainment" class="grid-box entertainment">
+                <div style="font-size: 24px; margin-bottom: 6px;">🎬</div>
+                <div style="font-weight: 800; font-size: 15px; color: #fff;">Entertainment</div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">Movies, Web Shows & Cartoons</div>
+            </a>
+            <a href="civic.html" class="grid-box civic" style="grid-column: span 2;">
+                <div style="font-size: 24px; margin-bottom: 6px;">🏛️</div>
+                <div style="font-weight: 800; font-size: 15px; color: #fff;">Citizen Voice & Governance (जन शिकायत)</div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">Geo-tagged complaints, community ideas & emergency 24/7 helplines</div>
+            </a>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <bottom-nav></bottom-nav>
+    </div>
+</body>
+</html>
+                       
