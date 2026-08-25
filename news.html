@@ -3,89 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityPulse - Exclusive News</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <title>CityPulse - News Network</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; margin: 0; padding: 15px; color: #1e293b; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; padding: 12px; color: #1e293b; padding-bottom: 70px; }
         .max-width-container { max-width: 700px; margin: 0 auto; }
+        .page-header { background: #dc2626; color: white; padding: 12px; border-radius: 10px; text-align: center; font-weight: 800; font-size: 16px; margin-bottom: 12px; }
         
-        .page-title { text-align: center; color: #dc2626; font-size: 20px; font-weight: 700; margin: 15px 0; background: #fee2e2; padding: 10px; border-radius: 8px; border: 1px solid #fca5a5; }
-        
-        .back-nav { text-align: center; margin-bottom: 20px; }
-        .back-nav a { text-decoration: none; background: #0f172a; color: white; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; }
+        .sub-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 15px; scrollbar-width: none; }
+        .sub-tabs::-webkit-scrollbar { display: none; }
+        .tab-btn { background: #e2e8f0; border: none; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; color: #475569; }
+        .tab-btn.active { background: #dc2626; color: white; }
 
-        /* Common card styles */
-        .news-card { background: #fff; border: 1px solid #e2e8f0; border-left: 4px solid #dc2626; padding: 16px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .news-badge { display: inline-block; background: #fee2e2; color: #991b1b; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 6px; margin-bottom: 8px; }
-        .news-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
-        .video-container { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; background: #000; border-radius: 8px; overflow: hidden; margin-top: 10px; }
-        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-        .no-data { text-align: center; color: #64748b; font-size: 14px; background: #fff; padding: 30px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .ad-banner { background: #fef3c7; border: 1px dashed #d97706; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 15px; }
+        
+        .card { background: white; border: 1px solid #e2e8f0; border-left: 4px solid #dc2626; padding: 14px; border-radius: 12px; margin-bottom: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .video-box { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; border-radius: 8px; overflow: hidden; margin-top: 8px; }
+        .video-box iframe, .video-box img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; object-fit: cover; }
     </style>
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="components.js" defer></script> <!-- Hamara Magic File -->
+    <script src="components.js" defer></script>
 </head>
 <body>
-
     <div class="max-width-container">
-        <!-- Reusable Component Header (Jo components.js se aayega) -->
         <city-header></city-header>
+        <div class="page-header">🚨 CityPulse News & Media Center</div>
 
-        <div class="page-title">🚨 CityPulse 24x7 News Portal</div>
-        
-        <div class="back-nav">
-            <a href="index.html">🏠 Back to Main App</a>
+        <div id="adSlot"></div>
+
+        <div class="sub-tabs">
+            <button class="tab-btn active" onclick="filterNews('All', this)">All</button>
+            <button class="tab-btn" onclick="filterNews('News_Live', this)">📺 Live TV</button>
+            <button class="tab-btn" onclick="filterNews('News_Crime', this)">🚨 Crime</button>
+            <button class="tab-btn" onclick="filterNews('News_Sports', this)">🏆 Sports</button>
+            <button class="tab-btn" onclick="filterNews('News_Business', this)">📈 Business</button>
         </div>
 
-        <div id="publicFeed">
-            <div class="no-data">Taaza khabrein load ho rahi hain...</div>
-        </div>
+        <div id="newsFeed">Loading news...</div>
+        <bottom-nav></bottom-nav>
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://qfefkyrwxdhdxyajutst.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmZWZreXJ3eGRoZHh5YWp1dHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMjY0ODcsImV4cCI6MjEwMjgwMjQ4N30.lmnKyvigM5JeVf1y_BR0tjqAp4PiXioZNcCE5VVYsKg';
-        
-        const localSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseUrl = 'https://qfefkyrwxdhdxyajutst.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmZWZreXJ3eGRoZHh5YWp1dHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMjY0ODcsImV4cCI6MjEwMjgwMjQ4N30.lmnKyvigM5JeVf1y_BR0tjqAp4PiXioZNcCE5VVYsKg';
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+        let rawNews = [];
 
-        async function fetchNewsOnly() {
-            const publicFeedContainer = document.getElementById('publicFeed');
-            try {
-                // Sirf News category ka data uthayenge!
-                const { data, error } = await localSupabase
-                    .from('media_hub')
-                    .select('*')
-                    .eq('status', 'active')
-                    .eq('category', 'News') 
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
-                
-                if (data.length === 0) {
-                    publicFeedContainer.innerHTML = `<div class="no-data">Abhi koi khabar nahi hai.</div>`;
-                    return;
-                }
-
-                let html = '';
-                data.forEach(item => {
-                    html += `
-                        <div class="news-card">
-                            <span class="news-badge">News Express</span>
-                            <div class="news-title">${item.title}</div>
-                            <div class="video-container">${item.location}</div>
-                        </div>
-                    `;
-                });
-                publicFeedContainer.innerHTML = html;
-
-            } catch (err) {
-                publicFeedContainer.innerHTML = `<div class="no-data" style="color: #dc2626;">Error loading: ${err.message}</div>`;
+        async function fetchNewsData() {
+            const { data } = await supabaseClient.from('media_hub').select('*').eq('status', 'active').order('created_at', { ascending: false });
+            
+            // Render Ad if active
+            const ads = data.filter(i => i.category === 'Ad_Banner');
+            if(ads.length > 0) {
+                document.getElementById('adSlot').innerHTML = `<div class="ad-banner"><span style="font-size:10px; background:#d97706; color:white; padding:2px 6px; border-radius:4px; font-weight:700;">SPONSORED</span><div style="font-weight:700; font-size:13px; margin-top:4px;">${ads[0].title}</div><div style="margin-top:6px;">${ads[0].location}</div></div>`;
             }
+
+            rawNews = data.filter(i => i.category.startsWith('News_'));
+            renderList(rawNews);
         }
 
-        fetchNewsOnly();
+        function filterNews(cat, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            if(cat === 'All') renderList(rawNews);
+            else renderList(rawNews.filter(i => i.category === cat));
+        }
+
+        function renderList(items) {
+            const feed = document.getElementById('newsFeed');
+            if(items.length === 0) return feed.innerHTML = `<div style="text-align:center; padding:30px; background:white; border-radius:12px; color:#64748b;">Is category mein koi content uplabdh nahi hai.</div>`;
+            
+            let html = '';
+            items.forEach(item => {
+                html += `
+                    <div class="card">
+                        <div style="font-size: 15px; font-weight: 700; color: #0f172a;">${item.title}</div>
+                        <div class="video-box">${item.location}</div>
+                    </div>`;
+            });
+            feed.innerHTML = html;
+        }
+        fetchNewsData();
     </script>
 </body>
 </html>
+
