@@ -69,6 +69,8 @@
 
     <!-- Main Admin Dashboard -->
     <div class="max-container" id="adminContent">
+        
+        <!-- Add Single Channel -->
         <div class="card">
             <h3>➕ Naya Channel Add Karein</h3>
             <label>Target Category:</label>
@@ -85,12 +87,19 @@
             <p id="saveMsg" style="font-size: 13px; font-weight: 600; margin-top: 10px; text-align: center;"></p>
         </div>
 
+        <!-- Bulk Add Form with Textarea -->
         <div class="card">
-            <h3>📦 Bulk Add Multiple Working Channels</h3>
-            <button class="primary-btn bulk-btn" onclick="addBulkChannels()">⚡ Load Working Channels at Once</button>
+            <h3>📦 Bulk Add Channels (Custom Data)</h3>
+            <label>Paste Channel Data / Links (JSON Format)</label>
+            <textarea id="bulkDataInput" placeholder="Yahan channels ki list paste karein..." style="height: 120px;">[
+  { "title": "India TV Live", "category": "News", "location": "<iframe width=\"100%\" height=\"315\" src=\"https://www.youtube.com/embed/live_stream?channel=UCttspZesZIDEwwpVIgoZtWQ\" frameborder=\"0\" allowfullscreen></iframe>", "status": "active" },
+  { "title": "Mr Bean Cartoons", "category": "Cartoon", "location": "<iframe width=\"100%\" height=\"315\" src=\"https://www.youtube.com/embed/jD355FkU-t8\" frameborder=\"0\" allowfullscreen></iframe>", "status": "active" }
+]</textarea>
+            <button class="primary-btn bulk-btn" onclick="addBulkChannelsCustom()">⚡ Upload Bulk Channels</button>
             <p id="bulkMsg" style="font-size: 13px; font-weight: 600; margin-top: 10px; text-align: center;"></p>
         </div>
 
+        <!-- Manage Existing Channels -->
         <div class="card">
             <h3>📋 Existing Channels Manager</h3>
             <div id="adminList">
@@ -98,10 +107,11 @@
             </div>
         </div>
 
+        <!-- Navigation Links -->
         <div class="nav-links">
-            <a href="index.html" target="_blank">🌐 Home</a>
-            <a href="news.html" target="_blank">📰 News Page</a>
-            <a href="entertainment.html" target="_blank">🎬 Entertainment Page</a>
+            <a href="index.html" class="nav-link" target="_blank">🌐 Home Hub</a>
+            <a href="news.html" class="nav-link" target="_blank">📰 News Page</a>
+            <a href="entertainment.html" class="nav-link" target="_blank">🎬 Entertainment Page</a>
         </div>
     </div>
 
@@ -111,6 +121,7 @@
         
         const localSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // 1. Authentication
         async function checkSession() {
             const { data: { session } } = await localSupabase.auth.getSession();
             if (session) {
@@ -147,6 +158,7 @@
             loadAdminList();
         }
 
+        // 2. Add Single Channel
         async function saveData() {
             const category = document.getElementById('itemCategory').value;
             const title = document.getElementById('itemTitle').value.trim();
@@ -162,31 +174,38 @@
             } else {
                 msg.style.color = '#16a34a';
                 msg.innerText = '✅ Channel successfully publish ho gaya!';
+                document.getElementById('itemTitle').value = '';
+                document.getElementById('itemLocation').value = '';
                 loadAdminList();
             }
         }
 
-        async function addBulkChannels() {
+        // 3. Bulk Add Channels (Custom Textarea Logic)
+        async function addBulkChannelsCustom() {
             const msg = document.getElementById('bulkMsg');
+            const rawText = document.getElementById('bulkDataInput').value.trim();
             msg.innerText = "⏳ Uploading...";
             
-            const bulkData = [
-                { title: "Aaj Tak Live", category: "News", location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/live_stream?channel=UCt4t-jeY85JegMlZ-E5UWtA" frameborder="0" allowfullscreen></iframe>', status: "active" },
-                { title: "Tom & Jerry Cartoon", category: "Cartoon", location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/t0Q2otsqC4I" frameborder="0" allowfullscreen></iframe>', status: "active" }
-            ];
-
-            const { error } = await localSupabase.from('media_hub').insert(bulkData);
-            
-            if (error) {
+            try {
+                const bulkData = JSON.parse(rawText);
+                const { error } = await localSupabase.from('media_hub').insert(bulkData);
+                
+                if (error) {
+                    msg.style.color = '#dc2626';
+                    msg.innerText = '❌ Error: ' + (error.code === '23505' ? 'Inme se kuch channels pehle se maujood hain.' : error.message);
+                } else {
+                    msg.style.color = '#16a34a';
+                    msg.innerText = '✅ Saare bulk channels successfully add ho gaye!';
+                    loadAdminList();
+                }
+            } catch (err) {
                 msg.style.color = '#dc2626';
-                msg.innerText = '❌ Error: ' + error.message;
-            } else {
-                msg.style.color = '#16a34a';
-                msg.innerText = '✅ Bulk channels add ho gaye!';
-                loadAdminList();
+                msg.innerText = '❌ Invalid JSON format! Kripya code check karein.';
+                console.error("JSON Error:", err);
             }
         }
 
+        // 4. Load & Manage Existing Channels
         async function loadAdminList() {
             const listDiv = document.getElementById('adminList');
             const { data, error } = await localSupabase.from('media_hub').select('*').order('created_at', { ascending: false });
@@ -217,7 +236,7 @@
                                 <option value="Cartoon" ${item.category === 'Cartoon' ? 'selected' : ''}>Cartoon</option>
                                 <option value="Entertainment" ${item.category === 'Entertainment' ? 'selected' : ''}>Entertainment</option>
                             </select>
-                            <button class="update-btn" onclick="updateChannel('${item.id}')">💾 Save</button>
+                            <button class="update-btn" onclick="updateChannel('${item.id}')">💾 Save Changes</button>
                         </div>
                     </div>
                 `;
@@ -225,7 +244,10 @@
             listDiv.innerHTML = html;
         }
 
-        function toggleEditBox(id) { document.getElementById(`edit-box-${id}`).style.display = document.getElementById(`edit-box-${id}`).style.display === 'block' ? 'none' : 'block'; }
+        function toggleEditBox(id) { 
+            const editBox = document.getElementById(`edit-box-${id}`);
+            editBox.style.display = editBox.style.display === 'block' ? 'none' : 'block'; 
+        }
         
         async function updateChannel(id) {
             const newTitle = document.getElementById(`new-title-${id}`).value;
@@ -240,12 +262,13 @@
         }
 
         async function deleteItem(id) {
-            if (confirm('Delete karein?')) {
+            if (confirm('Kya aap sach mein is channel ko delete karna chahte hain?')) {
                 await localSupabase.from('media_hub').delete().eq('id', id);
                 loadAdminList();
             }
         }
 
+        // Initialize
         checkSession();
     </script>
 </body>
