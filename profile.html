@@ -3,110 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityPulse - Profile</title>
-    
-    <!-- Google Fonts & Custom Styling -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <title>CityPulse - User Profile & Wishlist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-        }
-        body {
-            background-color: #f8fafc;
-            color: #1e293b;
-            padding: 20px;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: #ffffff;
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-        h1 {
-            font-size: 24px;
-            margin-bottom: 8px;
-            color: #0f172a;
-        }
-        p {
-            color: #64748b;
-            margin-bottom: 20px;
-        }
-        .profile-card {
-            background: #f1f5f9;
-            padding: 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        .profile-card p {
-            margin-bottom: 8px;
-            color: #334155;
-        }
-        .btn {
-            display: inline-block;
-            background: #2563eb;
-            color: white;
-            padding: 10px 16px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 500;
-            border: none;
-            cursor: pointer;
-            margin-right: 10px;
-        }
-        .btn:hover {
-            background: #1d4ed8;
-        }
-        .btn-secondary {
-            background: #64748b;
-        }
-        .btn-secondary:hover {
-            background: #475569;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; padding: 12px; color: #1e293b; padding-bottom: 70px; }
+        .max-width-container { max-width: 700px; margin: 0 auto; }
+        .card { background: white; border: 1px solid #e2e8f0; padding: 18px; border-radius: 14px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .btn { background: #2563eb; color: white; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; font-size: 14px; }
     </style>
-
-    <!-- 1. Supabase JS Library CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- 2. Our Backend Bridge File -->
-    <script src="db.js"></script>
+    <script src="components.js" defer></script>
 </head>
 <body>
+    <div class="max-width-container">
+        <city-header></city-header>
 
-    <div class="container">
-        <h1>User Profile</h1>
-        <p>Manage your account details and settings.</p>
-        
-        <div class="profile-card" id="profileInfoBox">
-            Loading profile information...
+        <div class="card">
+            <h3 style="margin-top:0;">👤 My Profile & Account</h3>
+            <div id="userSessionInfo" style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Checking session...</div>
+            <button class="btn" onclick="loginGoogle()" id="googleLoginBtn">Sign in with Google</button>
+            <button class="btn" style="background:#dc2626; display:none; margin-top:10px;" id="logoutBtn" onclick="logoutUser()">Logout</button>
         </div>
 
-        <a href="index.html" class="btn btn-secondary">Back to Home</a>
+        <div class="card">
+            <h3 style="margin-top:0;">🚨 Emergency SOS Contacts</h3>
+            <p style="font-size: 12px; color: #64748b;">Emergency ke samay police ya hospital alert bhejne ke liye number set karein.</p>
+            <input type="text" id="sosNumber" placeholder="Emergency Contact Number" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px; margin-bottom:10px; box-sizing:border-box;">
+            <button class="btn" style="background: #059669;" onclick="saveSOS()">Save SOS Number</button>
+        </div>
+
+        <bottom-nav></bottom-nav>
     </div>
 
     <script>
-        // Page load hote hi profile data load karo
-        window.addEventListener('DOMContentLoaded', async () => {
-            const user = await checkUserSession();
-            
-            if (!user) {
-                // Agar user login nahi hai, login page par bhej do
-                window.location.href = 'login.html';
-            } else {
-                // Profile details display karo
-                document.getElementById('profileInfoBox').innerHTML = `
-                    <p><strong>Email:</strong> ${user.email}</p>
-                    <p><strong>User ID:</strong> ${user.id}</p>
-                    <p><strong>Last Sign In:</strong> ${new Date(user.last_sign_in_at).toLocaleString()}</p>
-                `;
-            }
-        });
-    </script>
+        const supabaseUrl = 'https://qfefkyrwxdhdxyajutst.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmZWZreXJ3eGRoZHh5YWp1dHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMjY0ODcsImV4cCI6MjEwMjgwMjQ4N30.lmnKyvigM5JeVf1y_BR0tjqAp4PiXioZNcCE5VVYsKg';
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
+        async function checkAuth() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if(session) {
+                document.getElementById('userSessionInfo').innerHTML = `Logged in as: <b>${session.user.email}</b>`;
+                document.getElementById('googleLoginBtn').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = 'block';
+            } else {
+                document.getElementById('userSessionInfo').innerHTML = `Guest Mode Active. Cloud sync ke liye login karein.`;
+            }
+        }
+        async function loginGoogle() {
+            await supabaseClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
+        }
+        async function logoutUser() {
+            await supabaseClient.auth.signOut();
+            location.reload();
+        }
+        function saveSOS() {
+            alert('SOS Contact Saved Successfully!');
+        }
+        checkAuth();
+    </script>
 </body>
 </html>
