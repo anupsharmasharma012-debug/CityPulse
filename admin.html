@@ -3,273 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityPulse - Secure Admin Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <title>CityPulse - Master Enterprise Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; margin: 0; padding: 20px; color: #1e293b; }
-        .header { background: #ffffff; padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.04); margin-bottom: 20px; text-align: center; position: relative; }
-        .header h1 { margin: 0 0 6px 0; color: #0f172a; font-size: 24px; }
-        .header p { color: #64748b; margin: 0; font-size: 14px; }
-        
-        .logout-btn { position: absolute; top: 20px; right: 20px; background: #fee2e2; color: #dc2626; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 12px; display: none; }
-        
-        .max-container { max-width: 650px; margin: 0 auto; }
-        .card { background: #ffffff; padding: 24px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.04); margin-bottom: 20px; border: 1px solid #e2e8f0; }
-        .card h3 { margin-top: 0; color: #0f172a; font-size: 18px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; }
-        
-        label { font-size: 13px; font-weight: 600; color: #475569; display: block; margin-top: 12px; margin-bottom: 6px; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; box-sizing: border-box; background: #f8fafc; }
-        textarea { resize: vertical; height: 90px; }
-        
-        .primary-btn { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 15px; transition: background 0.2s; }
-        .primary-btn:hover { background: #1d4ed8; }
-        .bulk-btn { background: #16a34a; }
-        .bulk-btn:hover { background: #15803d; }
-
-        .admin-item { background: #f8fafc; padding: 14px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #e2e8f0; }
-        .admin-row { display: flex; justify-content: space-between; align-items: center; }
-        .admin-title { font-weight: 600; color: #0f172a; font-size: 15px; }
-        .admin-cat { font-size: 12px; color: #2563eb; background: #dbeafe; padding: 3px 8px; border-radius: 6px; display: inline-block; margin-top: 4px; }
-        
-        .action-btns { display: flex; gap: 6px; }
-        .edit-box { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px dashed #cbd5e1; }
-        
-        .hide-btn { background: #fef3c7; color: #d97706; border: none; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
-        .delete-btn { background: #fee2e2; color: #dc2626; border: none; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
-        .edit-btn { background: #e0f2fe; color: #0284c7; border: none; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
-        .update-btn { background: #0f172a; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 10px; width: 100%; }
-
-        .nav-links { display: flex; justify-content: center; gap: 15px; margin-top: 25px; }
-        .nav-link { color: #2563eb; text-decoration: none; font-weight: 600; font-size: 14px; }
-        
-        #authSection { max-width: 400px; margin: 40px auto; text-align: center; }
-        #adminContent { display: none; }
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; margin: 0; padding: 15px; color: #1e293b; }
+        .max-container { max-width: 750px; margin: 0 auto; }
+        .card { background: white; border: 1px solid #e2e8f0; padding: 20px; border-radius: 14px; margin-bottom: 18px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; margin-top: 5px; margin-bottom: 14px; box-sizing: border-box; background: #f8fafc; font-family: inherit; }
+        .btn { background: #0f172a; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; }
+        .admin-item { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #e2e8f0; }
+        .badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: #dbeafe; color: #1e40af; }
     </style>
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+    <div class="max-container">
+        <div class="card" style="text-align: center; background: #0f172a; color: white;">
+            <h2 style="margin:0;">🎛️ CityPulse Enterprise Admin</h2>
+            <p style="margin: 5px 0 0; font-size: 12px; color: #94a3b8;">Manage Network Content, Ads & Live Feeds</p>
+        </div>
 
-    <div class="header">
-        <h1>CityPulse Admin Portal ⚙️</h1>
-        <p id="adminStatusText">Manage Channels, Rename, Bulk Add & Categories</p>
-        <button id="logoutBtn" class="logout-btn" onclick="logoutAdmin()">Logout</button>
-    </div>
-
-    <!-- Login Section for Admin -->
-    <div id="authSection" class="card">
-        <h3>🔒 Admin Access Required</h3>
-        <p style="font-size: 12px; color: #64748b; margin-bottom: 15px;">Kripya apne CityPulse account se login karein</p>
-        <input type="email" id="adminEmail" placeholder="Admin Email" style="margin-bottom: 10px;">
-        <input type="password" id="adminPassword" placeholder="Password" style="margin-bottom: 10px;">
-        <button class="primary-btn" onclick="loginAdmin()">Login to Dashboard</button>
-        <p id="authMsg" style="font-size: 13px; font-weight: 600; margin-top: 10px; color: #dc2626;"></p>
-    </div>
-
-    <!-- Main Admin Dashboard -->
-    <div class="max-container" id="adminContent">
-        
-        <!-- Add Single Channel -->
         <div class="card">
-            <h3>➕ Naya Channel Add Karein</h3>
-            <label>Target Category:</label>
+            <h3 style="margin-top:0;">➕ Add New Portal Content / Ad</h3>
+            <label><b>Target Category:</b></label>
             <select id="itemCategory">
-                <option value="News">📰 News</option>
-                <option value="Cartoon">🎨 Cartoon</option>
-                <option value="Entertainment">🎬 Entertainment</option>
+                <optgroup label="📢 Advertisement">
+                    <option value="Ad_Banner">Global Ad Banner</option>
+                </optgroup>
+                <optgroup label="📰 News Categories">
+                    <option value="News_Live">Live TV News</option>
+                    <option value="News_Crime">Crime & Traffic</option>
+                    <option value="News_Sports">Sports</option>
+                    <option value="News_Business">Business & Market</option>
+                </optgroup>
+                <optgroup label="🎬 Entertainment Categories">
+                    <option value="Ent_Movies">Movies</option>
+                    <option value="Ent_Shows">Web Shows</option>
+                    <option value="Ent_Cartoon">Kids Cartoons</option>
+                </optgroup>
             </select>
-            <label>Channel / Title Name:</label>
-            <input type="text" id="itemTitle" placeholder="Jaise: Aaj Tak Live">
-            <label>YouTube Embed Code:</label>
-            <textarea id="itemLocation" placeholder='<iframe width="100%" height="315" src="..." frameborder="0" allowfullscreen></iframe>'></textarea>
-            <button class="primary-btn" onclick="saveData()">🚀 Publish Channel</button>
-            <p id="saveMsg" style="font-size: 13px; font-weight: 600; margin-top: 10px; text-align: center;"></p>
+            <label><b>Title / Sponsor Name:</b></label>
+            <input type="text" id="itemTitle" placeholder="e.g. Aaj Tak Live / Local Ad">
+            <label><b>Embed Code (YouTube Iframe / Ad Banner Image):</b></label>
+            <textarea id="itemLocation" rows="3" placeholder='<iframe ...></iframe>'></textarea>
+            <button class="btn" onclick="publishContent()">🚀 Publish Item</button>
+            <p id="msg" style="text-align:center; font-weight:700; font-size:13px; margin-top:10px;"></p>
         </div>
 
-        <!-- Bulk Add Form with Textarea -->
         <div class="card">
-            <h3>📦 Bulk Add Channels (Custom Data)</h3>
-            <label>Paste Channel Data / Links (JSON Format)</label>
-            <textarea id="bulkDataInput" placeholder="Yahan channels ki list paste karein..." style="height: 120px;">[
-  { "title": "India TV Live", "category": "News", "location": "<iframe width=\"100%\" height=\"315\" src=\"https://www.youtube.com/embed/live_stream?channel=UCttspZesZIDEwwpVIgoZtWQ\" frameborder=\"0\" allowfullscreen></iframe>", "status": "active" },
-  { "title": "Mr Bean Cartoons", "category": "Cartoon", "location": "<iframe width=\"100%\" height=\"315\" src=\"https://www.youtube.com/embed/jD355FkU-t8\" frameborder=\"0\" allowfullscreen></iframe>", "status": "active" }
-]</textarea>
-            <button class="primary-btn bulk-btn" onclick="addBulkChannelsCustom()">⚡ Upload Bulk Channels</button>
-            <p id="bulkMsg" style="font-size: 13px; font-weight: 600; margin-top: 10px; text-align: center;"></p>
-        </div>
-
-        <!-- Manage Existing Channels -->
-        <div class="card">
-            <h3>📋 Existing Channels Manager</h3>
-            <div id="adminList">
-                <p style="color: #64748b; font-size: 13px;">Loading channels...</p>
-            </div>
-        </div>
-
-        <!-- Navigation Links -->
-        <div class="nav-links">
-            <a href="index.html" class="nav-link" target="_blank">🌐 Home Hub</a>
-            <a href="news.html" class="nav-link" target="_blank">📰 News Page</a>
-            <a href="entertainment.html" class="nav-link" target="_blank">🎬 Entertainment Page</a>
+            <h3 style="margin-top:0;">📋 Live Network Manager</h3>
+            <div id="adminList">Loading items...</div>
         </div>
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://qfefkyrwxdhdxyajutst.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmZWZreXJ3eGRoZHh5YWp1dHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMjY0ODcsImV4cCI6MjEwMjgwMjQ4N30.lmnKyvigM5JeVf1y_BR0tjqAp4PiXioZNcCE5VVYsKg';
-        
-        const localSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseUrl = 'https://qfefkyrwxdhdxyajutst.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmZWZreXJ3eGRoZHh5YWp1dHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMjY0ODcsImV4cCI6MjEwMjgwMjQ4N30.lmnKyvigM5JeVf1y_BR0tjqAp4PiXioZNcCE5VVYsKg';
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        // 1. Authentication
-        async function checkSession() {
-            const { data: { session } } = await localSupabase.auth.getSession();
-            if (session) {
-                showDashboard(session.user.email);
-            }
-        }
-
-        async function loginAdmin() {
-            const email = document.getElementById('adminEmail').value.trim();
-            const password = document.getElementById('adminPassword').value.trim();
-            const msg = document.getElementById('authMsg');
-
-            const { data, error } = await localSupabase.auth.signInWithPassword({ email, password });
-            if (error) {
-                msg.innerText = '❌ Error: ' + error.message;
-            } else {
-                showDashboard(data.user.email);
-            }
-        }
-
-        async function logoutAdmin() {
-            await localSupabase.auth.signOut();
-            document.getElementById('authSection').style.display = 'block';
-            document.getElementById('adminContent').style.display = 'none';
-            document.getElementById('logoutBtn').style.display = 'none';
-            document.getElementById('adminStatusText').innerText = "Manage Channels, Rename, Bulk Add & Categories";
-        }
-
-        function showDashboard(email) {
-            document.getElementById('authSection').style.display = 'none';
-            document.getElementById('adminContent').style.display = 'block';
-            document.getElementById('logoutBtn').style.display = 'inline-block';
-            document.getElementById('adminStatusText').innerHTML = `Logged in as: <b style="color:#2563eb;">${email}</b>`;
-            loadAdminList();
-        }
-
-        // 2. Add Single Channel
-        async function saveData() {
+        async function publishContent() {
             const category = document.getElementById('itemCategory').value;
             const title = document.getElementById('itemTitle').value.trim();
             const location = document.getElementById('itemLocation').value.trim();
-            const msg = document.getElementById('saveMsg');
+            const msg = document.getElementById('msg');
+            if(!title || !location) return msg.innerText = '⚠️ Saare fields bhariye!';
 
-            if (!title || !location) return msg.innerText = '⚠️ Please saare fields bhariye!';
-
-            const { error } = await localSupabase.from('media_hub').insert([{ title, category, location, status: 'active' }]);
-            if (error) {
-                msg.style.color = '#dc2626';
-                msg.innerText = error.code === '23505' ? '❌ Is naam ka channel pehle se hai!' : '❌ Error: ' + error.message;
-            } else {
-                msg.style.color = '#16a34a';
-                msg.innerText = '✅ Channel successfully publish ho gaya!';
+            const { error } = await supabaseClient.from('media_hub').insert([{ title, category, location, status: 'active' }]);
+            if(error) msg.innerText = 'Error: ' + error.message;
+            else {
+                msg.style.color = 'green';
+                msg.innerText = '✅ Successfully Published!';
                 document.getElementById('itemTitle').value = '';
                 document.getElementById('itemLocation').value = '';
                 loadAdminList();
             }
         }
 
-        // 3. Bulk Add Channels (Custom Textarea Logic)
-        async function addBulkChannelsCustom() {
-            const msg = document.getElementById('bulkMsg');
-            const rawText = document.getElementById('bulkDataInput').value.trim();
-            msg.innerText = "⏳ Uploading...";
-            
-            try {
-                const bulkData = JSON.parse(rawText);
-                const { error } = await localSupabase.from('media_hub').insert(bulkData);
-                
-                if (error) {
-                    msg.style.color = '#dc2626';
-                    msg.innerText = '❌ Error: ' + (error.code === '23505' ? 'Inme se kuch channels pehle se maujood hain.' : error.message);
-                } else {
-                    msg.style.color = '#16a34a';
-                    msg.innerText = '✅ Saare bulk channels successfully add ho gaye!';
-                    loadAdminList();
-                }
-            } catch (err) {
-                msg.style.color = '#dc2626';
-                msg.innerText = '❌ Invalid JSON format! Kripya code check karein.';
-                console.error("JSON Error:", err);
-            }
-        }
-
-        // 4. Load & Manage Existing Channels
         async function loadAdminList() {
+            const { data } = await supabaseClient.from('media_hub').select('*').order('created_at', { ascending: false });
             const listDiv = document.getElementById('adminList');
-            const { data, error } = await localSupabase.from('media_hub').select('*').order('created_at', { ascending: false });
-
-            if (!data || data.length === 0) return listDiv.innerHTML = `<p>Koi channel nahi mila.</p>`;
+            if(!data || data.length === 0) return listDiv.innerHTML = `<p>No items found.</p>`;
 
             let html = '';
             data.forEach(item => {
                 const isHidden = item.status === 'hidden';
                 html += `
-                    <div class="admin-item">
-                        <div class="admin-row">
-                            <div>
-                                <div class="admin-title">${item.title}</div>
-                                <span class="admin-cat">${item.category}</span>
-                            </div>
-                            <div class="action-btns">
-                                <button class="edit-btn" onclick="toggleEditBox('${item.id}')">✏️ Edit</button>
-                                <button class="hide-btn" onclick="toggleStatus('${item.id}', '${item.status}')">${isHidden ? 'Unhide' : 'Hide'}</button>
-                                <button class="delete-btn" onclick="deleteItem('${item.id}')">Delete</button>
-                            </div>
+                    <div class="admin-item" style="${isHidden ? 'opacity:0.5;' : ''}">
+                        <div>
+                            <div style="font-weight:700; font-size:14px;">${item.title}</div>
+                            <span class="badge">${item.category}</span>
+                            ${isHidden ? '<span class="badge" style="background:#fee2e2; color:#dc2626;">Hidden</span>' : ''}
                         </div>
-                        <div id="edit-box-${item.id}" class="edit-box">
-                            <label>Rename Title:</label><input type="text" id="new-title-${item.id}" value="${item.title.replace(/"/g, '&quot;')}">
-                            <label>Change Category:</label>
-                            <select id="new-cat-${item.id}">
-                                <option value="News" ${item.category === 'News' ? 'selected' : ''}>News</option>
-                                <option value="Cartoon" ${item.category === 'Cartoon' ? 'selected' : ''}>Cartoon</option>
-                                <option value="Entertainment" ${item.category === 'Entertainment' ? 'selected' : ''}>Entertainment</option>
-                            </select>
-                            <button class="update-btn" onclick="updateChannel('${item.id}')">💾 Save Changes</button>
+                        <div>
+                            <button onclick="toggleStatus('${item.id}', '${item.status}')" style="padding:6px 10px; border:none; border-radius:6px; background:#fef3c7; color:#d97706; font-weight:700; cursor:pointer;">${isHidden ? 'Unhide' : 'Hide'}</button>
+                            <button onclick="deleteItem('${item.id}')" style="padding:6px 10px; border:none; border-radius:6px; background:#fee2e2; color:#dc2626; font-weight:700; cursor:pointer; margin-left:4px;">Del</button>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
             listDiv.innerHTML = html;
         }
 
-        function toggleEditBox(id) { 
-            const editBox = document.getElementById(`edit-box-${id}`);
-            editBox.style.display = editBox.style.display === 'block' ? 'none' : 'block'; 
-        }
-        
-        async function updateChannel(id) {
-            const newTitle = document.getElementById(`new-title-${id}`).value;
-            const newCat = document.getElementById(`new-cat-${id}`).value;
-            await localSupabase.from('media_hub').update({ title: newTitle, category: newCat }).eq('id', id);
-            loadAdminList();
-        }
-
         async function toggleStatus(id, currentStatus) {
-            await localSupabase.from('media_hub').update({ status: currentStatus === 'active' ? 'hidden' : 'active' }).eq('id', id);
+            await supabaseClient.from('media_hub').update({ status: currentStatus === 'active' ? 'hidden' : 'active' }).eq('id', id);
             loadAdminList();
         }
 
         async function deleteItem(id) {
-            if (confirm('Kya aap sach mein is channel ko delete karna chahte hain?')) {
-                await localSupabase.from('media_hub').delete().eq('id', id);
+            if(confirm('Delete this item?')) {
+                await supabaseClient.from('media_hub').delete().eq('id', id);
                 loadAdminList();
             }
         }
-
-        // Initialize
-        checkSession();
+        loadAdminList();
     </script>
 </body>
 </html>
