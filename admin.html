@@ -14,13 +14,11 @@
             --text-main: #0f172a;
             --text-muted: #64748b;
         }
-        /* Yeh admin panel Light mode mein banaya hai taaki aapko easy rahe */
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); margin: 0; padding: 15px; color: var(--text-main); }
         .max-container { max-width: 800px; margin: 0 auto; }
         
         .card { background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         
-        /* Tabs for Admin Categories */
         .admin-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; scrollbar-width: none; }
         .admin-tabs::-webkit-scrollbar { display: none; }
         .tab-btn { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; color: #475569; }
@@ -31,9 +29,8 @@
         
         .btn { background: var(--accent); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 10px; }
         
-        /* Visual Admin List Item */
         .admin-item { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 12px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #e2e8f0; }
-        .item-preview { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; margin-right: 12px; }
+        .item-preview { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; margin-right: 12px; border: 1px solid #cbd5e1; }
         .action-btn { padding: 6px 10px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 11px; margin-left: 5px; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -41,7 +38,6 @@
 <body>
     <div class="max-container">
         
-        <!-- Add Content Section -->
         <div class="card">
             <h3 style="margin-top:0; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">➕ Add Content / Bulk Upload</h3>
             
@@ -71,35 +67,32 @@
                         <input type="text" id="itemDesc" placeholder="Short detail...">
                     </div>
                     <div style="flex: 1;">
-                        <label>Badge (e.g. LIVE)</label>
+                        <label>Badge (e.g. LIVE, SPONSORED)</label>
                         <input type="text" id="itemBadge" placeholder="LIVE, AD, etc.">
                     </div>
                 </div>
 
-                <label>HD Image URL (Thumbnail / Poster)</label>
+                <label>HD Image URL (Thumbnail / Poster ke liye link dalein)</label>
                 <input type="text" id="itemImage" placeholder="https://...">
                 
-                <label>Video/Action Link (Leave blank for Ad Banners without link)</label>
+                <label>Video/Action Link (URL ya Embed Code - Ad ke liye khali chhod sakte hain)</label>
                 <textarea id="itemLink" rows="2" placeholder="URL or Embed Code..."></textarea>
             </div>
 
-            <!-- Bulk Add Section (Hidden by default) -->
             <div id="bulkAddMode" style="display: none;">
                 <label>Target Category for Bulk Items</label>
                 <select id="bulkCategory">
                     <option value="News_Standard">📰 Standard News</option>
                     <option value="Feed_LiveBubble">⚪ Live TV Channels</option>
                 </select>
-                <label>Paste Multiple Links (One link per line)</label>
+                <label>Paste Multiple Links (Har line mein 1 link)</label>
                 <textarea id="bulkLinks" rows="5" placeholder="https://youtube.com/...&#10;https://facebook.com/..."></textarea>
-                <p style="font-size: 11px; color: #64748b; margin-top: 5px;">Note: Bulk tool automatically extracts links. Edit names later from the list below.</p>
             </div>
             
             <button class="btn" onclick="saveContent()" id="submitBtn">🚀 Publish</button>
             <p id="msg" style="text-align:center; font-weight:700; font-size:13px; margin-top:12px;"></p>
         </div>
 
-        <!-- Section Filters & List -->
         <div class="card">
             <h3 style="margin-top:0; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">📋 Live Network Manager</h3>
             
@@ -144,7 +137,6 @@
             msg.innerText = 'Processing...';
 
             if (isBulkMode) {
-                // BULK ADD LOGIC
                 const category = document.getElementById('bulkCategory').value;
                 const linksText = document.getElementById('bulkLinks').value;
                 const links = linksText.split('\\n').filter(l => l.trim() !== '');
@@ -155,20 +147,19 @@
                     title: `Bulk Item ${Math.floor(Math.random() * 1000)}`,
                     category: category,
                     status: 'active',
-                    location: JSON.stringify({ desc: 'Auto Generated', badge: 'NEW', image: '', link: link.trim() })
+                    location: JSON.stringify({ desc: '', badge: '', image: '', link: link.trim() })
                 }));
 
                 const { error } = await supabaseClient.from('media_hub').insert(bulkData);
                 if(error) msg.innerHTML = `<span style="color:#ef4444;">Error: ${error.message}</span>`;
                 else {
-                    msg.innerHTML = `<span style="color:#10b981;">✅ ${bulkData.length} Items successfully bulk uploaded! Edit their names below.</span>`;
+                    msg.innerHTML = `<span style="color:#10b981;">✅ Bulk uploaded successfully!</span>`;
                     document.getElementById('bulkLinks').value = '';
                     loadAdminList();
                 }
                 return;
             }
 
-            // SINGLE ADD/EDIT LOGIC
             const editId = document.getElementById('editId').value;
             const category = document.getElementById('itemCategory').value;
             const title = document.getElementById('itemTitle').value.trim();
@@ -190,9 +181,8 @@
                 error = res.error;
             }
             
-            if(error) {
-                msg.innerHTML = `<span style="color:#ef4444;">Error: ${error.message}</span>`;
-            } else {
+            if(error) msg.innerHTML = `<span style="color:#ef4444;">Error: ${error.message}</span>`;
+            else {
                 msg.innerHTML = '<span style="color:#10b981;">✅ Successfully Saved!</span>';
                 resetForm();
                 loadAdminList();
@@ -210,20 +200,28 @@
             document.getElementById('submitBtn').style.background = 'var(--accent)';
         }
 
-        function startEdit(id, title, category, locationData) {
+        // 🟢 FIX: This function now safely pulls data directly from memory instead of HTML strings
+        function startEdit(id) {
+            const item = allAdminItems.find(i => i.id === id);
+            if(!item) return;
+
             switchAddMode('single', document.querySelector('.card .admin-tabs:first-of-type .tab-btn'));
-            document.getElementById('editId').value = id;
-            document.getElementById('itemTitle').value = title;
-            document.getElementById('itemCategory').value = category;
+            document.getElementById('editId').value = item.id;
+            document.getElementById('itemTitle').value = item.title;
+            document.getElementById('itemCategory').value = item.category;
             
             try {
-                let parsed = JSON.parse(locationData);
+                let parsed = JSON.parse(item.location);
                 document.getElementById('itemDesc').value = parsed.desc || '';
                 document.getElementById('itemBadge').value = parsed.badge || '';
                 document.getElementById('itemImage').value = parsed.image || '';
                 document.getElementById('itemLink').value = parsed.link || '';
             } catch(e) {
-                document.getElementById('itemLink').value = locationData;
+                // If it's old legacy data
+                document.getElementById('itemDesc').value = '';
+                document.getElementById('itemBadge').value = '';
+                document.getElementById('itemImage').value = '';
+                document.getElementById('itemLink').value = item.location || '';
             }
             
             document.getElementById('submitBtn').innerText = '💾 Update Content';
@@ -243,26 +241,23 @@
             document.querySelectorAll('.card:last-of-type .tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             
-            if(filterStr === 'All') {
-                renderAdminList(allAdminItems);
-            } else {
-                renderAdminList(allAdminItems.filter(item => item.category.includes(filterStr)));
-            }
+            if(filterStr === 'All') renderAdminList(allAdminItems);
+            else renderAdminList(allAdminItems.filter(item => item.category.includes(filterStr)));
         }
 
         function renderAdminList(items) {
             const listDiv = document.getElementById('adminList');
-            if(items.length === 0) return listDiv.innerHTML = `<p style="color:#64748b; font-size:13px; text-align:center;">No items found in this section.</p>`;
+            if(items.length === 0) return listDiv.innerHTML = `<p style="color:#64748b; font-size:13px; text-align:center;">No items found.</p>`;
             
             let html = '';
             items.forEach(item => {
                 const isHidden = item.status === 'hidden';
                 
-                // Decode JSON to show Image Thumbnail & Details
                 let parsed = { image: '', link: '' };
                 try { parsed = JSON.parse(item.location); } catch(e) { parsed.link = item.location; }
                 
-                const imgTag = parsed.image ? `<img src="${parsed.image}" class="item-preview">` : `<div class="item-preview">📰</div>`;
+                // Show Thumbnail image if exists, else show Emoji
+                const imgTag = parsed.image ? `<img src="${parsed.image}" class="item-preview">` : `<div class="item-preview">📺</div>`;
 
                 html += `
                     <div class="admin-item" style="${isHidden ? 'opacity:0.6; border-left:4px solid #ef4444;' : 'border-left:4px solid #2563eb;'}">
@@ -275,7 +270,7 @@
                             </div>
                         </div>
                         <div style="display:flex; flex-direction:column; gap:4px; margin-left:10px;">
-                            <button onclick="startEdit('${item.id}', '${item.title.replace(/'/g, "\\'")}', '${item.category}', '${(item.location || '').replace(/'/g, "\\'")}')" class="action-btn" style="background:#f1f5f9; color:#0f172a; border:1px solid #cbd5e1;">Edit</button>
+                            <button onclick="startEdit('${item.id}')" class="action-btn" style="background:#f1f5f9; color:#0f172a; border:1px solid #cbd5e1;">Edit</button>
                             <div style="display:flex; gap:4px;">
                                 <button onclick="toggleStatus('${item.id}', '${item.status}')" class="action-btn" style="background:${isHidden ? '#10b981' : '#f59e0b'}; color:white;">${isHidden ? 'Show' : 'Hide'}</button>
                                 <button onclick="deleteItem('${item.id}')" class="action-btn" style="background:#ef4444; color:white;">Del</button>
