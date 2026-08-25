@@ -3,46 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityPulse - Family Media & News Hub</title>
+    <title>CityPulse - Digital Media Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; padding: 15px; color: #1e293b; }
+        .max-width-container { max-width: 700px; margin: 0 auto; }
         
         /* Auth Bar */
-        .auth-bar { background: #ffffff; padding: 12px 16px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #e2e8f0; font-size: 13px; }
-        .auth-section { display: none; margin-top: 10px; text-align: center; background: #fff; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px; }
-        
+        .auth-bar { background: #ffffff; padding: 12px 16px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #e2e8f0; font-size: 13px; }
+        .auth-section { display: none; margin-top: 10px; text-align: center; background: #fff; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
         .google-btn { background: #ffffff; color: #374151; border: 1px solid #cbd5e1; padding: 10px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); width: 100%; justify-content: center; }
         .google-btn:hover { background: #f8fafc; }
 
         .auth-btn { background: #2563eb; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; }
         .logout-btn { background: #fee2e2; color: #dc2626; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; }
 
-        .tab-btn { background: #e2e8f0; border: none; padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; color: #475569; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
-        .tab-btn.active, .tab-btn:hover { background: #2563eb; color: white; }
-
-        .navigation-bar { display: none; margin-bottom: 15px; text-align: center; }
-        .back-btn { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
-
-        .max-width-container { max-width: 700px; margin: 0 auto; }
-
-        .news-card { background: #fff; border: 1px solid #e2e8f0; border-left: 4px solid #2563eb; padding: 16px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); position: relative; }
-        .news-badge { display: inline-block; background: #dbeafe; color: #1e40af; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 6px; margin-bottom: 8px; }
-        .news-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+        /* Gateway Cards (Navigation Hub) */
+        .hub-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 15px; }
+        .hub-card { background: #ffffff; border: 1px solid #e2e8f0; padding: 20px; border-radius: 16px; text-decoration: none; color: inherit; box-shadow: 0 4px 6px rgba(0,0,0,0.03); transition: transform 0.2s, box-shadow 0.2s; display: flex; align-items: center; gap: 16px; }
+        .hub-card:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.06); }
         
-        .video-container { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; background: #000; border-radius: 8px; overflow: hidden; margin-top: 10px; }
-        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-        
-        .wishlist-btn { background: #fef3c7; color: #d97706; border: 1px solid #f59e0b; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; float: right; margin-top: -30px; }
-        .wishlist-btn.saved { background: #fee2e2; color: #dc2626; border-color: #ef4444; }
+        .hub-icon { font-size: 32px; background: #f1f5f9; padding: 14px; border-radius: 12px; }
+        .hub-info h3 { margin: 0 0 4px 0; font-size: 18px; color: #0f172a; }
+        .hub-info p { margin: 0; font-size: 13px; color: #64748b; }
 
-        .ad-card { background: linear-gradient(135deg, #fef3c7, #fde68a); border: 1px solid #f59e0b; padding: 14px 18px; border-radius: 12px; margin-bottom: 16px; text-align: center; }
-        .ad-badge { background: #d97706; color: white; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
-        .ad-text { font-size: 13px; font-weight: 600; color: #78350f; margin-top: 6px; }
-
-        .news-meta { font-size: 12px; color: #94a3b8; margin-top: 10px; }
-        .no-data { text-align: center; color: #64748b; font-size: 14px; background: #fff; padding: 30px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .news-theme { border-left: 6px solid #dc2626; }
+        .ent-theme { border-left: 6px solid #7c3aed; }
+        .cartoon-theme { border-left: 6px solid #2563eb; }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -51,7 +39,7 @@
 <body>
 
     <div class="max-width-container">
-        <!-- Reusable Component Header -->
+        <!-- Reusable Header Component -->
         <city-header></city-header>
 
         <!-- Auth Bar -->
@@ -73,15 +61,26 @@
             </button>
         </div>
 
-        <!-- Reusable Component Tabs -->
-        <city-tabs></city-tabs>
+        <!-- Gateway Hub Navigation Cards -->
+        <div style="font-weight: 700; font-size: 16px; color: #0f172a; margin-bottom: 5px;">📍 Select Category / Portal</div>
+        <div style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Aap kis section mein jana chahte hain? Neeche select karein:</div>
 
-        <div class="navigation-bar" id="navBar">
-            <button class="back-btn" onclick="resetFilter()">⬅️ Back to All Channels</button>
-        </div>
+        <div class="hub-grid">
+            <a href="news.html" class="hub-card news-theme">
+                <div class="hub-icon">📰</div>
+                <div class="hub-info">
+                    <h3>City News & Live Updates</h3>
+                    <p>Local reporting, breaking news, aur live news channels dekhein.</p>
+                </div>
+            </a>
 
-        <div id="publicFeed">
-            <div class="no-data">Feeds load ho rahi hain...</div>
+            <a href="entertainment.html" class="hub-card ent-theme">
+                <div class="hub-icon">🎬</div>
+                <div class="hub-info">
+                    <h3>Entertainment & Movies</h3>
+                    <p>Movies, music, comedy, aur viral entertainment shows.</p>
+                </div>
+            </a>
         </div>
     </div>
 
@@ -90,18 +89,12 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmZWZreXJ3eGRoZHh5YWp1dHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMjY0ODcsImV4cCI6MjEwMjgwMjQ4N30.lmnKyvigM5JeVf1y_BR0tjqAp4PiXioZNcCE5VVYsKg';
         
         const localSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        let allPosts = [];
         let currentUser = null;
-        let cloudWishlist = [];
 
         async function checkUserSession() {
             const { data: { session } } = await localSupabase.auth.getSession();
             currentUser = session ? session.user : null;
             updateAuthUI();
-            if (currentUser) {
-                await fetchCloudWishlist();
-            }
-            fetchPublicFeed();
         }
 
         function updateAuthUI() {
@@ -115,7 +108,7 @@
                 logoutBtn.style.display = 'inline-block';
                 document.getElementById('authFormSection').style.display = 'none';
             } else {
-                statusText.innerHTML = `⚠️ Guest Mode (Cloud sync ke liye login karein)`;
+                statusText.innerHTML = `⚠️ Guest Mode`;
                 mainBtn.style.display = 'inline-block';
                 logoutBtn.style.display = 'none';
             }
@@ -129,147 +122,18 @@
         async function loginWithGoogle() {
             const { error } = await localSupabase.auth.signInWithOAuth({
                 provider: 'google',
-                options: {
-                    redirectTo: window.location.href
-                }
+                options: { redirectTo: window.location.href }
             });
-            if (error) {
-                alert('Google Login Error: ' + error.message);
-            }
+            if (error) alert('Google Login Error: ' + error.message);
         }
 
         async function logoutUser() {
             await localSupabase.auth.signOut();
             currentUser = null;
-            cloudWishlist = [];
             updateAuthUI();
-            renderFeed(allPosts);
-        }
-
-        async function fetchCloudWishlist() {
-            if (!currentUser) return;
-            const { data, error } = await localSupabase
-                .from('wishlist')
-                .select('channel_title')
-                .eq('user_id', currentUser.id);
-
-            if (!error && data) {
-                cloudWishlist = data.map(item => item.channel_title);
-            }
-        }
-
-        async function toggleWishlist(title) {
-            if (!currentUser) {
-                alert('⚠️ Pehle Google se login karein taaki wishlist cloud par save ho sake!');
-                toggleAuthForm();
-                return;
-            }
-
-            const isAlreadySaved = cloudWishlist.includes(title);
-
-            if (isAlreadySaved) {
-                const { error } = await localSupabase
-                    .from('wishlist')
-                    .delete()
-                    .eq('user_id', currentUser.id)
-                    .eq('channel_title', title);
-
-                if (!error) {
-                    cloudWishlist = cloudWishlist.filter(t => t !== title);
-                }
-            } else {
-                const { error } = await localSupabase
-                    .from('wishlist')
-                    .insert([{ user_id: currentUser.id, channel_title: title }]);
-
-                if (!error) {
-                    cloudWishlist.push(title);
-                }
-            }
-            renderFeed(allPosts);
-        }
-
-        async function fetchPublicFeed() {
-            const publicFeedContainer = document.getElementById('publicFeed');
-            try {
-                const { data, error } = await localSupabase
-                    .from('media_hub')
-                    .select('*')
-                    .eq('status', 'active')
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
-                allPosts = data || [];
-                renderFeed(allPosts);
-            } catch (err) {
-                publicFeedContainer.innerHTML = `<div class="no-data" style="color: #dc2626;">Error loading: ${err.message}</div>`;
-            }
-        }
-
-        function renderFeed(posts) {
-            const publicFeedContainer = document.getElementById('publicFeed');
-            let publicHtml = `
-                <div class="ad-card">
-                    <span class="ad-badge">Sponsored / Ad</span>
-                    <div class="ad-text">📢 Apne local business ka ad yahan lagwayein! Contact CityPulse Media.</div>
-                </div>
-            `;
-
-            if (posts.length === 0) {
-                publicHtml += `<div class="no-data">Is category ya wishlist mein abhi koi channel nahi hai.</div>`;
-                publicFeedContainer.innerHTML = publicHtml;
-                return;
-            }
-
-            posts.forEach(item => {
-                const categoryText = item.category || 'News';
-                const isSaved = cloudWishlist.includes(item.title);
-                let contentBody = `<div class="video-container">${item.location}</div>`;
-
-                publicHtml += `
-                    <div class="news-card">
-                        <span class="news-badge">${categoryText}</span>
-                        <button class="wishlist-btn ${isSaved ? 'saved' : ''}" onclick="toggleWishlist('${item.title.replace(/'/g, "\\'")}')">
-                            ${isSaved ? '❤️ Saved' : '⭐ Add to Wishlist'}
-                        </button>
-                        <div class="news-title">${item.title}</div>
-                        ${contentBody}
-                        <div class="news-meta">🕒 Broadcasted via CityPulse Network</div>
-                    </div>
-                `;
-            });
-
-            publicFeedContainer.innerHTML = publicHtml;
-        }
-
-        function filterCategory(selectedType) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('navBar').style.display = selectedType === 'All' ? 'none' : 'block';
-
-            if (selectedType === 'All') {
-                resetFilter();
-                return;
-            }
-
-            if (selectedType === 'Wishlist') {
-                const filtered = allPosts.filter(item => cloudWishlist.includes(item.title));
-                renderFeed(filtered);
-                return;
-            }
-
-            const filtered = allPosts.filter(item => (item.category || '').toLowerCase().includes(selectedType.toLowerCase()));
-            renderFeed(filtered);
-        }
-
-        function resetError() {} // Dummy
-
-        function resetFilter() {
-            document.getElementById('navBar').style.display = 'none';
-            renderFeed(allPosts);
         }
 
         checkUserSession();
     </script>
 </body>
 </html>
-
