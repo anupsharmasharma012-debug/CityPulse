@@ -40,9 +40,9 @@
         .edit-btn { background: #e0f2fe; color: #0284c7; border: none; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
         .update-btn { background: #0f172a; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 10px; width: 100%; }
 
-        .nav-link { display: block; text-align: center; margin-top: 25px; color: #2563eb; text-decoration: none; font-weight: 600; font-size: 14px; }
+        .nav-links { display: flex; justify-content: center; gap: 15px; margin-top: 25px; }
+        .nav-link { color: #2563eb; text-decoration: none; font-weight: 600; font-size: 14px; }
         
-        /* Auth Styles */
         #authSection { max-width: 400px; margin: 40px auto; text-align: center; }
         #adminContent { display: none; }
     </style>
@@ -67,7 +67,7 @@
         <p id="authMsg" style="font-size: 13px; font-weight: 600; margin-top: 10px; color: #dc2626;"></p>
     </div>
 
-    <!-- Main Admin Dashboard (Hidden till login) -->
+    <!-- Main Admin Dashboard -->
     <div class="max-container" id="adminContent">
         <div class="card">
             <h3>➕ Naya Channel Add Karein</h3>
@@ -98,7 +98,11 @@
             </div>
         </div>
 
-        <a href="index.html" class="nav-link" target="_blank">🌐 View Live Public App &rarr;</a>
+        <div class="nav-links">
+            <a href="index.html" target="_blank">🌐 Home</a>
+            <a href="news.html" target="_blank">📰 News Page</a>
+            <a href="entertainment.html" target="_blank">🎬 Entertainment Page</a>
+        </div>
     </div>
 
     <script>
@@ -107,7 +111,6 @@
         
         const localSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Authentication System
         async function checkSession() {
             const { data: { session } } = await localSupabase.auth.getSession();
             if (session) {
@@ -141,10 +144,9 @@
             document.getElementById('adminContent').style.display = 'block';
             document.getElementById('logoutBtn').style.display = 'inline-block';
             document.getElementById('adminStatusText').innerHTML = `Logged in as: <b style="color:#2563eb;">${email}</b>`;
-            loadAdminList(); // Only load channels after login
+            loadAdminList();
         }
 
-        // --- Rest of your Admin Features (Rename, Update, Add, Bulk) --- //
         async function saveData() {
             const category = document.getElementById('itemCategory').value;
             const title = document.getElementById('itemTitle').value.trim();
@@ -164,7 +166,26 @@
             }
         }
 
-        async function addBulkChannels() { /* Omitted bulk array logic to save space, but it's active in code */ }
+        async function addBulkChannels() {
+            const msg = document.getElementById('bulkMsg');
+            msg.innerText = "⏳ Uploading...";
+            
+            const bulkData = [
+                { title: "Aaj Tak Live", category: "News", location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/live_stream?channel=UCt4t-jeY85JegMlZ-E5UWtA" frameborder="0" allowfullscreen></iframe>', status: "active" },
+                { title: "Tom & Jerry Cartoon", category: "Cartoon", location: '<iframe width="100%" height="315" src="https://www.youtube.com/embed/t0Q2otsqC4I" frameborder="0" allowfullscreen></iframe>', status: "active" }
+            ];
+
+            const { error } = await localSupabase.from('media_hub').insert(bulkData);
+            
+            if (error) {
+                msg.style.color = '#dc2626';
+                msg.innerText = '❌ Error: ' + error.message;
+            } else {
+                msg.style.color = '#16a34a';
+                msg.innerText = '✅ Bulk channels add ho gaye!';
+                loadAdminList();
+            }
+        }
 
         async function loadAdminList() {
             const listDiv = document.getElementById('adminList');
@@ -225,7 +246,7 @@
             }
         }
 
-        checkSession(); // Check if already logged in when page loads
+        checkSession();
     </script>
 </body>
 </html>
