@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityPulse - Master Admin</title>
+    <title>CityPulse - Master Enterprise Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; margin: 0; padding: 15px; color: #1e293b; }
@@ -11,8 +11,9 @@
         .card { background: white; border: 1px solid #e2e8f0; padding: 20px; border-radius: 14px; margin-bottom: 18px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
         input, select, textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; margin-top: 5px; margin-bottom: 14px; box-sizing: border-box; background: #f8fafc; font-family: inherit; }
         .btn { background: #0f172a; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; }
+        .btn:hover { background: #1e293b; }
         .admin-item { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #e2e8f0; }
-        .badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: #dbeafe; color: #1e40af; }
+        .badge { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; background: #dbeafe; color: #1e40af; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -20,33 +21,44 @@
     <div class="max-container">
         <div class="card" style="text-align: center; background: #0f172a; color: white;">
             <h2 style="margin:0;">🎛️ CityPulse Enterprise Admin</h2>
-            <p style="margin: 5px 0 0; font-size: 12px; color: #94a3b8;">Manage Network Content, Ads & Feeds</p>
+            <p style="margin: 5px 0 0; font-size: 12px; color: #94a3b8;">Manage Network Content, YouTube/FB Embeds & Ads</p>
         </div>
 
         <div class="card">
-            <h3 style="margin-top:0;">➕ Add Content / Ad</h3>
+            <h3 style="margin-top:0;">➕ Add New Portal Content / Ad</h3>
             <label><b>Target Category:</b></label>
             <select id="itemCategory">
                 <optgroup label="📢 Advertisement">
                     <option value="Ad_Banner">Global Ad Banner</option>
                 </optgroup>
-                <optgroup label="📰 News Categories">
-                    <option value="News_Live">Live TV News</option>
-                    <option value="News_Crime">Crime & Traffic</option>
-                    <option value="News_Sports">Sports</option>
-                    <option value="News_Business">Business & Market</option>
+                <optgroup label="📰 News & Media Categories">
+                    <option value="News_Live">📺 Live TV News</option>
+                    <option value="News_Headlines">⚡ Top Headlines</option>
+                    <option value="News_Local">📍 Hyper-Local (Ward/District)</option>
+                    <option value="News_National">🏛️ State & National</option>
+                    <option value="News_Politics">⚖️ Politics</option>
+                    <option value="News_Crime">🚨 Crime & Traffic Alerts</option>
+                    <option value="News_Business">📈 Business & Market</option>
+                    <option value="News_Sports">🏆 Sports & Events</option>
+                    <option value="News_World">🌍 World News</option>
+                    <option value="News_Science">🔬 Science & Environment</option>
+                    <option value="News_FactCheck">✅ Fact Check & Rumors</option>
+                    <option value="News_Reels">📸 Photo & Video News / Reels</option>
                 </optgroup>
                 <optgroup label="🎬 Entertainment Categories">
-                    <option value="Ent_Movies">Movies</option>
-                    <option value="Ent_Shows">Web Shows</option>
-                    <option value="Ent_Cartoon">Kids Cartoons</option>
+                    <option value="Ent_Movies">🍿 Movies</option>
+                    <option value="Ent_Shows">📺 Web Shows</option>
+                    <option value="Ent_Cartoon">🎨 Kids Cartoons</option>
                 </optgroup>
             </select>
-            <label><b>Title / Sponsor Name:</b></label>
-            <input type="text" id="itemTitle" placeholder="e.g. Aaj Tak Live">
-            <label><b>Embed Code (YouTube Iframe / Ad Banner):</b></label>
-            <textarea id="itemLocation" rows="3" placeholder='<iframe ...></iframe>'></textarea>
-            <button class="btn" onclick="publishContent()">🚀 Publish Item</button>
+            
+            <label><b>Title / Headline:</b></label>
+            <input type="text" id="itemTitle" placeholder="e.g. Breaking News: Local Update...">
+            
+            <label><b>Embed Code (YouTube iframe / Facebook video embed / Ad Image):</b></label>
+            <textarea id="itemLocation" rows="3" placeholder='<iframe width="100%" height="315" src="..." frameborder="0" allowfullscreen></iframe>'></textarea>
+            
+            <button class="btn" onclick="publishContent()">🚀 Publish to Network</button>
             <p id="msg" style="text-align:center; font-weight:700; font-size:13px; margin-top:10px;"></p>
         </div>
 
@@ -66,12 +78,15 @@
             const title = document.getElementById('itemTitle').value.trim();
             const location = document.getElementById('itemLocation').value.trim();
             const msg = document.getElementById('msg');
-            if(!title || !location) return msg.innerText = '⚠️ Saare fields bhariye!';
+            
+            if(!title || !location) return msg.innerText = '⚠️ Please saare fields bhariye!';
 
             const { error } = await supabaseClient.from('media_hub').insert([{ title, category, location, status: 'active' }]);
-            if(error) msg.innerText = 'Error: ' + error.message;
-            else {
-                msg.style.color = 'green';
+            if(error) {
+                msg.style.color = '#dc2626';
+                msg.innerText = 'Error: ' + error.message;
+            } else {
+                msg.style.color = '#16a34a';
                 msg.innerText = '✅ Successfully Published!';
                 document.getElementById('itemTitle').value = '';
                 document.getElementById('itemLocation').value = '';
@@ -82,20 +97,22 @@
         async function loadAdminList() {
             const { data } = await supabaseClient.from('media_hub').select('*').order('created_at', { ascending: false });
             const listDiv = document.getElementById('adminList');
-            if(!data || data.length === 0) return listDiv.innerHTML = `<p>No items found.</p>`;
+            
+            if(!data || data.length === 0) return listDiv.innerHTML = `<p style="color:#64748b; font-size:13px;">No items found in database.</p>`;
+            
             let html = '';
             data.forEach(item => {
                 const isHidden = item.status === 'hidden';
                 html += `
                     <div class="admin-item" style="${isHidden ? 'opacity:0.5;' : ''}">
                         <div>
-                            <div style="font-weight:700; font-size:14px;">${item.title}</div>
+                            <div style="font-weight:700; font-size:14px; color:#0f172a;">${item.title}</div>
                             <span class="badge">${item.category}</span>
                             ${isHidden ? '<span class="badge" style="background:#fee2e2; color:#dc2626;">Hidden</span>' : ''}
                         </div>
-                        <div>
-                            <button onclick="toggleStatus('${item.id}', '${item.status}')" style="padding:6px 10px; border:none; border-radius:6px; background:#fef3c7; color:#d97706; font-weight:700; cursor:pointer;">${isHidden ? 'Unhide' : 'Hide'}</button>
-                            <button onclick="deleteItem('${item.id}')" style="padding:6px 10px; border:none; border-radius:6px; background:#fee2e2; color:#dc2626; font-weight:700; cursor:pointer; margin-left:4px;">Del</button>
+                        <div style="display:flex; gap:6px;">
+                            <button onclick="toggleStatus('${item.id}', '${item.status}')" style="padding:6px 10px; border:none; border-radius:6px; background:#fef3c7; color:#d97706; font-weight:700; cursor:pointer; font-size:12px;">${isHidden ? 'Unhide' : 'Hide'}</button>
+                            <button onclick="deleteItem('${item.id}')" style="padding:6px 10px; border:none; border-radius:6px; background:#fee2e2; color:#dc2626; font-weight:700; cursor:pointer; font-size:12px;">Del</button>
                         </div>
                     </div>`;
             });
@@ -108,11 +125,12 @@
         }
 
         async function deleteItem(id) {
-            if(confirm('Delete this item?')) {
+            if(confirm('Kya aap sach mein is item ko delete karna chahte hain?')) {
                 await supabaseClient.from('media_hub').delete().eq('id', id);
                 loadAdminList();
             }
         }
+
         loadAdminList();
     </script>
 </body>
