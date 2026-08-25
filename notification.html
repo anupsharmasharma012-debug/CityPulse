@@ -3,196 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityPulse - Alerts & Notices</title>
-    <!-- [CSS] LINKED TO MASTER STYLESHEET -->
-    <link rel="stylesheet" href="style.css">
+    <title>CityPulse - Notice Board</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* ==========================================
-           [CSS] PAGE-SPECIFIC CUSTOM STYLES START
-           ========================================== */
-        :root { --danger: #ef4444; --warning: #f59e0b; }
-        body.dark-theme { --danger: #f87171; }
-        
-        /* Header Layout Styles */
-        .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-        .header-left { display: flex; align-items: center; gap: 12px; }
-        .back-btn { background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; }
-        .header h1 { font-size: 18px; font-weight: bold; }
-        
-        .header-actions { display: flex; align-items: center; gap: 12px; }
-        .clear-btn { font-size: 11px; font-weight: 700; color: var(--text-sub); cursor: pointer; background: var(--bg-color); padding: 4px 8px; border-radius: 6px; }
-        .settings-icon { font-size: 18px; cursor: pointer; color: var(--text-main); }
-
-        /* Scrollable Filter Chips Styles */
-        .filter-tabs { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 4px; }
-        .filter-tabs::-webkit-scrollbar { display: none; }
-        .tab-chip { white-space: nowrap; padding: 6px 14px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; font-size: 11px; font-weight: 600; color: var(--text-sub); cursor: pointer; display: flex; align-items: center; gap: 4px; transition: 0.2s; }
-        .tab-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-
-        /* Notification List Styles */
-        .notif-list { display: flex; flex-direction: column; gap: 10px; }
-        .notif-card { display: flex; gap: 12px; background: var(--card-bg); padding: 14px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); cursor: pointer; position: relative; overflow: hidden; }
-        
-        /* Unread State Styles */
-        .notif-card.unread { background: rgba(0, 122, 153, 0.03); border-color: rgba(0, 122, 153, 0.2); }
-        .unread-dot { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; position: absolute; top: 14px; right: 14px; }
-        
-        .notif-icon { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; background: var(--bg-color); border: 1px solid var(--border); }
-        .notif-card.emergency .notif-icon { background: rgba(239, 68, 68, 0.1); color: var(--danger); border-color: rgba(239, 68, 68, 0.2); }
-        .notif-card.utility .notif-icon { background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); }
-
-        .notif-content { display: flex; flex-direction: column; gap: 4px; flex: 1; padding-right: 12px; }
-        .notif-header { display: flex; justify-content: space-between; align-items: center; }
-        .notif-tag { font-size: 9px; font-weight: 800; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; background: var(--border); color: var(--text-main); }
-        .notif-card.emergency .notif-tag { background: var(--danger); color: white; }
-        
-        .notif-time { font-size: 10px; color: var(--text-sub); font-weight: 600; }
-        .notif-title { font-size: 13px; font-weight: 700; color: var(--text-main); line-height: 1.2; }
-        .notif-desc { font-size: 11px; color: var(--text-sub); line-height: 1.3; }
-        /* ==========================================
-           [CSS] PAGE-SPECIFIC CUSTOM STYLES END
-           ========================================== */
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; padding: 12px; color: #1e293b; padding-bottom: 70px; }
+        .max-width-container { max-width: 700px; margin: 0 auto; }
+        .notice-card { background: white; border: 1px solid #e2e8f0; border-left: 4px solid #2563eb; padding: 16px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
     </style>
+    <script src="components.js" defer></script>
 </head>
 <body>
+    <div class="max-width-container">
+        <city-header></city-header>
+        <div style="font-weight: 800; font-size: 18px; margin-bottom: 15px; color: #0f172a;">🔔 Notice Board & Civic Alerts</div>
 
-<!-- [HTML] MAIN CONTENT CONTAINER START -->
-<div class="page-container">
-    
-    <!-- [HTML] HEADER SECTION START -->
-    <div class="header">
-        <div class="header-left">
-            <button class="back-btn" onclick="history.back()">←</button>
-            <h1>Alerts & Notices</h1>
+        <div class="notice-card">
+            <div style="font-size: 11px; font-weight: 700; color: #2563eb; margin-bottom: 4px;">PUBLIC HEALTH DRIVE</div>
+            <div style="font-weight: 700; font-size: 15px; margin-bottom: 6px;">Free Vaccination Camp in Ward No. 12</div>
+            <div style="font-size: 13px; color: #475569;">Aane wale shaniwar ko community hall mein subah 9 baje se camp shuru hoga.</div>
         </div>
-        <div class="header-actions">
-            <span class="clear-btn" onclick="alert('All notifications cleared!')">Clear All</span>
-            <span class="settings-icon" onclick="alert('Opening Notification Preferences (Sound/DND)...')">⚙️</span>
-        </div>
+
+        <bottom-nav></bottom-nav>
     </div>
-    <!-- [HTML] HEADER SECTION END -->
-
-    <!-- [HTML] FILTER TABS START -->
-    <div class="filter-tabs">
-        <div class="tab-chip active">All</div>
-        <div class="tab-chip">🔵 Unread (2)</div>
-        <div class="tab-chip">🚨 Emergency</div>
-        <div class="tab-chip">📢 Notice Board</div>
-        <div class="tab-chip">⚡ Utilities</div>
-    </div>
-    <!-- [HTML] FILTER TABS END -->
-
-    <!-- [HTML] NOTIFICATION LIST START -->
-    <div class="notif-list">
-        
-        <!-- Emergency / Critical Weather Alert (Unread) -->
-        <div class="notif-card emergency unread" onclick="alert('Opening Emergency Details...')">
-            <div class="unread-dot"></div>
-            <div class="notif-icon">🚨</div>
-            <div class="notif-content">
-                <div class="notif-header">
-                    <span class="notif-tag">Critical Alert</span>
-                    <span class="notif-time">Just now</span>
-                </div>
-                <div class="notif-title">Severe Weather Warning</div>
-                <div class="notif-desc">Heavy rainfall expected in Bhatpara over the next 4 hours. Avoid low-lying areas.[span_6](start_span)[span_6](end_span)</div>
-            </div>
-        </div>
-
-        <!-- Utility Interruption (Unread) -->
-        <div class="notif-card utility unread" onclick="alert('Opening Utility Details...')">
-            <div class="unread-dot"></div>
-            <div class="notif-icon">⚡</div>
-            <div class="notif-content">
-                <div class="notif-header">
-                    <span class="notif-tag" style="background: var(--warning); color: white;">Utility Interruption</span>
-                    <span class="notif-time">1 hr ago</span>
-                </div>
-                <div class="notif-title">Power Outage Scheduled</div>
-                <div class="notif-desc">Maintenance work in Ward 14. Power will be out from 2 PM to 5 PM today.[span_7](start_span)[span_7](end_span)</div>
-            </div>
-        </div>
-
-        <!-- Civic / Notice Board (Read) -->
-        <div class="notif-card" onclick="alert('Opening Tender Document...')">
-            <div class="notif-icon">📢</div>
-            <div class="notif-content">
-                <div class="notif-header">
-                    <span class="notif-tag">Notice Board</span>
-                    <span class="notif-time">Yesterday</span>
-                </div>
-                <div class="notif-title">Local Tender: Road Repair Work</div>
-                <div class="notif-desc">Bhatpara Municipality has released a new tender for repairing Ghosh Para road.[span_8](start_span)[span_8](end_span)</div>
-            </div>
-        </div>
-
-        <!-- Scheme / Job Deadline (Read) -->
-        <div class="notif-card" onclick="alert('Opening Scheme Deep Link...')">
-            <div class="notif-icon">💼</div>
-            <div class="notif-content">
-                <div class="notif-header">
-                    <span class="notif-tag">Deadline Alert</span>
-                    <span class="notif-time">2 days ago</span>
-                </div>
-                <div class="notif-title">Swasthya Sathi Application</div>
-                <div class="notif-desc">Last date to apply or update details for the health scheme is approaching. Tap to apply.[span_9](start_span)[span_9](end_span)</div>
-            </div>
-        </div>
-
-        <!-- System/Updates (Read) -->
-        <div class="notif-card">
-            <div class="notif-icon">✅</div>
-            <div class="notif-content">
-                <div class="notif-header">
-                    <span class="notif-tag">App Update</span>
-                    <span class="notif-time">1 week ago</span>
-                </div>
-                <div class="notif-title">Jan Shikayat Portal Updated</div>
-                <div class="notif-desc">You can now track live status of your submitted complaints.[span_10](start_span)[span_10](end_span)</div>
-            </div>
-        </div>
-
-    </div>
-    <!-- [HTML] NOTIFICATION LIST END -->
-
-</div>
-<!-- [HTML] MAIN CONTENT CONTAINER END -->
-
-<!-- [HTML] MODERN 5-TAB BOTTOM NAVIGATION START -->
-<div class="bottom-nav">
-    <a href="index.html" class="nav-item">
-        <div class="nav-icon">🏠</div><span>Home</span>
-    </a>
-    <a href="profile.html" class="nav-item">
-        <div class="nav-icon">👤</div><span>Profile</span>
-    </a>
-    <a href="search.html" class="nav-item">
-        <div class="nav-icon">🔍</div><span>Search</span>
-    </a>
-    <a href="category.html" class="nav-item">
-        <div class="nav-icon">📂</div><span>Category</span>
-    </a>
-    <a href="notifications.html" class="nav-item active">
-        <div class="nav-icon">🔔</div><span>Alerts</span>
-    </a>
-</div>
-<!-- [HTML] MODERN 5-TAB BOTTOM NAVIGATION END -->
-
-<!-- [JS] SCRIPT LOGIC START -->
-<script>
-    // Global Dark Mode Sync
-    if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
-    
-    // Filter chip active state toggle logic
-    document.querySelectorAll('.tab-chip').forEach(tab => {
-        tab.addEventListener('click', function() {
-            document.querySelectorAll('.tab-chip').forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
-</script>
-<!-- [JS] SCRIPT LOGIC END -->
-
 </body>
 </html>
-
