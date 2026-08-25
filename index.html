@@ -8,9 +8,6 @@
     
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; padding: 15px; color: #1e293b; }
-        .header { background: #ffffff; padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.04); margin-bottom: 15px; text-align: center; }
-        .header h1 { margin: 0 0 6px 0; color: #0f172a; font-size: 24px; }
-        .header p { color: #64748b; margin: 0; font-size: 13px; }
         
         /* Auth Bar */
         .auth-bar { background: #ffffff; padding: 12px 16px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #e2e8f0; font-size: 13px; }
@@ -22,7 +19,6 @@
         .auth-btn { background: #2563eb; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; }
         .logout-btn { background: #fee2e2; color: #dc2626; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; }
 
-        .tabs-container { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 15px; }
         .tab-btn { background: #e2e8f0; border: none; padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; color: #475569; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
         .tab-btn.active, .tab-btn:hover { background: #2563eb; color: white; }
 
@@ -50,16 +46,15 @@
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="components.js" defer></script>
 </head>
 <body>
 
-    <div class="header">
-        <h1>CityPulse 🏙️</h1>
-        <p>Aapka Apna Digital Family & Media Hub</p>
-    </div>
-
-    <!-- Auth Bar -->
     <div class="max-width-container">
+        <!-- Reusable Component Header -->
+        <city-header></city-header>
+
+        <!-- Auth Bar -->
         <div class="auth-bar" id="authBarContainer">
             <div>
                 <span id="userStatusText" style="font-weight: 600; color: #475569;">Checking session...</span>
@@ -78,13 +73,8 @@
             </button>
         </div>
 
-        <div class="tabs-container">
-            <button class="tab-btn active" onclick="filterCategory('All')">🌟 All</button>
-            <button class="tab-btn" onclick="filterCategory('News')">📰 News</button>
-            <button class="tab-btn" onclick="filterCategory('Cartoon')">🎨 Cartoon</button>
-            <button class="tab-btn" onclick="filterCategory('Entertainment')">🎬 Entertainment</button>
-            <button class="tab-btn" onclick="filterCategory('Wishlist')" style="background: #fef3c7; color: #92400e;">⭐ My Wishlist</button>
-        </div>
+        <!-- Reusable Component Tabs -->
+        <city-tabs></city-tabs>
 
         <div class="navigation-bar" id="navBar">
             <button class="back-btn" onclick="resetFilter()">⬅️ Back to All Channels</button>
@@ -270,6 +260,8 @@
             const filtered = allPosts.filter(item => (item.category || '').toLowerCase().includes(selectedType.toLowerCase()));
             renderFeed(filtered);
         }
+
+        function resetError() {} // Dummy
 
         function resetFilter() {
             document.getElementById('navBar').style.display = 'none';
