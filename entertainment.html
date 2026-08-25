@@ -9,12 +9,10 @@
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; padding: 12px; color: #1e293b; padding-bottom: 70px; }
         .max-width-container { max-width: 700px; margin: 0 auto; }
         .page-header { background: #7c3aed; color: white; padding: 12px; border-radius: 10px; text-align: center; font-weight: 800; font-size: 16px; margin-bottom: 12px; }
-        
         .sub-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 15px; scrollbar-width: none; }
         .sub-tabs::-webkit-scrollbar { display: none; }
         .tab-btn { background: #e2e8f0; border: none; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; color: #475569; }
         .tab-btn.active { background: #7c3aed; color: white; }
-
         .card { background: white; border: 1px solid #e2e8f0; border-left: 4px solid #7c3aed; padding: 14px; border-radius: 12px; margin-bottom: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .video-box { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; border-radius: 8px; overflow: hidden; margin-top: 8px; }
         .video-box iframe, .video-box img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; object-fit: cover; }
@@ -46,6 +44,7 @@
 
         async function fetchEntData() {
             const { data } = await supabaseClient.from('media_hub').select('*').eq('status', 'active').order('created_at', { ascending: false });
+            if(!data) return;
             rawEnt = data.filter(i => i.category.startsWith('Ent_'));
             renderList(rawEnt);
         }
@@ -60,15 +59,9 @@
         function renderList(items) {
             const feed = document.getElementById('entFeed');
             if(items.length === 0) return feed.innerHTML = `<div style="text-align:center; padding:30px; background:white; border-radius:12px; color:#64748b;">Is category mein koi content uplabdh nahi hai.</div>`;
-            
             let html = '';
             items.forEach(item => {
-                html += `
-                    <div class="card">
-                        <div style="font-size: 15px; font-weight: 700; color: #0f172a;">${item.title}</div>
-                        <div style="font-size: 11px; color: #7c3aed; font-weight: 700; margin-top:2px;">Category: ${item.category}</div>
-                        <div class="video-box">${item.location}</div>
-                    </div>`;
+                html += `<div class="card"><div style="font-size: 15px; font-weight: 700; color: #0f172a;">${item.title}</div><div class="video-box">${item.location}</div></div>`;
             });
             feed.innerHTML = html;
         }
