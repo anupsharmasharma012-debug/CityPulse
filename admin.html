@@ -3,82 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityPulse - Master Control Panel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>CityPulse - Advanced Master Backend</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #07090e;
-            --card-bg: #131824;
-            --card-border: #222b3d;
-            --accent: #3b82f6;
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
+            --bg-dark: #f8fafc;
+            --card-bg: #ffffff;
+            --card-border: #e2e8f0;
+            --accent: #2563eb;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
         }
+        /* Yeh admin panel Light mode mein banaya hai taaki aapko easy rahe */
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); margin: 0; padding: 15px; color: var(--text-main); }
-        .max-container { max-width: 750px; margin: 0 auto; }
-        .header-box { background: linear-gradient(135deg, #1e1b4b, #0f172a); border: 1px solid var(--accent); padding: 20px; border-radius: 16px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(59,130,246,0.2); }
+        .max-container { max-width: 800px; margin: 0 auto; }
         
-        .card { background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        .card { background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         
-        label { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 5px; display: block; text-transform: uppercase; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid var(--card-border); border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; background: #0b0e14; color: #fff; font-family: inherit; font-size: 14px; transition: border 0.2s; }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+        /* Tabs for Admin Categories */
+        .admin-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; scrollbar-width: none; }
+        .admin-tabs::-webkit-scrollbar { display: none; }
+        .tab-btn { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; color: #475569; }
+        .tab-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+        label { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 5px; display: block; margin-top: 10px;}
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 5px; box-sizing: border-box; background: #f8fafc; font-family: inherit; font-size: 13px; }
         
-        .btn { background: var(--accent); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 800; cursor: pointer; width: 100%; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.2s; }
-        .btn:hover { background: #2563eb; }
+        .btn { background: var(--accent); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 10px; }
         
-        .admin-item { display: flex; justify-content: space-between; align-items: center; background: #0b0e14; padding: 14px; border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--card-border); }
-        .badge { font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 4px; background: #1e3a8a; color: #93c5fd; text-transform: uppercase; }
-        .action-btn { padding: 6px 12px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 11px; text-transform: uppercase; }
+        /* Visual Admin List Item */
+        .admin-item { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 12px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #e2e8f0; }
+        .item-preview { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; margin-right: 12px; }
+        .action-btn { padding: 6px 10px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 11px; margin-left: 5px; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="max-container">
-        <div class="header-box">
-            <h2 style="margin:0; font-weight: 900; font-size: 22px;">🎛️ CityPulse Master Backend</h2>
-            <p style="margin: 5px 0 0; font-size: 12px; color: #93c5fd;">Manage FB Live, JioTV Channels, Ads & Headlines</p>
-        </div>
-
+        
+        <!-- Add Content Section -->
         <div class="card">
-            <h3 style="margin-top:0; border-bottom: 1px solid var(--card-border); padding-bottom: 10px;">➕ Add / Edit Content</h3>
+            <h3 style="margin-top:0; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">➕ Add Content / Bulk Upload</h3>
             
+            <div class="admin-tabs">
+                <button class="tab-btn active" onclick="switchAddMode('single', this)">Single Entry</button>
+                <button class="tab-btn" onclick="switchAddMode('bulk', this)" style="background: #10b981; color: white; border-color: #10b981;">🚀 Bulk Add Links</button>
+            </div>
+
             <input type="hidden" id="editId" value="">
 
-            <label>1. Content Placement (Kahan dikhana hai?)</label>
-            <select id="itemCategory">
-                <optgroup label="🏠 Home Page Elements">
-                    <option value="Home_HeroFB">🔴 Top FB Live / Local Channel Carousel</option>
-                    <option value="Home_AdBanner">📢 Local Sponsored Ad Banner</option>
-                </optgroup>
-                <optgroup label="📺 Media Feed Elements (JioTV Style)">
-                    <option value="Feed_LiveBubble">⚪ Live TV Round Channel Logo (Top Row)</option>
-                    <option value="Feed_Headline">⚡ Big Cinematic Headline (16:9 Card)</option>
-                    <option value="News_Standard">📰 Standard News/Crime Card</option>
-                </optgroup>
-            </select>
-            
-            <label>2. Main Title / Channel Name</label>
-            <input type="text" id="itemTitle" placeholder="e.g. Bhatpara Live Official / Breaking News Title">
-            
-            <label>3. Subtitle / Description (Choti Detail)</label>
-            <input type="text" id="itemDesc" placeholder="e.g. Live Ground Reporting / Flat 50% Off">
+            <div id="singleAddMode">
+                <label>Category (Kahan dikhana hai?)</label>
+                <select id="itemCategory">
+                    <option value="Home_HeroFB">🔴 Top FB Live / Carousel (Home)</option>
+                    <option value="Home_AdBanner">📢 Local Ad Banner (Home)</option>
+                    <option value="Feed_LiveBubble">⚪ Live TV Round Logo (Feed)</option>
+                    <option value="Feed_Headline">⚡ Big Cinematic Headline (Feed)</option>
+                    <option value="News_Standard">📰 Standard News Card (Feed)</option>
+                </select>
+                
+                <label>Title / Channel Name</label>
+                <input type="text" id="itemTitle" placeholder="Enter title...">
+                
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex: 1;">
+                        <label>Subtitle / Description</label>
+                        <input type="text" id="itemDesc" placeholder="Short detail...">
+                    </div>
+                    <div style="flex: 1;">
+                        <label>Badge (e.g. LIVE)</label>
+                        <input type="text" id="itemBadge" placeholder="LIVE, AD, etc.">
+                    </div>
+                </div>
 
-            <label>4. Tag / Badge (Upar dikhne wala label)</label>
-            <input type="text" id="itemBadge" placeholder="e.g. FB LIVE / SPONSORED / CRIME">
+                <label>HD Image URL (Thumbnail / Poster)</label>
+                <input type="text" id="itemImage" placeholder="https://...">
+                
+                <label>Video/Action Link (Leave blank for Ad Banners without link)</label>
+                <textarea id="itemLink" rows="2" placeholder="URL or Embed Code..."></textarea>
+            </div>
 
-            <label>5. HD Image / Logo URL (HD Photo ka link)</label>
-            <input type="text" id="itemImage" placeholder="https://images.unsplash.com/...">
+            <!-- Bulk Add Section (Hidden by default) -->
+            <div id="bulkAddMode" style="display: none;">
+                <label>Target Category for Bulk Items</label>
+                <select id="bulkCategory">
+                    <option value="News_Standard">📰 Standard News</option>
+                    <option value="Feed_LiveBubble">⚪ Live TV Channels</option>
+                </select>
+                <label>Paste Multiple Links (One link per line)</label>
+                <textarea id="bulkLinks" rows="5" placeholder="https://youtube.com/...&#10;https://facebook.com/..."></textarea>
+                <p style="font-size: 11px; color: #64748b; margin-top: 5px;">Note: Bulk tool automatically extracts links. Edit names later from the list below.</p>
+            </div>
             
-            <label>6. Video Embed Code or Action Link (Facebook/YouTube Link)</label>
-            <textarea id="itemLink" rows="2" placeholder='<iframe src="..."></iframe> OR https://facebook.com/...'></textarea>
-            
-            <button class="btn" onclick="saveContent()" id="submitBtn">🚀 Publish Live</button>
+            <button class="btn" onclick="saveContent()" id="submitBtn">🚀 Publish</button>
             <p id="msg" style="text-align:center; font-weight:700; font-size:13px; margin-top:12px;"></p>
         </div>
 
+        <!-- Section Filters & List -->
         <div class="card">
-            <h3 style="margin-top:0; border-bottom: 1px solid var(--card-border); padding-bottom: 10px;">📋 Live Network Manager (Edit/Delete/Hide)</h3>
+            <h3 style="margin-top:0; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">📋 Live Network Manager</h3>
+            
+            <div class="admin-tabs">
+                <button class="tab-btn active" onclick="filterAdminList('All', this)">All</button>
+                <button class="tab-btn" onclick="filterAdminList('Home', this)">Home Elements</button>
+                <button class="tab-btn" onclick="filterAdminList('Feed', this)">Feed/Live TV</button>
+                <button class="tab-btn" onclick="filterAdminList('News', this)">News</button>
+            </div>
+
             <div id="adminList">Loading database...</div>
         </div>
     </div>
@@ -88,7 +119,56 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmZWZreXJ3eGRoZHh5YWp1dHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMjY0ODcsImV4cCI6MjEwMjgwMjQ4N30.lmnKyvigM5JeVf1y_BR0tjqAp4PiXioZNcCE5VVYsKg';
         const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
+        let allAdminItems = [];
+        let isBulkMode = false;
+
+        function switchAddMode(mode, btn) {
+            document.querySelectorAll('#singleAddMode, #bulkAddMode').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.card .admin-tabs:first-of-type .tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            if(mode === 'single') {
+                document.getElementById('singleAddMode').style.display = 'block';
+                isBulkMode = false;
+                document.getElementById('submitBtn').innerText = '🚀 Publish';
+            } else {
+                document.getElementById('bulkAddMode').style.display = 'block';
+                isBulkMode = true;
+                document.getElementById('submitBtn').innerText = '🔥 Process Bulk Links';
+            }
+        }
+
         async function saveContent() {
+            const msg = document.getElementById('msg');
+            msg.style.color = '#2563eb';
+            msg.innerText = 'Processing...';
+
+            if (isBulkMode) {
+                // BULK ADD LOGIC
+                const category = document.getElementById('bulkCategory').value;
+                const linksText = document.getElementById('bulkLinks').value;
+                const links = linksText.split('\\n').filter(l => l.trim() !== '');
+                
+                if(links.length === 0) return msg.innerHTML = '<span style="color:#ef4444;">⚠️ Please paste at least one link!</span>';
+                
+                let bulkData = links.map((link, index) => ({
+                    title: `Bulk Item ${Math.floor(Math.random() * 1000)}`,
+                    category: category,
+                    status: 'active',
+                    location: JSON.stringify({ desc: 'Auto Generated', badge: 'NEW', image: '', link: link.trim() })
+                }));
+
+                const { error } = await supabaseClient.from('media_hub').insert(bulkData);
+                if(error) msg.innerHTML = `<span style="color:#ef4444;">Error: ${error.message}</span>`;
+                else {
+                    msg.innerHTML = `<span style="color:#10b981;">✅ ${bulkData.length} Items successfully bulk uploaded! Edit their names below.</span>`;
+                    document.getElementById('bulkLinks').value = '';
+                    loadAdminList();
+                }
+                return;
+            }
+
+            // SINGLE ADD/EDIT LOGIC
             const editId = document.getElementById('editId').value;
             const category = document.getElementById('itemCategory').value;
             const title = document.getElementById('itemTitle').value.trim();
@@ -96,23 +176,16 @@
             const badge = document.getElementById('itemBadge').value.trim();
             const image = document.getElementById('itemImage').value.trim();
             const link = document.getElementById('itemLink').value.trim();
-            const msg = document.getElementById('msg');
             
             if(!title) return msg.innerHTML = '<span style="color:#ef4444;">⚠️ Title is mandatory!</span>';
 
-            // Smart JSON bundling without changing database structure
             const payloadData = JSON.stringify({ desc, badge, image, link });
-
-            msg.style.color = '#3b82f6';
-            msg.innerText = 'Processing...';
 
             let error;
             if (editId) {
-                // Update existing
                 const res = await supabaseClient.from('media_hub').update({ title, category, location: payloadData }).eq('id', editId);
                 error = res.error;
             } else {
-                // Insert new
                 const res = await supabaseClient.from('media_hub').insert([{ title, category, location: payloadData, status: 'active' }]);
                 error = res.error;
             }
@@ -120,7 +193,7 @@
             if(error) {
                 msg.innerHTML = `<span style="color:#ef4444;">Error: ${error.message}</span>`;
             } else {
-                msg.innerHTML = '<span style="color:#10b981;">✅ Successfully Published to Network!</span>';
+                msg.innerHTML = '<span style="color:#10b981;">✅ Successfully Saved!</span>';
                 resetForm();
                 loadAdminList();
             }
@@ -133,11 +206,12 @@
             document.getElementById('itemBadge').value = '';
             document.getElementById('itemImage').value = '';
             document.getElementById('itemLink').value = '';
-            document.getElementById('submitBtn').innerText = '🚀 Publish Live';
+            document.getElementById('submitBtn').innerText = '🚀 Publish';
             document.getElementById('submitBtn').style.background = 'var(--accent)';
         }
 
         function startEdit(id, title, category, locationData) {
+            switchAddMode('single', document.querySelector('.card .admin-tabs:first-of-type .tab-btn'));
             document.getElementById('editId').value = id;
             document.getElementById('itemTitle').value = title;
             document.getElementById('itemCategory').value = category;
@@ -149,7 +223,6 @@
                 document.getElementById('itemImage').value = parsed.image || '';
                 document.getElementById('itemLink').value = parsed.link || '';
             } catch(e) {
-                // For old data format
                 document.getElementById('itemLink').value = locationData;
             }
             
@@ -160,24 +233,51 @@
 
         async function loadAdminList() {
             const { data } = await supabaseClient.from('media_hub').select('*').order('created_at', { ascending: false });
-            const listDiv = document.getElementById('adminList');
+            if(data) {
+                allAdminItems = data;
+                renderAdminList(allAdminItems);
+            }
+        }
+
+        function filterAdminList(filterStr, btn) {
+            document.querySelectorAll('.card:last-of-type .tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
             
-            if(!data || data.length === 0) return listDiv.innerHTML = `<p style="color:#64748b; font-size:13px;">No items found in database.</p>`;
+            if(filterStr === 'All') {
+                renderAdminList(allAdminItems);
+            } else {
+                renderAdminList(allAdminItems.filter(item => item.category.includes(filterStr)));
+            }
+        }
+
+        function renderAdminList(items) {
+            const listDiv = document.getElementById('adminList');
+            if(items.length === 0) return listDiv.innerHTML = `<p style="color:#64748b; font-size:13px; text-align:center;">No items found in this section.</p>`;
             
             let html = '';
-            data.forEach(item => {
+            items.forEach(item => {
                 const isHidden = item.status === 'hidden';
+                
+                // Decode JSON to show Image Thumbnail & Details
+                let parsed = { image: '', link: '' };
+                try { parsed = JSON.parse(item.location); } catch(e) { parsed.link = item.location; }
+                
+                const imgTag = parsed.image ? `<img src="${parsed.image}" class="item-preview">` : `<div class="item-preview">📰</div>`;
+
                 html += `
-                    <div class="admin-item" style="${isHidden ? 'opacity:0.5; border-color:#ef4444;' : ''}">
-                        <div>
-                            <div style="font-weight:700; font-size:14px; margin-bottom:4px;">${item.title}</div>
-                            <span class="badge">${item.category.replace('_', ' ')}</span>
-                            ${isHidden ? '<span class="badge" style="background:#450a0a; color:#fca5a5;">HIDDEN</span>' : ''}
+                    <div class="admin-item" style="${isHidden ? 'opacity:0.6; border-left:4px solid #ef4444;' : 'border-left:4px solid #2563eb;'}">
+                        <div style="display:flex; align-items:center; flex:1; overflow:hidden;">
+                            ${imgTag}
+                            <div style="overflow:hidden;">
+                                <div style="font-weight:700; font-size:13px; color:#0f172a; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;">${item.title}</div>
+                                <div style="font-size:10px; color:#64748b; margin:3px 0;">Cat: <b>${item.category.replace('_', ' ')}</b></div>
+                                ${isHidden ? '<span style="font-size:9px; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:800;">HIDDEN</span>' : ''}
+                            </div>
                         </div>
-                        <div style="display:flex; flex-direction:column; gap:6px;">
-                            <button onclick="startEdit('${item.id}', '${item.title.replace(/'/g, "\\'")}', '${item.category}', '${(item.location || '').replace(/'/g, "\\'")}')" class="action-btn" style="background:#3b82f6; color:white;">Edit</button>
-                            <div style="display:flex; gap:6px;">
-                                <button onclick="toggleStatus('${item.id}', '${item.status}')" class="action-btn" style="background:#f59e0b; color:black;">${isHidden ? 'Show' : 'Hide'}</button>
+                        <div style="display:flex; flex-direction:column; gap:4px; margin-left:10px;">
+                            <button onclick="startEdit('${item.id}', '${item.title.replace(/'/g, "\\'")}', '${item.category}', '${(item.location || '').replace(/'/g, "\\'")}')" class="action-btn" style="background:#f1f5f9; color:#0f172a; border:1px solid #cbd5e1;">Edit</button>
+                            <div style="display:flex; gap:4px;">
+                                <button onclick="toggleStatus('${item.id}', '${item.status}')" class="action-btn" style="background:${isHidden ? '#10b981' : '#f59e0b'}; color:white;">${isHidden ? 'Show' : 'Hide'}</button>
                                 <button onclick="deleteItem('${item.id}')" class="action-btn" style="background:#ef4444; color:white;">Del</button>
                             </div>
                         </div>
@@ -192,7 +292,7 @@
         }
 
         async function deleteItem(id) {
-            if(confirm('🚨 WARNING: Are you sure you want to permanently delete this item?')) {
+            if(confirm('Delete this item permanently?')) {
                 await supabaseClient.from('media_hub').delete().eq('id', id);
                 loadAdminList();
             }
