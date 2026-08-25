@@ -1,18 +1,31 @@
-// 1. Global Top Header Component
+// 1. Global Top Header Component with Smart Auto Back Button
 class CityHeader extends HTMLElement {
     connectedCallback() {
+        // Check karein ki kya user Home page par hai ya nahi
+        const currentPath = window.location.pathname;
+        const isHome = currentPath.endsWith('index.html') || currentPath === '/' || currentPath.endsWith('/');
+        
         this.innerHTML = `
             <div style="background: #ffffff; padding: 12px 16px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #e2e8f0;">
-                <div style="display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="alert('Location Switcher: Bhatpara, WB')">
-                    <span style="font-size: 18px;">📍</span>
-                    <div>
-                        <div style="font-size: 10px; color: #64748b; font-weight: 700;">LOCATION</div>
-                        <div style="font-size: 12px; font-weight: 800; color: #0f172a;">Bhatpara ▾</div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    ${!isHome ? `
+                        <button onclick="history.back()" style="background: #f1f5f9; border: none; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; transition: background 0.2s;" title="Go Back">
+                            ⬅️
+                        </button>
+                    ` : ''}
+                    <div style="display: flex; align-items: center; gap: 6px; cursor: pointer;" onclick="alert('Location Switcher: Bhatpara, WB')">
+                        <span style="font-size: 16px;">📍</span>
+                        <div>
+                            <div style="font-size: 9px; color: #64748b; font-weight: 700;">LOCATION</div>
+                            <div style="font-size: 11px; font-weight: 800; color: #0f172a;">Bhatpara ▾</div>
+                        </div>
                     </div>
                 </div>
+
                 <div style="text-align: center;">
-                    <h1 style="margin: 0; color: #0f172a; font-size: 17px; font-weight: 800;">CityPulse 🏙️</h1>
+                    <h1 style="margin: 0; color: #0f172a; font-size: 16px; font-weight: 800;">CityPulse 🏙️</h1>
                 </div>
+
                 <div>
                     <a href="profile.html" style="text-decoration: none; background: #fef3c7; color: #d97706; padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
                         ❤️ Wishlist
@@ -24,7 +37,7 @@ class CityHeader extends HTMLElement {
 }
 customElements.define('city-header', CityHeader);
 
-// 2. Bottom Navigation Bar Component (Exact Order: Home -> Category -> Search -> Profile -> Notification)
+// 2. Bottom Navigation Bar Component (Order: Home -> Category -> Search -> Profile -> Notice)
 class BottomNav extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
