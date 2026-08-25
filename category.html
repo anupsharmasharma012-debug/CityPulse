@@ -1,272 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- ==========================================
-       [HTML] FILE HEADER & METADATA START
-       ========================================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityPulse - All Categories</title>
-    <!-- [CSS] LINKED TO MASTER STYLESHEET -->
-    <link rel="stylesheet" href="style.css">
+    <title>CityPulse - Categories</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* ==========================================
-           [CSS] PAGE-SPECIFIC CUSTOM STYLES START
-           ========================================== */
-        .page-container { 
-            width: 100%; max-width: 420px; height: 100vh; 
-            display: flex; flex-direction: column; background: var(--card-bg); 
-            position: relative; overflow: hidden;
-            padding: 0;
-        }
-        
-        /* Header Layout Styles */
-        .header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); z-index: 10;}
-        .header h1 { font-size: 16px; font-weight: bold; margin-left: 10px;}
-        .back-btn { background: none; border: none; font-size: 20px; color: var(--text-main); cursor: pointer; }
-        .search-icon-btn { font-size: 18px; color: var(--text-main); cursor: pointer; }
-
-        /* Two-Pane Layout Wrapper */
-        .layout-wrapper { display: flex; height: calc(100vh - 110px); }
-
-        /* Left Sidebar Styles */
-        .sidebar { 
-            width: 85px; background: var(--bg-color); 
-            overflow-y: auto; border-right: 1px solid var(--border); 
-            padding-bottom: 20px;
-        }
-        .sidebar::-webkit-scrollbar { display: none; } 
-        
-        .side-tab { 
-            padding: 14px 4px; text-align: center; font-size: 9px; font-weight: 700; 
-            color: var(--text-sub); cursor: pointer; border-left: 3px solid transparent; 
-            display: flex; flex-direction: column; align-items: center; gap: 6px;
-        }
-        .side-tab.active { background: var(--card-bg); color: var(--primary); border-left-color: var(--primary); }
-        .side-icon { font-size: 22px; margin-bottom: 2px;}
-
-        /* Right Content Area Styles */
-        .content-area { 
-            flex: 1; padding: 12px 14px; overflow-y: auto; background: var(--card-bg); padding-bottom: 80px;
-        }
-        .content-area::-webkit-scrollbar { width: 4px; }
-        .content-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-        .sub-cat-group { margin-bottom: 20px; }
-        .sub-cat-title { font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
-        
-        /* Sub-Category Grid Items */
-        .sub-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px 8px; }
-        .sub-item { text-align: center; cursor: pointer; text-decoration: none; display: flex; flex-direction: column; align-items: center; }
-        .sub-icon-box { 
-            width: 52px; height: 52px; border-radius: 14px; 
-            background: rgba(0, 122, 153, 0.05); border: 1px solid var(--border); 
-            display: flex; align-items: center; justify-content: center; font-size: 22px; 
-            margin-bottom: 6px; transition: 0.2s;
-        }
-        .sub-item:active .sub-icon-box { border-color: var(--primary); background: rgba(0, 122, 153, 0.15); }
-        .sub-item span { font-size: 9px; font-weight: 600; color: var(--text-main); line-height: 1.2; }
-        /* ==========================================
-           [CSS] PAGE-SPECIFIC CUSTOM STYLES END
-           ========================================== */
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; padding: 12px; color: #1e293b; padding-bottom: 70px; }
+        .max-width-container { max-width: 700px; margin: 0 auto; }
+        .cat-card { background: white; border: 1px solid #e2e8f0; padding: 16px; border-radius: 12px; margin-bottom: 12px; display: flex; align-items: center; gap: 15px; text-decoration: none; color: inherit; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
     </style>
+    <script src="components.js" defer></script>
 </head>
 <body>
+    <div class="max-width-container">
+        <city-header></city-header>
+        <div style="font-weight: 800; font-size: 18px; margin-bottom: 15px; color: #0f172a;">🗂️ Explore All Categories</div>
 
-<!-- [HTML] MAIN CONTENT CONTAINER START -->
-<div class="page-container">
-    
-    <!-- [HTML] HEADER SECTION START -->
-    <div class="header">
-        <div style="display: flex; align-items: center;">
-            <button class="back-btn" onclick="window.location.href='index.html'">←</button>
-            <h1>Categories</h1>
-        </div>
-        <div class="search-icon-btn" onclick="window.location.href='search.html'">🔍</div>
+        <a href="news.html" class="cat-card">
+            <div style="font-size: 28px; background: #fee2e2; padding: 10px; border-radius: 10px;">📰</div>
+            <div>
+                <div style="font-weight: 700; font-size: 16px;">News & Media Portal</div>
+                <div style="font-size: 12px; color: #64748b;">Live TV, Headlines, Crime & Sports</div>
+            </div>
+        </a>
+
+        <a href="entertainment.html" class="cat-card">
+            <div style="font-size: 28px; background: #ede9fe; padding: 10px; border-radius: 10px;">🎬</div>
+            <div>
+                <div style="font-weight: 700; font-size: 16px;">Entertainment & Shows</div>
+                <div style="font-size: 12px; color: #64748b;">Movies, Web Shows & Kids Cartoons</div>
+            </div>
+        </a>
+
+        <bottom-nav></bottom-nav>
     </div>
-    <!-- [HTML] HEADER SECTION END -->
-
-    <!-- [HTML] TWO-PANE LAYOUT START -->
-    <div class="layout-wrapper">
-        <div class="sidebar" id="sidebarMenu"></div>
-        <div class="content-area" id="contentArea"></div>
-    </div>
-    <!-- [HTML] TWO-PANE LAYOUT END -->
-
-</div>
-<!-- [HTML] MAIN CONTENT CONTAINER END -->
-
-<!-- [HTML] MODERN 5-TAB BOTTOM NAVIGATION START -->
-<div class="bottom-nav">
-    <a href="index.html" class="nav-item">
-        <div class="nav-icon">🏠</div><span>Home</span>
-    </a>
-    <a href="search.html" class="nav-item">
-        <div class="nav-icon">🔍</div><span>Search</span>
-    </a>
-    <a href="pay.html" class="nav-item">
-        <div class="nav-icon">🛡️</div><span>Pay</span>
-    </a>
-    <a href="category.html" class="nav-item active">
-        <div class="nav-icon">📂</div><span>Category</span>
-    </a>
-    <a href="notifications.html" class="nav-item">
-        <div class="nav-icon">🔔</div><span>Alerts</span>
-    </a>
-</div>
-<!-- [HTML] MODERN 5-TAB BOTTOM NAVIGATION END -->
-
-<!-- [JS] SCRIPT LOGIC START -->
-<script>
-    // Global Dark Mode Sync[span_2](start_span)[span_2](end_span)
-    if (localStorage.getItem("citypulse_theme") === "dark") document.body.classList.add("dark-theme");
-
-    // Category Data Object updated with new rocket modules
-    const categoryData = {
-        "profile": {
-            icon: "👤", title: "Profile",
-            groups: [
-                { title: "Account & Settings", items: [
-                    { icon: "🔐", name: "Login/Auth", link: "login.html" },
-                    { icon: "📍", name: "My Address", link: "location.html" },
-                    { icon: "📂", name: "My Activity", link: "profile.html" },
-                    { icon: "⚙️", name: "Settings", link: "menu.html" }
-                ]}
-            ]
-        },
-        "news": {
-            icon: "📰", title: "News",
-            groups: [
-                { title: "Local & Breaking", items: [
-                    { icon: "🔥", name: "Headlines", link: "news.html" },
-                    { icon: "📍", name: "Hyper-Local", link: "news.html" },
-                    { icon: "🚨", name: "Crime/Traffic", link: "news.html" }
-                ]}
-            ]
-        },
-        "pay": {
-            icon: "💳", title: "Pay",
-            groups: [
-                { title: "Bills & Recharges", items: [
-                    { icon: "📱", name: "Mobile/DTH", link: "pay.html" },
-                    { icon: "⚡", name: "Utility/Water", link: "pay.html" },
-                    { icon: "🏛️", name: "Municipal Tax", link: "pay.html" }
-                ]}
-            ]
-        },
-        "transport": {
-            icon: "🧳", title: "Transport",
-            groups: [
-                { title: "Public Transit & Pooling", items: [
-                    { icon: "🛺", name: "Auto Pool", link: "pool_ride.html" },
-                    { icon: "🚌", name: "Local Bus", link: "explore.html" },
-                    { icon: "🚆", name: "Train Time", link: "explore.html" }
-                ]}
-            ]
-        },
-        "ride": {
-            icon: "🚗", title: "Ride",
-            groups: [
-                { title: "Bookings & Logistics", items: [
-                    { icon: "🛺", name: "Share Pool", link: "pool_ride.html" },
-                    { icon: "🛵", name: "Bike Taxi", link: "delivery.html" },
-                    { icon: "📦", name: "Send Parcel", link: "delivery.html" }
-                ]}
-            ]
-        },
-        "shopping": {
-            icon: "🛍️", title: "Shopping",
-            groups: [
-                { title: "Local Market & Vyapar", items: [
-                    { icon: "🛒", name: "Grocery", link: "marketplace.html" },
-                    { icon: "🏬", name: "Dukaan Hub", link: "gig_market.html" },
-                    { icon: "👕", name: "Fashion", link: "marketplace.html" }
-                ]}
-            ]
-        },
-        "food": {
-            icon: "🍔", title: "Food",
-            groups: [
-                { title: "Food & Recipes", items: [
-                    { icon: "🍲", name: "Order Food", link: "marketplace.html" },
-                    { icon: "📖", name: "Recipes", link: "marketplace.html" }
-                ]}
-            ]
-        },
-        "services": {
-            icon: "🛠️", title: "Services",
-            groups: [
-                { title: "Utilities & Gigs", items: [
-                    { icon: "🛠️", name: "Local Gigs", link: "gig_market.html" },
-                    { icon: "🚨", name: "Emergency SOS", link: "emergency.html" },
-                    { icon: "🗓️", name: "Calendar", link: "Callender.html" }
-                ]}
-            ]
-        },
-        "health": {
-            icon: "🏥", title: "Health",
-            groups: [
-                { title: "Medical Services", items: [
-                    { icon: "🚑", name: "Ambulance", link: "health.html" },
-                    { icon: "🩺", name: "Doctors", link: "health.html" },
-                    { icon: "💊", name: "Pharmacy", link: "health.html" }
-                ]}
-            ]
-        },
-        "career": {
-            icon: "💼", title: "Career",
-            groups: [
-                { title: "Jobs & Vyapar", items: [
-                    { icon: "🛠️", name: "Gig Board", link: "gig_market.html" },
-                    { icon: "💼", name: "Job Portal", link: "career_edu.html" },
-                    { icon: "💻", name: "Learn Coding", link: "career_edu.html" }
-                ]}
-            ]
-        }
-    };
-
-    let activeCategory = "news";
-
-    function renderSidebar() {
-        const sidebar = document.getElementById("sidebarMenu");
-        sidebar.innerHTML = "";
-        for (const [key, data] of Object.entries(categoryData)) {
-            const div = document.createElement("div");
-            div.className = `side-tab ${key === activeCategory ? 'active' : ''}`;
-            div.onclick = () => {
-                activeCategory = key;
-                renderSidebar();
-                renderContent();
-            };
-            div.innerHTML = `<div class="side-icon">${data.icon}</div><span>${data.title}</span>`;
-            sidebar.appendChild(div);
-        }
-    }
-
-    function renderContent() {
-        const content = document.getElementById("contentArea");
-        content.innerHTML = "";
-        const data = categoryData[activeCategory];
-        data.groups.forEach(group => {
-            let groupHtml = `<div class="sub-cat-group">
-                <div class="sub-cat-title">${group.title}</div>
-                <div class="sub-grid">`;
-            group.items.forEach(item => {
-                groupHtml += `<a href="${item.link}" class="sub-item">
-                        <div class="sub-icon-box">${item.icon}</div>
-                        <span>${item.name}</span>
-                    </a>`;
-            });
-            groupHtml += `</div></div>`;
-            content.innerHTML += groupHtml;
-        });
-    }
-
-    renderSidebar();
-    renderContent();
-</script>
-<!-- [JS] SCRIPT LOGIC END -->
-
 </body>
 </html>
-
