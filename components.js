@@ -41,8 +41,9 @@ window.toggleTheme = function() {
 // 1. Global Cinematic Top Header Component
 class CityHeader extends HTMLElement {
     connectedCallback() {
-        const currentPath = window.location.pathname;
-        const isHome = currentPath.endsWith('index.html') || currentPath === '/' || currentPath.endsWith('');
+        // BUG FIX: Accurate way to detect Home Page vs Other Pages
+        const pageName = window.location.pathname.split('/').pop();
+        const isHome = pageName === 'index.html' || pageName === ''; 
         const isLight = document.body.classList.contains('light-mode');
         
         this.innerHTML = `
@@ -65,7 +66,6 @@ class CityHeader extends HTMLElement {
                 </div>
 
                 <div style="display: flex; gap: 8px; align-items: center;">
-                    <!-- Wishlist button removed from here, now placed in bottom nav -->
                     <button onclick="toggleTheme()" style="background: #1e2330; border: 1px solid #2a324a; width: 32px; height: 32px; border-radius: 8px; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3);" title="Switch Theme">
                         <span id="theme-icon">${isLight ? '🌙' : '☀️'}</span>
                     </button>
@@ -107,11 +107,9 @@ class BottomNav extends HTMLElement {
                     <span>Profile</span>
                 </a>
                 
-                <!-- Notification / Notice on the Extreme Right -->
                 <a href="notification.html" style="text-decoration: none; color: var(--text-muted); font-size: 9px; font-weight: 600; flex: 1; display: flex; flex-direction: column; align-items: center; position: relative;">
                     <div style="position: relative; display: inline-block;">
                         <span style="font-size: 18px; margin-bottom: 3px;">🔔</span>
-                        <!-- Red glowing dot to indicate new notification -->
                         <span style="position: absolute; top: 0px; right: -2px; background: #ff2a2a; width: 6px; height: 6px; border-radius: 50%; box-shadow: 0 0 5px rgba(255,42,42,0.6);"></span>
                     </div>
                     <span>Notice</span>
@@ -123,4 +121,3 @@ class BottomNav extends HTMLElement {
     }
 }
 customElements.define('bottom-nav', BottomNav);
-
