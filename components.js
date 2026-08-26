@@ -65,12 +65,10 @@ class CityHeader extends HTMLElement {
                 </div>
 
                 <div style="display: flex; gap: 8px; align-items: center;">
-                    <button onclick="toggleTheme()" style="background: transparent; border: none; font-size: 16px; cursor: pointer; padding: 0;" title="Switch Theme">
+                    <!-- Wishlist button removed from here, now placed in bottom nav -->
+                    <button onclick="toggleTheme()" style="background: #1e2330; border: 1px solid #2a324a; width: 32px; height: 32px; border-radius: 8px; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3);" title="Switch Theme">
                         <span id="theme-icon">${isLight ? '🌙' : '☀️'}</span>
                     </button>
-                    <a href="profile.html" style="text-decoration: none; background: rgba(245,158,11,0.15); color: #f59e0b; padding: 6px 8px; border-radius: 8px; font-size: 10px; font-weight: 700; border: 1px solid rgba(245,158,11,0.3);">
-                        ❤️ Saved
-                    </a>
                 </div>
             </div>
         `;
@@ -82,25 +80,47 @@ customElements.define('city-header', CityHeader);
 class BottomNav extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
-            <div style="position: fixed; bottom: 0; left: 0; width: 100%; background: #121212; border-top: 1px solid #1f2433; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); z-index: 1000; max-width: 700px; margin: 0 auto; right: 0; transition: all 0.3s;">
-                <a href="index.html" style="text-decoration: none; text-align: center; color: var(--text-muted); font-size: 10px; font-weight: 600;">
-                    <div style="font-size: 18px; margin-bottom: 2px;">🏠</div>Home
+            <div style="position: fixed; bottom: 0; left: 0; width: 100%; background: #121212; border-top: 1px solid #1f2433; display: flex; justify-content: space-between; padding: 10px 5px; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); z-index: 1000; max-width: 700px; margin: 0 auto; right: 0; transition: all 0.3s; box-sizing: border-box;">
+                
+                <a href="index.html" style="text-decoration: none; color: var(--text-muted); font-size: 9px; font-weight: 600; flex: 1; display: flex; flex-direction: column; align-items: center;">
+                    <span style="font-size: 18px; margin-bottom: 3px;">🏠</span>
+                    <span>Home</span>
                 </a>
-                <a href="feed.html" style="text-decoration: none; text-align: center; color: var(--text-muted); font-size: 10px; font-weight: 600;">
-                    <div style="font-size: 18px; margin-bottom: 2px;">📺</div>Live TV
+                
+                <a href="category.html" style="text-decoration: none; color: var(--text-muted); font-size: 9px; font-weight: 600; flex: 1; display: flex; flex-direction: column; align-items: center;">
+                    <span style="font-size: 18px; margin-bottom: 3px;">🗂️</span>
+                    <span>Category</span>
                 </a>
-                <a href="search.html" style="text-decoration: none; text-align: center; color: var(--text-muted); font-size: 10px; font-weight: 600;">
-                    <div style="font-size: 18px; margin-bottom: 2px;">🔍</div>Search
+                
+                <a href="search.html" style="text-decoration: none; color: var(--text-muted); font-size: 9px; font-weight: 600; flex: 1; display: flex; flex-direction: column; align-items: center;">
+                    <span style="font-size: 18px; margin-bottom: 3px;">🔍</span>
+                    <span>Search</span>
                 </a>
-                <a href="civic.html" style="text-decoration: none; text-align: center; color: var(--text-muted); font-size: 10px; font-weight: 600;">
-                    <div style="font-size: 18px; margin-bottom: 2px;">🏛️</div>Shikayat
+                
+                <a href="wishlist.html" style="text-decoration: none; color: var(--text-muted); font-size: 9px; font-weight: 600; flex: 1; display: flex; flex-direction: column; align-items: center;">
+                    <span style="font-size: 18px; margin-bottom: 3px;">❤️</span>
+                    <span>Wishlist</span>
                 </a>
-                <a href="profile.html" style="text-decoration: none; text-align: center; color: var(--text-muted); font-size: 10px; font-weight: 600;">
-                    <div style="font-size: 18px; margin-bottom: 2px;">👤</div>Profile
+                
+                <a href="profile.html" style="text-decoration: none; color: var(--text-muted); font-size: 9px; font-weight: 600; flex: 1; display: flex; flex-direction: column; align-items: center;">
+                    <span style="font-size: 18px; margin-bottom: 3px;">👤</span>
+                    <span>Profile</span>
                 </a>
+                
+                <!-- Notification / Notice on the Extreme Right -->
+                <a href="notification.html" style="text-decoration: none; color: var(--text-muted); font-size: 9px; font-weight: 600; flex: 1; display: flex; flex-direction: column; align-items: center; position: relative;">
+                    <div style="position: relative; display: inline-block;">
+                        <span style="font-size: 18px; margin-bottom: 3px;">🔔</span>
+                        <!-- Red glowing dot to indicate new notification -->
+                        <span style="position: absolute; top: 0px; right: -2px; background: #ff2a2a; width: 6px; height: 6px; border-radius: 50%; box-shadow: 0 0 5px rgba(255,42,42,0.6);"></span>
+                    </div>
+                    <span>Notice</span>
+                </a>
+                
             </div>
             <div style="height: 60px;"></div>
         `;
     }
 }
 customElements.define('bottom-nav', BottomNav);
+
